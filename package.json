@@ -3,22 +3,23 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
-    "express": "~4.0.0",
-    "morgan": "~1.0.0",
     "body-parser": "~1.0.0",
-    "method-override": "~1.0.0",
-    "static-favicon": "~1.0.1",
-    "cookie-parser": "~1.0.1",
-    "express-session": "~1.0.2",
-    "errorhandler": "~1.0.0",
-    "compression": "~1.0.1",
-    "lodash": "~2.4.1",
-    "ejs": "~0.8.4",
-    "mongoose": "~3.8.8",
+    "coffee-script": "^1.7.1",
     "composable-middleware": "^0.3.0",
+    "compression": "~1.0.1",
     "connect-mongo": "^0.4.1",
+    "cookie-parser": "~1.0.1",
+    "ejs": "~0.8.4",
+    "errorhandler": "~1.0.0",
+    "express": "~4.0.0",
+    "express-session": "~1.0.2",
+    "lodash": "~2.4.1",
+    "method-override": "~1.0.0",
+    "mongoose": "~3.8.8",
+    "morgan": "~1.0.0",
     "socket.io": "~1.0.6",
-    "socketio-jwt": "^2.0.2"
+    "socketio-jwt": "^2.0.2",
+    "static-favicon": "~1.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
@@ -79,7 +80,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "start": "node server/app.js",
+    "start": "node node_modules/.bin/coffee server/app.coffee",
     "test": "grunt test",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },

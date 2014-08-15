@@ -1,11 +1,11 @@
 'use strict'
 
 angular.module 'dbboardApp', [
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
-  'btford.socket-io',
-  'ui.router',
+  'ngCookies'
+  'ngResource'
+  'ngSanitize'
+  'btford.socket-io'
+  'ui.router'
   'ui.bootstrap'
   'structures'
   'adf'

@@ -22,7 +22,7 @@
 # * THE SOFTWARE.
 # 
 "use strict"
-angular.module("structures", ["adf"]).config (dashboardProvider) ->
+angular.module("structures", ["adf.provider"]).config (dashboardProvider) ->
   dashboardProvider.structure("6-6",
     rows: [columns: [
       {

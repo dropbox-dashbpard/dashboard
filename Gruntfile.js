@@ -36,13 +36,15 @@ module.exports = function (grunt) {
       },
       dev: {
         options: {
-          script: 'server/app.js',
+          opts: ['node_modules/.bin/coffee'],
+          script: 'server/app.coffee',
           debug: true
         }
       },
       prod: {
         options: {
-          script: 'dist/server/app.js'
+          opts: ['node_modules/.bin/coffee'],
+          script: 'dist/server/app.coffee'
         }
       }
     },
@@ -118,7 +120,7 @@ module.exports = function (grunt) {
       },
       express: {
         files: [
-          'server/**/*.{js,json}'
+          'server/**/*.{coffee,js,json}'
         ],
         tasks: ['express:dev', 'wait'],
         options: {
@@ -411,7 +413,8 @@ module.exports = function (grunt) {
     karma: {
       unit: {
         configFile: 'karma.conf.js',
-        singleRun: true
+        singleRun: true,
+        logLevel: 'DEBUG'
       }
     },
 
