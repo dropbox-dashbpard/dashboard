@@ -25,9 +25,54 @@ DropboxSchema = new Schema(
   ua: Object  # UA object
 )
 
-DropboxSchema.index {created_at: -1}
 DropboxSchema.index {device_id: 1, created_at: -1}
 DropboxSchema.index {product: 1, version: 1, app: 1, tag: 1, created_at: -1}
+
+DropboxSchema.statics.findByDeviceID = (deviceId, from_date, to_date, limit, cb) ->
+  promise = @find()
+  .where("created_at").gte(from_date).lt(to_date)
+  .where("device_id").equals(deviceId).limit(limit)
+  .select("product version app tag occurred_at created_at device_id")
+  .exec()
+  if cb then promise.onResolve(cb) else promise
+
+DropboxSchema.statics.findAppInAdvance = (product, version, app, from_date, to_date, limit, cb) ->
+  promise = @find()
+  .where("created_at").gte(from_date).lt(to_date)
+  .where("product").equals(product)
+  .where("version").equals(version)
+  .where("app").equals(app)
+  .limit(limit)
+  .select("product version occurred_at device_id tag app").exec()
+  if cb then promise.onResolve(cb) else promise
+
+DropboxSchema.statics.findTagInAdvance = (product, version, tag, from_date, to_date, limit, cb) ->
+  promise = @find()
+  .where("created_at").gte(from_date).lt(to_date)
+  .where("product").equals(product)
+  .where("version").equals(version)
+  .where("tag").equals(tag)
+  .limit(limit)
+  .select("product version app tag occurred_at created_at device_id")
+  .exec()
+  if cb then promise.onResolve(cb) else promise
+
+DropboxSchema.statics.findByMacAddress = (mac, from_date, to_date, limit, cb) ->
+  promise = @find()
+  .where("created_at").gte(from_date).lt(to_date)
+  .where("ua.mac_address").equals(mac)
+  .limit(limit)
+  .select("product version app tag occurred_at created_at device_id")
+  .exec()
+  if cb then promise.onResolve(cb) else promise
+
+DropboxSchema.statics.findByCreatedAt = (from_date, to_date, limit, cb) ->
+  promise = @find()
+  .where("created_at").gte(from_date).lt(to_date)
+  .limit(limit)
+  .select("product version app tag occurred_at created_at device_id")
+  .exec()
+  if cb then promise.onResolve(cb) else promise
 
 ##################################################################################
 # define the limitation of dropbox message of every day
@@ -46,14 +91,22 @@ DropboxLimitSchema = new Schema(
 )
 
 DropboxLimitSchema.statics.incLimit = (id, limit, callback) ->
-  promise = @findOneAndUpdate(_id: id, {$inc: {value: 1}, $setOnInsert: {limit: limit}}, upsert: true).exec()
+  promise = @findOneAndUpdate(
+      _id: id
+    ,
+      $inc:
+        value: 1
+      $setOnInsert:
+        limit: limit
+        created_at: stringToDate(dateToString(new Date()))
+    , upsert: true
+  ).exec()
   promise.addBack(callback) if callback
 
 DropboxLimitSchema.virtual('key').get ->
   @_id
 DropboxLimitSchema.virtual('key').set (value)->
   @_id = value
-DropboxLimitSchema.index {created_at: -1}
 
 ##################################################################################
 # the device counter of every day
@@ -100,19 +153,11 @@ DropboxStatSchema.index {date: -1}
 DropboxStatSchema.index {date: -1, product: 1, version: -1}
 DropboxStatSchema.index {product: 1, version: -1}
 
-DropboxStatSchema.statics.toKey = (app, tag) ->
-  app = app.replace /\./g, "#"
-  if tag
-    tag = tag.replace /\./g, "#"
-    "#{app}###{tag}"
-  else
-    app
+DropboxStatSchema.statics.toKey = (name) ->
+  name.replace /\./g, "#"
 
 DropboxStatSchema.statics.toName = (key) ->
-  keys = key.split '##'
-  keys = _.map keys, (key) ->
-    key.replace /#/g, '.'
-  if keys.length is 1 then keys[0] else keys
+  key.replace /#/g, '.'
 
 DropboxStatSchema.statics.addDropboxEntry = (product, version, date, entries, newDevice, callback) ->
   doc = $inc: {}
@@ -145,6 +190,7 @@ DropboxStatSchema.statics.addDropboxEntry = (product, version, date, entries, ne
   ).select("_id").exec()
   promise.addBack(callback) if callback
 
+# exports
 exports = module.exports =
   Dropbox: mongoose.model("Dropbox", DropboxSchema)
   DropboxLimit: mongoose.model("DropboxLimit", DropboxLimitSchema)

@@ -1,7 +1,6 @@
-###
-Express configuration
-###
+### Express configuration ###
 "use strict"
+
 express = require("express")
 favicon = require("static-favicon")
 morgan = require("morgan")
@@ -11,7 +10,9 @@ methodOverride = require("method-override")
 cookieParser = require("cookie-parser")
 errorHandler = require("errorhandler")
 path = require("path")
+
 config = require("./environment")
+
 module.exports = (app) ->
   env = app.get("env")
   app.set "views", config.root + "/server/views"
@@ -22,6 +23,7 @@ module.exports = (app) ->
   app.use bodyParser.json()
   app.use methodOverride()
   app.use cookieParser()
+
   if "production" is env
     app.use favicon(path.join(config.root, "public", "favicon.ico"))
     app.use express.static(path.join(config.root, "public"))
@@ -34,4 +36,3 @@ module.exports = (app) ->
     app.set "appPath", "client"
     app.use morgan("dev")
     app.use errorHandler() # Error handler - has to be last
-  return

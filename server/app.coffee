@@ -1,6 +1,4 @@
-###
-Main application file
-###
+# Main application file
 "use strict"
 
 # Set default node environment to development

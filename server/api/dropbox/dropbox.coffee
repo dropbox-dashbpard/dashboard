@@ -65,7 +65,7 @@ exports.device = (req, res, next) ->
 exports.add = (req, res, next) ->
   isUnderLimits = (kvs) ->
     promise = new mongoose.Promise
-    promise.complete true
+    promise.fulfill true
     _.reduce kvs, (memo, limit) ->
       memo.then((underLimit) ->
         p = new mongoose.Promise
@@ -74,9 +74,9 @@ exports.add = (req, res, next) ->
             if err
               p.error err
             else
-              p.complete (doc?.value or 0) < (doc?.limit or limit.limit)
+              p.fulfill (doc?.value or 0) < (doc?.limit or limit.limit)
         else
-          p.complete false
+          p.fulfill false
         p
       )
     , promise
@@ -98,7 +98,7 @@ exports.add = (req, res, next) ->
 
   addEntries = (entries) ->  # 增加所有的entry, 返回一个promise
     promise = new mongoose.Promise
-    promise.complete []
+    promise.fulfill []
     _.reduce entries, (memo, entry) ->
       # 不在黑名单的都会增加dropbox计数
       memo.then (results) ->
@@ -106,18 +106,18 @@ exports.add = (req, res, next) ->
         if req.device.in_white  # 在白名单，所以不增加limit里的计数
           Dropbox.create entry, (err, doc) ->
             results.push if err then null else {dropbox_id: doc._id, result: "ok"}
-            p.complete results
+            p.fulfill results
         else
           kvs = req.product.limit_kvs entry
           isUnderLimits(kvs).then (underLimit) ->  # 判断是否limit计数超限
             if underLimit  # 没有超过limit计数
               Dropbox.create entry, (err, doc) ->
                 results.push if err then null else {dropbox_id: doc._id, result: "ok"}
-                p.complete results
+                p.fulfill results
                 incLimits kvs  # 增加limit计数
             else  # over limit, so drop it
               results.push null
-              p.complete results
+              p.fulfill results
         p
     , promise
 
@@ -144,10 +144,29 @@ exports.upload = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   res.send "TODO"  #TODO upload log file
 
-exports.get = (req, res, next) ->
+exports.get = (req, res, next) ->  # get a dropbox entry
   dropbox_id = req.param('dropbox_id')
   Dropbox.findById(dropbox_id).exec()
   .then (doc) ->
       res.json doc
     , (err) ->
       next err
+
+exports.list = (req, res) ->  # query dropbox entries
+  limit = parseInt(req.param("limit")) or 1000
+  from = new Date(req.param("from") or (Date.now() - 1000*3600*24))
+  to = new Date(req.param("to") or Date.now())
+  if from > to
+    [from, to] = [to, from]
+  promise = if(deviceId = req.param("device_id"))
+    Dropbox.findByDeviceID deviceId, from, to, limit
+  else if(app = req.param("app"))
+    Dropbox.findAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
+  else if(tag = req.param("tag"))
+    Dropbox.findTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
+  else if(mac = req.param("mac"))
+    Dropbox.findByMacAddress mac, from, to, limit
+  else
+    Dropbox.findByCreatedAt from, to, limit
+  promise.onResolve (err, docs) ->
+    res.json(data: docs or [])
