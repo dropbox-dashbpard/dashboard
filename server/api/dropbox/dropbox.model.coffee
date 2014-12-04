@@ -220,7 +220,7 @@ DropboxStatSchema.statics.trend = (product, dist, start, end, cb) ->
     @find()
     .where('date').gte(start).lte(end)
     .where('product').equals(product)
-    .where('version').in(config.versions[dist] or [])
+    .where('version').in(config?.versions?[dist] or [])
     .select('version date all').exec (err, docs) =>
       return cb err if err
       result = {}
@@ -297,8 +297,9 @@ DropboxStatSchema.statics.errorRate = (product, dist, total, drilldown, cb) ->
         result[ver].devices += doc.all?.devices or 0
         if drilldown
           for app, value of doc.app
-            result[ver].apps[app] ?= 0
-            result[ver].apps[app] += value.occurred
+            appName = @toName app
+            result[ver].apps[appName] ?= 0
+            result[ver].apps[appName] += value.occurred
       cb null, ({version: ver, occurred: result[ver]?.occurred or 0, devices: result[ver]?.devices or 0, drilldown: result[ver]?.apps or {}} for ver in versions)
 
 # 特定产品，应用在不同版本上的错误旅

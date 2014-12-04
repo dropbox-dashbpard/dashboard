@@ -16,8 +16,8 @@ require "./config/seed" if config.seedDB
 # Setup server
 app = express()
 server = require("http").createServer(app)
-# socketio = require("socket.io").listen(server)
-# require("./config/socketio") socketio
+socketio = require("socket.io").listen(server)
+require("./config/socketio") socketio
 require("./config/express") app
 require("./routes") app
 

@@ -1,0 +1,12 @@
+<div class="row">
+  <ul class="nav nav-tabs" role="tablist">
+    <li ng-class="{active: stateContains('query.dashboard')}"><a ui-sref='query.dashboard'>仪表盘</a></li>
+    <li ng-class="{active: stateContains('query.device')}"><a ui-sref='query.device'>设备ID</a></li>
+    <li ng-class="{active: stateContains('query.mac')}"><a ui-sref='query.mac'>MAC地址</a></li>
+    <li ng-class="{active: stateContains('query.app')}"><a ui-sref='query.app'>应用</a></li>
+    <li ng-class="{active: stateContains('query.tag')}"><a ui-sref='query.tag'>类别</a></li>
+    <li ng-class="{active: stateContains('query.dbitem')}"><a ui-sref='query.dbitem'>数据ID</a></li>
+    <li ng-class="{active: stateContains('query.report_tag')}"><a ui-sref='query.report_tag'>聚类分析</a></li>
+  </ul>
+</div>
+<div ui-view></div>

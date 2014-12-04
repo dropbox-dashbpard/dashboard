@@ -1,0 +1,7 @@
+<div class="panel panel-default" ng-if="(undefined != items && null != items) || reloading">
+  <div class="panel-heading"><span class="glyphicon glyphicon-list-alt"> 数据列表</span></div>
+  <div class="panel-body">
+    <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar>
+    <div class="gridStyle" ng-grid="gridItems" ng-if="!reloading"></div>
+  </div>
+</div>

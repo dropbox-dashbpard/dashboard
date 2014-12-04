@@ -5,5 +5,5 @@ angular.module 'dbboardApp'
   $stateProvider
   .state 'main',
     url: '/'
-    templateUrl: 'app/main/main.html'
+    templateUrl: 'app/partial/dashboard.html'
     controller: 'MainCtrl'

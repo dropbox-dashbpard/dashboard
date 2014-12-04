@@ -10,7 +10,7 @@ router.post '/', dropbox.ua, dropbox.product, dropbox.device, dropbox.add
 router.post '/:dropbox_id/content', dropbox.updateContent
 router.post '/:dropbox_id/upload', dropbox.upload
 
-router.get '/item/:dropbox_id', dropbox.get
+router.get '/items/:dropbox_id', dropbox.get
 router.get '/items', dropbox.list
 
 router.get '/product/:product/version/:version', dropbox.list
@@ -26,7 +26,9 @@ router.get '/product/:product/errorrateofversion', dropbox.errorRateOfVersion
 router.get '/product/:product/app', dropbox.apps
 router.get '/product/:product/tag', dropbox.tags
 
-router.get '/products', dropbox.products
-router.get '/product/:product', dropbox.product
+router.get '/products', dropbox.productList
+router.get '/product/:product', dropbox.productGet
+
+router.get "/releases", dropbox.versionType
 
 module.exports = router

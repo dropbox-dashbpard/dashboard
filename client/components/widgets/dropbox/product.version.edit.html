@@ -1,0 +1,24 @@
+<form role="form">
+  <div class="form-group">
+    <label for="path">选择产品：</label>
+    <select class="form-control" ng-model="config.product" ng-options="product.name as product.display for product in products">
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="path">选择软件发布类型：</label>
+    <select class="form-control" ng-model="config.dist" ng-options="dist.name as dist.display for dist in dists">
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="path">选择软件发布版本：</label>
+    <select class="form-control" ng-model="config.version" ng-options="ver for ver in versions">
+      <option value="">--请选择--</option>}
+      option
+    </select>
+  </div>
+  <div class="form-group" ng-if="config.selectDays">
+    <label for="path">选择趋势图需要显示的天数：</label>
+    <select class="form-control" ng-model="config.days" ng-options="day for day in days">
+    </select>
+  </div>
+</form>

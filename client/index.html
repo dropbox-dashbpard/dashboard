@@ -9,10 +9,13 @@
     <base href="/">
     <title></title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
+      <link rel="stylesheet" href="bower_components/jquery-ui/themes/cupertino/jquery-ui.css" />
+      <link rel="stylesheet" href="bower_components/ng-grid/ng-grid.css" />
+      <link rel="stylesheet" href="bower_components/select2/select2.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -28,13 +31,13 @@
 
     <div ng-include="'components/navbar/navbar.html'"></div>
     <!-- Add your site or application content here -->
-    <div class="container">
+    <div class="container-fluid">
       <div ui-view=""></div>
     </div>
 
     <footer class="footer">
       <div class="container">
-          <p><a href="https://twitter.com/xiaocong">@xiaocong</a></p>
+          <p><a href="https://github.com/xiaocong">@xiaocong</a></p>
       </div>
     </footer>
 
@@ -67,11 +70,18 @@
       <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
       <script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
       <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+      <script src="bower_components/showdown/src/showdown.js"></script>
       <script src="bower_components/angular-markdown-directive/markdown.js"></script>
       <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
       <script src="bower_components/highcharts/highcharts.js"></script>
       <script src="bower_components/highcharts/highcharts-more.js"></script>
       <script src="bower_components/highcharts/modules/exporting.js"></script>
+      <script src="bower_components/highcharts/modules/drilldown.js"></script>
+      <script src="bower_components/ng-grid/build/ng-grid.js"></script>
+      <script src="bower_components/ng-grid/plugins/ng-grid-flexible-height.js"></script>
+      <script src="bower_components/select2/select2.js"></script>
+      <script src="bower_components/angular-ui-select2/src/select2.js"></script>
+      <script src="bower_components/angular-ui-date/src/date.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
 
@@ -79,11 +89,15 @@
         <script src="app/app.js"></script>
           <!-- injector:js -->
           <script src="app/main/main.js"></script>
+          <script src="app/products/products.js"></script>
+          <script src="app/query/query.js"></script>
           <script src="app/structures.js"></script>
           <script src="app/trend/trend.js"></script>
           <script src="components/adf/adf.js"></script>
+          <script src="components/dropbox/dropbox.js"></script>
           <script src="components/navbar/navbar.js"></script>
           <script src="components/socket/socket.js"></script>
+          <script src="components/widgets/dropbox/dropbox.js"></script>
           <script src="components/widgets/github/github.js"></script>
           <!-- endinjector -->
         <!-- endbuild -->

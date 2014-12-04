@@ -2,14 +2,14 @@
   "name": "dbboard",
   "version": "0.0.0",
   "dependencies": {
-    "angular": ">=1.2.*",
+    "angular": "~1.2.*",
     "json3": "~3.3.1",
     "es5-shim": "~3.0.1",
     "jquery": "~2.0.3",
     "bootstrap": "~3.1.1",
     "angular-resource": ">=1.2.*",
     "angular-cookies": ">=1.2.*",
-    "angular-sanitize": ">=1.2.*",
+    "angular-sanitize": "~1.2.*",
     "angular-bootstrap": "~0.11.0",
     "font-awesome": ">=4.1.0",
     "lodash": "~2.4.1",
@@ -19,10 +19,43 @@
     "jquery-ui": "~1.11.1",
     "angular-markdown-directive": "~0.3.0",
     "highcharts-ng": "~0.0.6",
-    "highcharts": "~4.0.3"
+    "highcharts": "~4.0.3",
+    "ng-grid": "~2.0.12",
+    "select2": "~3.5.1",
+    "angular-ui-select2": "~0.0.5",
+    "angular-ui-date": "~0.0.4",
+    "showdown": "~0.3.1"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",
     "angular-scenario": ">=1.2.*"
+  },
+  "overrides": {
+    "highcharts": {
+      "main": [
+        "highcharts.js",
+        "highcharts-more.js",
+        "modules/exporting.js",
+        "modules/drilldown.js"
+      ]
+    },
+    "ng-grid": {
+      "main": [
+        "build/ng-grid.js",
+        "ng-grid.css",
+        "plugins/ng-grid-flexible-height.js"
+      ]
+    },
+    "showdown": {
+      "main": [
+        "src/showdown.js"
+      ]
+    },
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js",
+        "themes/cupertino/jquery-ui.css"
+      ]
+    }
   }
 }

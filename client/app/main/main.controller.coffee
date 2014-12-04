@@ -2,21 +2,30 @@
 
 angular.module 'dbboardApp'
 .controller 'MainCtrl', ($scope, $http, socket) ->
-  $scope.awesomeThings = []
+  $scope.name = "主看板"
 
-  $http.get('/api/things').success (awesomeThings) ->
-    $scope.awesomeThings = awesomeThings
-    socket.syncUpdates 'thing', $scope.awesomeThings
+  $scope.model =
+    title: "阿尔卑斯"
+    structure: "12"
+    rows: [columns: [
+      {
+        styleClass: "col-xs-12"
+        widgets: [
+          {
+            type: "productTrendWidget"
+            config:
+              product: "alps"
+              dist: "development"
+              selectDays: true
+              days: 90
+          }
+        ]
+      }
+    ]]
 
-  $scope.addThing = ->
-    return if $scope.newThing is ''
-    $http.post '/api/things',
-      name: $scope.newThing
+  $scope.collapsible = false
 
-    $scope.newThing = ''
-
-  $scope.deleteThing = (thing) ->
-    $http.delete '/api/things/' + thing._id
+  socket.syncDBModel 'main', $scope.model, (event) ->
 
   $scope.$on '$destroy', ->
-    socket.unsyncUpdates 'thing'
+    socket.unsyncDBModel 'main'

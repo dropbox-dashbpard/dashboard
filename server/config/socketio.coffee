@@ -1,6 +1,9 @@
 ###
 Socket.io configuration
 ###
+"use strict"
+
+config = require("./environment")
 
 # When the user disconnects.. perform this
 onDisconnect = (socket) ->
@@ -11,14 +14,10 @@ onConnect = (socket) ->
   # When the client emits 'info', this listens and executes
   socket.on "info", (data) ->
     console.info "[%s] %s", socket.address, JSON.stringify(data, null, 2)
-    return
-
   
   # Insert sockets below
-  require("../api/thing/thing.socket").register socket
-  return
-"use strict"
-config = require("./environment")
+  # require("../api/thing/thing.socket").register socket
+
 module.exports = (socketio) ->
   
   # socket.io (v1.x.x) is powered by debug.
@@ -43,12 +42,7 @@ module.exports = (socketio) ->
     socket.on "disconnect", ->
       onDisconnect socket
       console.info "[%s] DISCONNECTED", socket.address
-      return
-
     
     # Call onConnect.
     onConnect socket
     console.info "[%s] CONNECTED", socket.address
-    return
-
-  return

@@ -349,17 +349,25 @@ exports.tags = (req, res) ->
     }
 
 # 产品列表清单
-exports.products = (req, res, next) ->
+exports.productList = (req, res, next) ->
   ProductConfig.find({}, 'display').exec (err, docs) ->
     return next err if err
     products = _.map docs, (config) ->
-      display: config.display
+      display: config.display or config.name
       name: config.name
     res.json 200, data: products
 
 # 产品详单
-exports.product = (req, res, next) ->
+exports.productGet = (req, res, next) ->
   product = req.param 'product'
   ProductConfig.findById(product).exec (err, config) ->
     return next err if err
     res.json 200, config
+
+# 产品版本类型
+exports.versionType = (req, res, next) ->
+  res.json 200,
+    data:
+      production: "产品发布（最终用户）"
+      stable: "稳定发布（内测用户）"
+      development: "开发发布（工程测试）"

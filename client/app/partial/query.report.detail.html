@@ -1,0 +1,30 @@
+<div class="panel panel-default" ng-if="report || reloading">
+  <div class="panel-heading"><span class="glyphicon glyphicon-list-alt"> 数据列表</span></div>
+  <div class="panel-body">
+    <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar>
+    <div ng-if="!reloading">
+      <div class="input-group">
+        <span class="input-group-addon">查询：</span>
+        <input type="text" class="form-control" ng-model="issueData.issueQuery">
+      </div>
+      <pagination boundary-links="true" total-items="issues.length" items-per-page="issueData.itemsPerPage" ng-model="issueData.currentPage" max-size="issueData.maxSize" num-pages="issueData.numPages" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="issue in issues" ng-if="$index >= (issueData.currentPage-1)*issueData.itemsPerPage && $index < issueData.currentPage*issueData.itemsPerPage">
+          <span class="badge pull-right">{{issue.counter}}</span>
+          <h4 class="list-group-item-heading" ng-repeat="app_id in issue.error_feature.app_id.split(',')">{{app_id}}</h4>
+          <div class="markdown" ng-if="issue.error_feature.features" btf-markdown="composeMarkdown(issue.error_feature.features)"></div>
+          <span ng-controller="DropboxIDListCtrl" ng-init="init(issue.dropbox_ids)">
+            <a class="{{preClass}}" href="" ng-click="pre($event)">&laquo;</a>
+            <a class="btn btn-group btn-sm" href="" ng-repeat="(index, dbid) in ids.slice(page * per_page, (page + 1) * per_page)" ng-click="show(dbid, $event)">{{index + 1 + page * per_page}}</a>
+            <a class="{{nextClass}}" href="" ng-click="next($event)">&raquo;</a>
+          </span>
+          <br>
+          <div class="btn-group">
+            <a href="{{'http://jira.n.xiaomi.com/browse/' + ticket.name}}" ng-repeat="ticket in (issue.error_feature.tickets || [])">{{ticket.name}}</a>
+          </div>
+        </li>
+      </ul>
+      <pagination boundary-links="true" total-items="issues.length" items-per-page="issueData.itemsPerPage" ng-model="issueData.currentPage" max-size="issueData.maxSize" num-pages="issueData.numPages" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+    </div>
+  </div>
+</div>
