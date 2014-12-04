@@ -42,10 +42,23 @@ exports.product = (req, res, next) ->
     return next(err) if err
     return res.status(404).send 'No such a product!' if not prod
     dc = new ProductConfig()
-    ProductConfig.findOneAndUpdate {_id: prod.name}, {$setOnInsert: {display: prod.name, template: dc.template, limits: dc.limits}}, {upsert: true}, (err, config) ->
+    ProductConfig.findOneAndUpdate {
+      _id: prod.name
+    }, {
+      $setOnInsert: {
+        display: prod.name,
+        template: dc.template,
+        limits: dc.limits
+        versions: dc.versions
+        ignores: dc.ignores
+      }
+    }, {
+      upsert: true
+    }, (err, config) ->
       return next(err) if err
       req.product = config
       req.version = config.version req.ua
+      config.addVersion 'development', req.version  # TODO debug only
       next()
 
 exports.device = (req, res, next) ->
@@ -53,17 +66,17 @@ exports.device = (req, res, next) ->
     memo + (entry.data?.count or 1)
   , 0
   device_id = req.product.device_id req.ua
-  DeviceStat.addDevice device_id, req.report_at, total, (err, device, date) ->
+  DeviceStat.addDevice device_id, req.version, req.report_at, total, (err, device, key) ->
     return next(err) if err
     req.device = device
-    req.isNewDevice = device.counter[date] <= total
+    req.isNewDevice = device.counter[key] <= total
     if req.device.in_black
       res.status(403).send 'Forbidden!'  # drop all entries in black_list, and don't count it on dropbox summary
     else
       next()
 
 exports.add = (req, res, next) ->
-  isUnderLimits = (kvs) ->
+  isUnderLimits = (kvs) ->  # 判断是否超出上报限额
     promise = new mongoose.Promise
     promise.fulfill true
     _.reduce kvs, (memo, limit) ->
@@ -122,13 +135,14 @@ exports.add = (req, res, next) ->
     , promise
 
   # 统计计数
-  DropboxStat.addDropboxEntry(req.product.name, req.version, req.report_at, entries, req.isNewDevice)
+  DropboxStat.addDropboxEntry req.product.name, req.version, req.report_at, entries, req.isNewDevice, req.product
   # 纪录dropbox数据
   addEntries(entries).then (results) ->
     res.json data: results
   , (err) ->
     res.status(500).send "Internal server error!"
 
+# update dropbox message content
 exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   if req.body.content?
@@ -140,6 +154,7 @@ exports.updateContent = (req, res, next) ->
   else
     res.status(400).send "No content!"
 
+# upload attachment of dropbox
 exports.upload = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   res.send "TODO"  #TODO upload log file
@@ -152,6 +167,7 @@ exports.get = (req, res, next) ->  # get a dropbox entry
     , (err) ->
       next err
 
+# 查询dropbox列表
 exports.list = (req, res) ->  # query dropbox entries
   limit = parseInt(req.param("limit")) or 1000
   from = new Date(req.param("from") or (Date.now() - 1000*3600*24))
@@ -170,3 +186,180 @@ exports.list = (req, res) ->  # query dropbox entries
     Dropbox.findByCreatedAt from, to, limit
   promise.onResolve (err, docs) ->
     res.json(data: docs or [])
+
+# 趋势图
+exports.trend = (req, res, next) ->
+  product = req.param 'product'
+  dist = req.param('dist') or 'production'
+  end = if req.param('end') then new Date(req.param('end')) else new Date()
+  if req.param('start')
+    start = new Date(req.param('start'))
+  else
+    start = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() - 30))
+  DropboxStat.trend product, dist, start, end, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      dist: dist
+      start: start
+      end: end
+      data: data
+    }
+
+# 分布图
+exports.distribution = (req, res, next) ->
+  product = req.param 'product'
+  dist = req.param('dist') or 'production'
+  end = if req.param("end") then new Date(req.param('end')) else new Date()
+  if req.param('start')
+    start = new Date(req.param('start'))
+  else
+    start = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() - 30))
+  switch req.param("category")
+    when "tag"
+      distFunc = DropboxStat.tagDistribution
+    when "app"
+      distFunc = DropboxStat.appDistribution
+    else
+      return res.send 404
+  distFunc.call DropboxStat, product, dist, start, end, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      dist: dist
+      start: start
+      end: end
+      data: data
+    }
+
+exports.errorRate = (req, res, next) ->
+  product = req.param 'product'
+  dist = req.param('dist') or 'production'
+  total = parseInt(req.param('total')) or 12
+  drilldown = if req.param("drilldown") then true else false
+  DropboxStat.errorRate product, dist, total, drilldown, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      dist: dist
+      total: total
+      data: data
+    }
+
+exports.errorRateOfApp = (req, res, next) ->
+  product = req.param 'product'
+  dist = req.param('dist') or 'production'
+  total = parseInt(req.param('total')) or 12
+  app = req.params[0]
+  DropboxStat.errorRateOfApp product, dist, app, total, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      dist: dist
+      total: total
+      app: app
+      data: data
+    }
+
+exports.errorRateOfTag = (req, res, next) ->
+  product = req.param 'product'
+  dist = req.param('dist') or 'production'
+  total = parseInt(req.param('total')) or 12
+  tag = req.params[0]
+  DropboxStat.errorRateOfTag product, dist, tag, total, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      dist: dist
+      total: total
+      tag: tag
+      data: data
+    }
+
+exports.trendOfVersion = (req, res, next) ->
+  product = req.param 'product'
+  end = if req.param('end') then new Date(req.param('end')) else new Date()
+  if req.param('start')
+    start = new Date(req.param('start'))
+  else
+    start = new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate() - 30))
+  ver = req.param('version')
+  DropboxStat.trendOfVersion product, ver, start, end, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      version: ver
+      start: start
+      end: end
+      data: data
+    }
+
+exports.distributionOfVersion = (req, res, next) ->
+  product = req.param 'product'
+  ver = req.param 'version'
+  distFun = switch req.param("category")
+    when "tag"
+      DropboxStat.tagDistributionOfVersion
+    when "app"
+      DropboxStat.appDistributionOfVersion
+    else
+      null
+  if distFun
+    distFun.call DropboxStat, product, ver, (err, data) ->
+      return next err if err
+      res.json 200, {
+        product: product
+        version: ver
+        data: data
+      }
+  else
+    res.send 404
+
+exports.errorRateOfVersion = (req, res, next) ->
+  product = req.param 'product'
+  ver = req.param 'version'
+  DropboxStat.errorRateOfVersion product, ver, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      version: ver
+      data: data
+    }
+
+exports.apps = (req, res, next) ->
+  product = req.param 'product'
+  ver = req.param 'version'
+  DropboxStat.apps product, ver, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      version: ver
+      data: data
+    }
+
+exports.tags = (req, res) ->
+  product = req.param 'product'
+  ver = req.param 'version'
+  DropboxStat.tags product, ver, (err, data) ->
+    return next err if err
+    res.json 200, {
+      product: product
+      version: ver
+      data: data
+    }
+
+# 产品列表清单
+exports.products = (req, res, next) ->
+  ProductConfig.find({}, 'display').exec (err, docs) ->
+    return next err if err
+    products = _.map docs, (config) ->
+      display: config.display
+      name: config.name
+    res.json 200, data: products
+
+# 产品详单
+exports.product = (req, res, next) ->
+  product = req.param 'product'
+  ProductConfig.findById(product).exec (err, config) ->
+    return next err if err
+    res.json 200, config

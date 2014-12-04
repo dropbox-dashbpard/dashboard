@@ -28,6 +28,22 @@ ProductConfigSchema = new Schema(
     default:
       version: '<%= build_id %>'
       device_id: '<%= sn %>'
+      version_validation: /^\d+\.\d+$/
+  versions:
+    production: Array  # 产品正式发布版本
+    stable: Array  # 稳定版本，类似于weekly stable build
+    development: Array  # 开发版本，可以使daily build
+  ignores:
+    type: Array
+    default: [
+      {
+        app: 'system'
+        tag: 'SYSTEM_BOOT'
+      }, {
+        app: 'system'
+        tag: 'SYSTEM_RECOVERY_LOG'
+      }
+    ]
   limits:
     type: Array
     default: [
@@ -56,6 +72,28 @@ ProductConfigSchema.methods.limit_kvs = (entry) ->
 
     key: key
     limit: limit.limit
+
+ProductConfigSchema.methods.shouldIgnore = (app, tag) ->
+  _.find @ignores or [], (ig) ->
+    if ig.app? and ig.tag?
+      ig.app is app and ig.tag is tag
+    else if ig.app?
+      ig.app is app
+    else if ig.tag?
+      ig.tag is tag
+    else
+      false
+
+ProductConfigSchema.methods.addVersion = (type, ver, cb) ->
+  if not ver?
+    [type, ver] = ["development", type]
+  if ver not instanceof Array
+    ver = [ver]
+  ver = _.filter ver, (v) =>
+    @template.version_validation.exec v
+  @versions[type] = _.sortBy _.union(@versions[type] or [], ver)
+  promise = @save()
+  if cb then promose.onResolve(cb) else promise
 
 ProductConfigSchema.methods.device_id = (ua) ->
   ejs.render @template.device_id, ua
