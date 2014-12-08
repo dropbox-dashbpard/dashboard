@@ -1,0 +1,39 @@
+<div class="navbar navbar-inverse navbar-fixed-top" ng-controller="NavbarCtrl">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">崩溃信息看板</a>
+    </div>
+    <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
+      <ul class="nav navbar-nav">
+        <li ng-class="{active: false}" dropdown>
+          <a href class="dropdown-toggle" data-toggle="dropdown">
+            产品<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="prod in products" ng-class="{active: isActive('/product/' + prod.name)}"><a href="/product/{{prod.name}}">{{prod.display}}</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li ng-class="{active: isActive('/query')}" dropdown>
+          <a ng-href="/query" >查询</a>
+        </li>
+        <li ng-class="{active: false}" dropdown>
+          <a href class="dropdown-toggle" data-toggle="dropdown">
+            {{session.user.username}}<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/info">个人信息</a></li>
+            <li><a href ng-click="logout()">登出</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

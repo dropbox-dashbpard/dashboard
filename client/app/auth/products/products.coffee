@@ -3,8 +3,8 @@
 angular.module 'dbboardApp'
 .config ($stateProvider) ->
   $stateProvider
-  .state 'products',
-    url: '/product/:product'
+  .state 'auth.products',
+    url: '^/product/:product'
     templateUrl: 'app/partial/dashboard.html',
     controller: 'ProductsCtrl'
     resolve:

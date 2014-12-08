@@ -11,14 +11,18 @@ angular.module "dbboardApp", [
   "adf"
   "LocalStorageModule"
   "widgets.dropbox"
-  "ui.date"
   "btford.markdown"
+  "ui.date"
   "ui.select2"
+  "http-auth-interceptor"
 ]
 .config ($stateProvider, $urlRouterProvider, $locationProvider) ->
-  $urlRouterProvider
-  .otherwise "/"
+  $urlRouterProvider.otherwise '/'
 
   $locationProvider.html5Mode true
 # .config (markdownConverterProvider) ->
 #   markdownConverterProvider.config extensions: ["twitter"]
+.run ($rootScope, $location, $state) ->
+  $rootScope.$on 'event:auth-loginRequired', ->
+    $state.go "login"
+    false

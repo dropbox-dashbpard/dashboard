@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module 'dbboardApp'
-.controller 'MainCtrl', ($scope, $http, socket) ->
+.controller 'BoardCtrl', ($scope, $http, socket) ->
   $scope.name = "主看板"
 
   $scope.model =

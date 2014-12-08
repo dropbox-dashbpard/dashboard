@@ -3,26 +3,35 @@ Populate DB with sample data on server start
 to disable, edit config/environment/index.js, and set `seedDB: false`
 ###
 "use strict"
-Thing = require("../api/thing/thing.model")
-Thing.find({}).remove ->
-  Thing.create
-    name: "Development Tools"
-    info: "Integration with popular tools such as Bower, Grunt, Karma, Mocha, JSHint, Node Inspector, Livereload, Protractor, Jade, Stylus, Sass, CoffeeScript, and Less."
-  ,
-    name: "Server and Client integration"
-    info: "Built with a powerful and fun stack: MongoDB, Express, AngularJS, and Node."
-  ,
-    name: "Smart Build System"
-    info: "Build system ignores `spec` files, allowing you to keep tests alongside code. Automatic injection of scripts and styles into your index.html"
-  ,
-    name: "Modular Structure"
-    info: "Best practice client and server structures allow for more code reusability and maximum scalability"
-  ,
-    name: "Optimized Build"
-    info: "Build process packs up your templates as a single JavaScript payload, minifies your scripts/css/images, and rewrites asset names for caching."
-  ,
-    name: "Deployment Ready"
-    info: "Easily deploy your app to Heroku or Openshift with the heroku and openshift subgenerators"
 
-  return
+User = require('../lib/auth/user.model').User
+UserGroup = require('../lib/auth/user.model').UserGroup
 
+UserGroup.find({}).remove ->
+  new UserGroup(
+    name: 'test'
+    token: '068772F3-8130-44C0-ADBB-511C68DA2888'
+  ).save (err, group) ->
+
+User.find({}).remove ->
+  new User(
+    email: 'admin@test.com'
+    username: 'admin'
+    password: 'admin'
+    admin: true
+    group: 'default'
+  ).save (err, doc)->
+
+  new User(
+    email: 'guest@test.com'
+    username: 'guest'
+    password: 'guest'
+    group: 'default'
+  ).save (err, doc)->
+
+  new User(
+    email: 'test@test.com'
+    username: 'test'
+    password: 'test'
+    group: 'test'
+  ).save (err, doc)->

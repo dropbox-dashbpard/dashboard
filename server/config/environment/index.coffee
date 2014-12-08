@@ -21,7 +21,7 @@ all =
   
   # Secret for session, you will want to change this and make it an environment variable
   secrets:
-    session: "dbboard-secret"
+    session: process.env.SESSION_SECRET or "dropbox-admin-secret"
 
   
   # List of user roles

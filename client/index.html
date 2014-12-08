@@ -29,11 +29,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div ng-include="'components/navbar/navbar.html'"></div>
-    <!-- Add your site or application content here -->
-    <div class="container-fluid">
-      <div ui-view=""></div>
-    </div>
+    <div ui-view=""></div>
 
     <footer class="footer">
       <div class="container">
@@ -82,20 +78,24 @@
       <script src="bower_components/select2/select2.js"></script>
       <script src="bower_components/angular-ui-select2/src/select2.js"></script>
       <script src="bower_components/angular-ui-date/src/date.js"></script>
+      <script src="bower_components/mdo-http-auth-interceptor/http-auth-interceptor.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
 
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
-          <script src="app/main/main.js"></script>
-          <script src="app/products/products.js"></script>
-          <script src="app/query/query.js"></script>
+          <script src="app/auth/auth.js"></script>
+          <script src="app/auth/board/board.js"></script>
+          <script src="app/auth/navbar.js"></script>
+          <script src="app/auth/products/products.js"></script>
+          <script src="app/auth/query/query.js"></script>
+          <script src="app/login/controlle.js"></script>
+          <script src="app/login/login.js"></script>
+          <script src="app/login/service.js"></script>
           <script src="app/structures.js"></script>
-          <script src="app/trend/trend.js"></script>
           <script src="components/adf/adf.js"></script>
           <script src="components/dropbox/dropbox.js"></script>
-          <script src="components/navbar/navbar.js"></script>
           <script src="components/socket/socket.js"></script>
           <script src="components/widgets/dropbox/dropbox.js"></script>
           <script src="components/widgets/github/github.js"></script>

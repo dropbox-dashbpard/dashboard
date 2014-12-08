@@ -1,18 +1,23 @@
 'use strict'
 
-mongoose = require('mongoose')
 _ = require 'lodash'
 
 dateToString = require('./util').dateToString
 stringToDate = require('./util').stringToDate
 
-Dropbox = require('./dropbox.model').Dropbox
-DropboxLimit = require('./dropbox.model').DropboxLimit
-DeviceStat = require('./dropbox.model').DeviceStat
-DropboxStat = require('./dropbox.model').DropboxStat
+auth = require('../../lib/auth/auth')
 
-Product = require('./product.model').Product
-ProductConfig = require('./product.model').ProductConfig
+exports.localAuth = [auth.ensureAuthenticated, (req, res, next) ->
+  prefix = req.user?.group or 'default'
+  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix)
+  next()
+]
+
+exports.bearerAuth = [auth.ensureToken, (req, res, next) ->
+  prefix = req.user.name or 'default'
+  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix)
+  next()
+]
 
 exports.ua = (req, res, next) ->
   uaString = req.get('X-Dropbox-UA')
@@ -32,7 +37,7 @@ exports.ua = (req, res, next) ->
   res.status(400).send 'Invalid UA'
 
 exports.product = (req, res, next) ->
-  Product.findOne(
+  req.model.Product.findOne(
     build:
       brand: req.ua.brand
       device: req.ua.device
@@ -42,7 +47,7 @@ exports.product = (req, res, next) ->
     return next(err) if err
     return res.status(404).send 'No such a product!' if not prod
     dc = new ProductConfig()
-    ProductConfig.findOneAndUpdate {
+    req.model.ProductConfig.findOneAndUpdate {
       _id: prod.name
     }, {
       $setOnInsert: {
@@ -66,7 +71,7 @@ exports.device = (req, res, next) ->
     memo + (entry.data?.count or 1)
   , 0
   device_id = req.product.device_id req.ua
-  DeviceStat.addDevice device_id, req.version, req.report_at, total, (err, device, key) ->
+  req.model.DeviceStat.addDevice device_id, req.version, req.report_at, total, (err, device, key) ->
     return next(err) if err
     req.device = device
     req.isNewDevice = device.counter[key] <= total
@@ -83,7 +88,7 @@ exports.add = (req, res, next) ->
       memo.then((underLimit) ->
         p = new mongoose.Promise
         if underLimit
-          DropboxLimit.findById limit.key, (err, doc) ->
+          req.model.DropboxLimit.findById limit.key, (err, doc) ->
             if err
               p.error err
             else
@@ -96,7 +101,7 @@ exports.add = (req, res, next) ->
 
   incLimits = (kvs) ->
     _.each kvs, (limit) ->
-      DropboxLimit.incLimit limit.key, limit.limit, (err, doc) ->
+      req.model.DropboxLimit.incLimit limit.key, limit.limit, (err, doc) ->
         console.log err if err
 
   entries = _.map req.body.data or [], (entry) ->
@@ -117,14 +122,14 @@ exports.add = (req, res, next) ->
       memo.then (results) ->
         p = new mongoose.Promise
         if req.device.in_white  # 在白名单，所以不增加limit里的计数
-          Dropbox.create entry, (err, doc) ->
+          req.model.Dropbox.create entry, (err, doc) ->
             results.push if err then null else {dropbox_id: doc._id, result: "ok"}
             p.fulfill results
         else
           kvs = req.product.limit_kvs entry
           isUnderLimits(kvs).then (underLimit) ->  # 判断是否limit计数超限
             if underLimit  # 没有超过limit计数
-              Dropbox.create entry, (err, doc) ->
+              req.model.Dropbox.create entry, (err, doc) ->
                 results.push if err then null else {dropbox_id: doc._id, result: "ok"}
                 p.fulfill results
                 incLimits kvs  # 增加limit计数
@@ -135,7 +140,7 @@ exports.add = (req, res, next) ->
     , promise
 
   # 统计计数
-  DropboxStat.addDropboxEntry req.product.name, req.version, req.report_at, entries, req.isNewDevice, req.product
+  req.model.DropboxStat.addDropboxEntry req.product.name, req.version, req.report_at, entries, req.isNewDevice, req.product
   # 纪录dropbox数据
   addEntries(entries).then (results) ->
     res.json data: results
@@ -146,7 +151,7 @@ exports.add = (req, res, next) ->
 exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   if req.body.content?
-    Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": req.body.content}, select: "_id").exec()
+    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": req.body.content}, select: "_id").exec()
     .then (doc) ->
         res.json result: "ok"
       , (err) ->
@@ -161,7 +166,7 @@ exports.upload = (req, res, next) ->
 
 exports.get = (req, res, next) ->  # get a dropbox entry
   dropbox_id = req.param('dropbox_id')
-  Dropbox.findById(dropbox_id).exec()
+  req.model.Dropbox.findById(dropbox_id).exec()
   .then (doc) ->
       res.json doc
     , (err) ->
@@ -175,15 +180,15 @@ exports.list = (req, res) ->  # query dropbox entries
   if from > to
     [from, to] = [to, from]
   promise = if(deviceId = req.param("device_id"))
-    Dropbox.findByDeviceID deviceId, from, to, limit
+    req.model.Dropbox.findByDeviceID deviceId, from, to, limit
   else if(app = req.param("app"))
-    Dropbox.findAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
+    req.model.Dropbox.findAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
   else if(tag = req.param("tag"))
-    Dropbox.findTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
+    req.model.Dropbox.findTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
   else if(mac = req.param("mac"))
-    Dropbox.findByMacAddress mac, from, to, limit
+    req.model.Dropbox.findByMacAddress mac, from, to, limit
   else
-    Dropbox.findByCreatedAt from, to, limit
+    req.model.Dropbox.findByCreatedAt from, to, limit
   promise.onResolve (err, docs) ->
     res.json(data: docs or [])
 
@@ -196,7 +201,7 @@ exports.trend = (req, res, next) ->
     start = new Date(req.param('start'))
   else
     start = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() - 30))
-  DropboxStat.trend product, dist, start, end, (err, data) ->
+  req.model.DropboxStat.trend product, dist, start, end, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -217,12 +222,12 @@ exports.distribution = (req, res, next) ->
     start = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() - 30))
   switch req.param("category")
     when "tag"
-      distFunc = DropboxStat.tagDistribution
+      distFunc = req.model.DropboxStat.tagDistribution
     when "app"
-      distFunc = DropboxStat.appDistribution
+      distFunc = req.model.DropboxStat.appDistribution
     else
       return res.send 404
-  distFunc.call DropboxStat, product, dist, start, end, (err, data) ->
+  distFunc.call req.model.DropboxStat, product, dist, start, end, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -237,7 +242,7 @@ exports.errorRate = (req, res, next) ->
   dist = req.param('dist') or 'production'
   total = parseInt(req.param('total')) or 12
   drilldown = if req.param("drilldown") then true else false
-  DropboxStat.errorRate product, dist, total, drilldown, (err, data) ->
+  req.model.DropboxStat.errorRate product, dist, total, drilldown, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -251,7 +256,7 @@ exports.errorRateOfApp = (req, res, next) ->
   dist = req.param('dist') or 'production'
   total = parseInt(req.param('total')) or 12
   app = req.params[0]
-  DropboxStat.errorRateOfApp product, dist, app, total, (err, data) ->
+  req.model.DropboxStat.errorRateOfApp product, dist, app, total, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -266,7 +271,7 @@ exports.errorRateOfTag = (req, res, next) ->
   dist = req.param('dist') or 'production'
   total = parseInt(req.param('total')) or 12
   tag = req.params[0]
-  DropboxStat.errorRateOfTag product, dist, tag, total, (err, data) ->
+  req.model.DropboxStat.errorRateOfTag product, dist, tag, total, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -284,7 +289,7 @@ exports.trendOfVersion = (req, res, next) ->
   else
     start = new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate() - 30))
   ver = req.param('version')
-  DropboxStat.trendOfVersion product, ver, start, end, (err, data) ->
+  req.model.DropboxStat.trendOfVersion product, ver, start, end, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -299,13 +304,13 @@ exports.distributionOfVersion = (req, res, next) ->
   ver = req.param 'version'
   distFun = switch req.param("category")
     when "tag"
-      DropboxStat.tagDistributionOfVersion
+      req.model.DropboxStat.tagDistributionOfVersion
     when "app"
-      DropboxStat.appDistributionOfVersion
+      req.model.DropboxStat.appDistributionOfVersion
     else
       null
   if distFun
-    distFun.call DropboxStat, product, ver, (err, data) ->
+    distFun.call req.model.DropboxStat, product, ver, (err, data) ->
       return next err if err
       res.json 200, {
         product: product
@@ -318,7 +323,7 @@ exports.distributionOfVersion = (req, res, next) ->
 exports.errorRateOfVersion = (req, res, next) ->
   product = req.param 'product'
   ver = req.param 'version'
-  DropboxStat.errorRateOfVersion product, ver, (err, data) ->
+  req.model.DropboxStat.errorRateOfVersion product, ver, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -329,7 +334,7 @@ exports.errorRateOfVersion = (req, res, next) ->
 exports.apps = (req, res, next) ->
   product = req.param 'product'
   ver = req.param 'version'
-  DropboxStat.apps product, ver, (err, data) ->
+  req.model.DropboxStat.apps product, ver, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -340,7 +345,7 @@ exports.apps = (req, res, next) ->
 exports.tags = (req, res) ->
   product = req.param 'product'
   ver = req.param 'version'
-  DropboxStat.tags product, ver, (err, data) ->
+  req.model.DropboxStat.tags product, ver, (err, data) ->
     return next err if err
     res.json 200, {
       product: product
@@ -350,8 +355,9 @@ exports.tags = (req, res) ->
 
 # 产品列表清单
 exports.productList = (req, res, next) ->
-  ProductConfig.find({}, 'display').exec (err, docs) ->
+  req.model.ProductConfig.find({}, 'display').exec (err, docs) ->
     return next err if err
+    console.log docs
     products = _.map docs, (config) ->
       display: config.display or config.name
       name: config.name
@@ -360,7 +366,7 @@ exports.productList = (req, res, next) ->
 # 产品详单
 exports.productGet = (req, res, next) ->
   product = req.param 'product'
-  ProductConfig.findById(product).exec (err, config) ->
+  req.model.ProductConfig.findById(product).exec (err, config) ->
     return next err if err
     res.json 200, config
 

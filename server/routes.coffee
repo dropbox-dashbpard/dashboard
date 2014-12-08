@@ -4,11 +4,11 @@ Main application routes
 "use strict"
 errors = require("./components/errors")
 module.exports = (app) ->
-  
+
   # Insert routes below
-  app.use "/api/things", require("./api/thing")
-  app.use "/api/0/dropbox", require("./api/dropbox")
-  app.use "/api/0/util", require("./api/util")
+  app.use "/auth", require("./lib/auth")
+  app.use "/api/0/dropbox", require("./lib/dropbox")
+  app.use "/api/0/util", require("./lib/util")
   
   # All undefined asset or api routes should return a 404
   app.route("/:url(api|auth|components|app|bower_components|assets)/*").get errors[404]

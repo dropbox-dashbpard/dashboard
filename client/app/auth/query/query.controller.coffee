@@ -38,9 +38,9 @@ angular.module('dbboardApp')
   $scope.from = new Date($stateParams.from or (now.getTime() - 24*3600*1000))
   $scope.to = new Date($stateParams.to or now)
   $scope.queryDevice = (deviceId, from, to) ->
-    $state.go("query.device", {deviceId: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
+    $state.go("auth.query.device", {deviceId: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
   $scope.queryMac = (deviceId, from, to) ->
-    $state.go("query.mac", {mac: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
+    $state.go("auth.query.mac", {mac: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
   # When the controller is running, the child controller isn't. If we broadcase event here,
   # the child will not receive it. so we have to broadcase event to child controller after viewContentLoaded.
   $scope.$on "$viewContentLoaded", (event) ->
@@ -178,7 +178,7 @@ angular.module('dbboardApp')
       $scope.location = location 
 .controller "QueryDropboxItemCtrl", ($rootScope, $scope, $state, $stateParams) ->
   $scope.query = (id) ->
-    $state.go("query.dbitem", {dropboxId: id}, {reload: true}) if id
+    $state.go("auth.query.dbitem", {dropboxId: id}, {reload: true}) if id
   $scope.$on "$viewContentLoaded", (event) ->
     if $stateParams.dropboxId
       $scope.dropboxId = $stateParams.dropboxId
@@ -205,7 +205,7 @@ angular.module('dbboardApp')
         $scope.value ?= $stateParams.value or values[0]
 
   $scope.queryInAdvance = (product, version, value) ->
-    $state.go("query.report_tag", {product: product, version: version, value: value}, {reload: true}) if product and version and value
+    $state.go("auth.query.report_tag", {product: product, version: version, value: value}, {reload: true}) if product and version and value
     params = {product: product, version: version}
     params[$scope.type] = value
     $rootScope.$broadcast "Change:Dropbox:Report", params if product and version and value
