@@ -2,7 +2,7 @@
 
 angular.module("dropbox")
 .value("dbReleasesApiUrl", "/api/0/dropbox/releases")
-.value("dbProductApiUrl", "/api/0/dropbox/products")
+.value("dbProductApiUrl", "/api/0/dropbox/product")
 .value("dbProductVersionslApiUrl", "/api/0/dropbox/product")
 .service("dbReleaseTypesService", ($q, $http, $cacheFactory, dbReleasesApiUrl) ->
   if not (cache = $cacheFactory.get("dropbox"))

@@ -1,25 +1,17 @@
 'use strict'
 
 _ = require 'lodash'
+mongoose = require 'mongoose'
 
 dateToString = require('./util').dateToString
 stringToDate = require('./util').stringToDate
 
-auth = require('../../lib/auth/auth')
-
-exports.localAuth = [auth.ensureAuthenticated, (req, res, next) ->
-  prefix = req.user?.group or 'default'
+exports.dbmodel = (req, res, next) ->  # 设置mongodb的model
+  prefix = req.user?.group or req.user?.name  or 'default'
   req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix)
   next()
-]
 
-exports.bearerAuth = [auth.ensureToken, (req, res, next) ->
-  prefix = req.user.name or 'default'
-  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix)
-  next()
-]
-
-exports.ua = (req, res, next) ->
+exports.ua = (req, res, next) ->  # parse 上报数据的ua
   uaString = req.get('X-Dropbox-UA')
   try
     if uaString
@@ -36,17 +28,16 @@ exports.ua = (req, res, next) ->
     # TODO mv to logger
   res.status(400).send 'Invalid UA'
 
-exports.product = (req, res, next) ->
+exports.product = (req, res, next) ->  # parse上报数据的产品信息
   req.model.Product.findOne(
-    build:
-      brand: req.ua.brand
-      device: req.ua.device
-      product: req.ua.product
-      model: req.ua.model
+    'build.brand': req.ua.brand
+    'build.device': req.ua.device
+    'build.product': req.ua.product
+    'build.model': req.ua.model
   ).exec (err, prod) ->
     return next(err) if err
     return res.status(404).send 'No such a product!' if not prod
-    dc = new ProductConfig()
+    dc = new req.model.ProductConfig()
     req.model.ProductConfig.findOneAndUpdate {
       _id: prod.name
     }, {
@@ -63,10 +54,10 @@ exports.product = (req, res, next) ->
       return next(err) if err
       req.product = config
       req.version = config.version req.ua
-      config.addVersion 'development', req.version  # TODO debug only
+      config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
       next()
 
-exports.device = (req, res, next) ->
+exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce req.body.data, (memo, entry) ->
     memo + (entry.data?.count or 1)
   , 0
@@ -352,28 +343,3 @@ exports.tags = (req, res) ->
       version: ver
       data: data
     }
-
-# 产品列表清单
-exports.productList = (req, res, next) ->
-  req.model.ProductConfig.find({}, 'display').exec (err, docs) ->
-    return next err if err
-    console.log docs
-    products = _.map docs, (config) ->
-      display: config.display or config.name
-      name: config.name
-    res.json 200, data: products
-
-# 产品详单
-exports.productGet = (req, res, next) ->
-  product = req.param 'product'
-  req.model.ProductConfig.findById(product).exec (err, config) ->
-    return next err if err
-    res.json 200, config
-
-# 产品版本类型
-exports.versionType = (req, res, next) ->
-  res.json 200,
-    data:
-      production: "产品发布（最终用户）"
-      stable: "稳定发布（内测用户）"
-      development: "开发发布（工程测试）"

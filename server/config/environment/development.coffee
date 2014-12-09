@@ -8,4 +8,4 @@ module.exports =
   mongo:
     uri: "mongodb://localhost/dbboard-dev"
 
-  seedDB: true
+  # seedDB: true

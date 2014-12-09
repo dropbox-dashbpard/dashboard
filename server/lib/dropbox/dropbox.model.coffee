@@ -173,11 +173,11 @@ exports = module.exports = (dbprefix) ->
 
     DropboxStatSchema.virtual('apps').get ->
       for app of @app
-        @model('#{dbprefix}.DropboxStat').toName(app)
+        @model("#{dbprefix}.DropboxStat").toName(app)
 
     DropboxStatSchema.virtual('tags').get ->
       for tag of @tag
-        @model('#{dbprefix}.DropboxStat').toName(tag)
+        @model("#{dbprefix}.DropboxStat").toName(tag)
 
     DropboxStatSchema.statics.addDropboxEntry = (product, version, date, entries, newDevice, config, callback) ->
       doc = $inc: {}
@@ -227,7 +227,7 @@ exports = module.exports = (dbprefix) ->
         start = dateToString start
       if end instanceof Date
         end = dateToString end
-      @model('#{dbprefix}.ProductConfig').findById product, "versions.#{dist}", (err, config) =>
+      @model("#{dbprefix}.ProductConfig").findById product, "versions.#{dist}", (err, config) =>
         return cb err if err
         @find()
         .where('date').gte(start).lte(end)
@@ -251,7 +251,7 @@ exports = module.exports = (dbprefix) ->
         start = dateToString start
       if end instanceof Date
         end = dateToString end
-      @model('#{dbprefix}.ProductConfig').findById product, "versions.#{dist}", (err, config) =>
+      @model("#{dbprefix}.ProductConfig").findById product, "versions.#{dist}", (err, config) =>
         return cb err if err
         @find()
         .where('date').gte(start).lte(end)
@@ -273,7 +273,7 @@ exports = module.exports = (dbprefix) ->
         start = dateToString start
       if end instanceof Date
         end = dateToString end
-      @model('#{dbprefix}.ProductConfig').findById product, "versions.#{dist}", (err, config) =>
+      @model("#{dbprefix}.ProductConfig").findById product, "versions.#{dist}", (err, config) =>
         return cb err if err
         @find()
         .where('date').gte(start).lte(end)
@@ -291,7 +291,7 @@ exports = module.exports = (dbprefix) ->
 
     # 计算特定产品和build类型的错误率
     DropboxStatSchema.statics.errorRate = (product, dist, total, drilldown, cb) ->
-      @model('#{dbprefix}.ProductConfig').findById product, "versions.#{dist}", (err, config) =>
+      @model("#{dbprefix}.ProductConfig").findById product, "versions.#{dist}", (err, config) =>
         return cb err if err
         versions = (config?.versions?[dist] or [])[-total..]
         @find()
@@ -316,7 +316,7 @@ exports = module.exports = (dbprefix) ->
 
     # 特定产品，应用在不同版本上的错误旅
     DropboxStatSchema.statics.errorRateOfApp = (product, dist, app, total, cb) ->
-      @model('#{dbprefix}.ProductConfig').findById product, "versions.#{dist}", (err, config) =>
+      @model("#{dbprefix}.ProductConfig").findById product, "versions.#{dist}", (err, config) =>
         versions = (config.versions[dist] or [])[-total..]
         return cb err if err
         @find()
@@ -343,7 +343,7 @@ exports = module.exports = (dbprefix) ->
 
     # 特定产品，tag在不同版本上的错误旅
     DropboxStatSchema.statics.errorRateOfTag = (product, dist, tag, total, cb) ->
-      @model('#{dbprefix}.ProductConfig').findById product, "versions.#{dist}", (err, config) =>
+      @model("#{dbprefix}.ProductConfig").findById product, "versions.#{dist}", (err, config) =>
         versions = (config.versions[dist] or [])[-total..]
         return cb err if err
         @find()
@@ -454,4 +454,3 @@ exports = module.exports = (dbprefix) ->
   cache.put "#{dbprefix}.dropbox", cached
 
   cached
-

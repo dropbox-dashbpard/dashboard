@@ -7,7 +7,7 @@ angular.module("dropbox")
       method: "GET"
       isArray: true
       transformResponse: (body, header) ->
-        JSON.parse(body).data
+        angular.fromJson(body)?.data
   }
 .factory "TypeItems", ($resource) ->
   $resource "/api/0/dropbox/product/:product/:type", {}, {
@@ -15,7 +15,7 @@ angular.module("dropbox")
       method: "GET"
       isArray: true
       transformResponse: (body, header) ->
-        JSON.parse(body).data
+        angular.fromJson(body)?.data or []
   }
 .factory "DropboxReport", ($resource) ->
   $resource "/api/0/dropbox/ea/product/:product", {}, {
@@ -23,5 +23,13 @@ angular.module("dropbox")
       method: "GET"
       isArray: false
       transformResponse: (body, header) ->
-        JSON.parse(body)
+        angular.fromJson(body)
+  }
+.factory 'Product', ($resource, dbProductApiUrl) ->
+  $resource "dbProductApiUrl/:product", {}, {
+    query:
+      method: 'GET'
+      isArray: true
+      transformResponse: (data, headers) ->
+        angular.fromJson(data)?.data or []
   }

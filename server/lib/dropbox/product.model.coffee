@@ -24,7 +24,7 @@ exports = module.exports = (dbprefix) ->
       collection: "#{dbprefix}.products"
     )
 
-    ProductSchema.index {builds: 1}
+    ProductSchema.index {build: 1}
 
     ProductConfigSchema = new Schema(
       _id: String
@@ -34,11 +34,13 @@ exports = module.exports = (dbprefix) ->
         default:
           version: '<%= build_id %>'
           device_id: '<%= sn %>'
-          version_validation: /^\d+\.\d+$/
+          version_validation: '^\\d+\\.\\d+$'
       versions:
-        production: Array  # 产品正式发布版本
-        stable: Array  # 稳定版本，类似于weekly stable build
-        development: Array  # 开发版本，可以使daily build
+        type: Object
+        default:
+          production: []  # 产品正式发布版本
+          stable: []  # 稳定版本，类似于weekly stable build
+          development: []  # 开发版本，可以使daily build
       ignores:
         type: Array
         default: [
@@ -98,10 +100,15 @@ exports = module.exports = (dbprefix) ->
       if ver not instanceof Array
         ver = [ver]
       ver = _.filter ver, (v) =>
-        @template.version_validation.exec v
-      @versions[type] = _.sortBy _.union(@versions[type] or [], ver)
-      promise = @save()
-      if cb then promose.onResolve(cb) else promise
+        RegExp(@template.version_validation).exec v
+      @set "versions.#{type}", _.sortBy(_.union(@versions[type] or [], ver))
+      @save cb
+
+    ProductConfigSchema.methods.builds = (cb) ->
+      mongoose.model("#{dbprefix}.Product").find name: @name, (err, prods) ->
+        return cb err if err
+        cb null, _.map prods, (prod) ->
+          prod.build
 
     ProductConfigSchema.methods.device_id = (ua) ->
       ejs.render @template.device_id, ua

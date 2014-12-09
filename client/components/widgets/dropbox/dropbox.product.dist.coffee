@@ -120,7 +120,8 @@ angular.module("widgets.dropbox")
   $scope.tags = rebootTags
   if config.selectApp
     $scope.$watch "config.product", (newValue, oldValue) ->
-      $scope.apps = TypeItems.query {type: config.category, product: config.product}
+      if config.product
+        $scope.apps = TypeItems.query {type: config.category, product: config.product}
 ).controller("productTrendCtrl", ($scope, config, trend, products, releaseTypes, chartsProvider) ->
   if trend
     distDisplay = _.find(releaseTypes, (dist)->

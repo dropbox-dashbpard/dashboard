@@ -3,33 +3,50 @@
 express = require('express')
 
 dropbox = require './dropbox'
+product = require './product'
+productModel = require './model'
+productConfig = require './config'
 auth = require('../../lib/auth/auth')
 
 router = express.Router()
 
-router.post '/', dropbox.bearerAuth, dropbox.ua, dropbox.product, dropbox.device, dropbox.add
-router.post '/:dropbox_id/content', dropbox.bearerAuth, dropbox.updateContent
-router.post '/:dropbox_id/upload', dropbox.bearerAuth, dropbox.upload
+localAuth = [auth.ensureAuthenticated, dropbox.dbmodel]
+bearerAuth = [auth.ensureToken, dropbox.dbmodel]
 
-router.get '/items/:dropbox_id', dropbox.localAuth, dropbox.get
-router.get '/items', dropbox.localAuth, dropbox.list
+router.post '/', bearerAuth, dropbox.ua, dropbox.product, dropbox.device, dropbox.add
+router.post '/:dropbox_id/content', bearerAuth, dropbox.updateContent
+router.post '/:dropbox_id/upload', bearerAuth, dropbox.upload
 
-router.get '/product/:product/version/:version', dropbox.localAuth, dropbox.list
-router.get '/product/:product/trend', dropbox.localAuth, dropbox.trend
-router.get '/product/:product/distribution/:category', dropbox.localAuth, dropbox.distribution
-router.get '/product/:product/errorrate', dropbox.localAuth, dropbox.errorRate
-router.get '/product/:product/errorrate/app/*', dropbox.localAuth, dropbox.errorRateOfApp
-router.get '/product/:product/errorrate/tag/*', dropbox.localAuth, dropbox.errorRateOfTag
-router.get '/product/:product/trendofversion', dropbox.localAuth, dropbox.trendOfVersion
-router.get '/product/:product/distributionofversion/:category', dropbox.localAuth, dropbox.distributionOfVersion
-router.get '/product/:product/errorrateofversion', dropbox.localAuth, dropbox.errorRateOfVersion
+router.get '/items/:dropbox_id', localAuth, dropbox.get
+router.get '/items', localAuth, dropbox.list
 
-router.get '/product/:product/app', dropbox.localAuth, dropbox.apps
-router.get '/product/:product/tag', dropbox.localAuth, dropbox.tags
+router.get '/product/:product/version/:version', localAuth, dropbox.list
+router.get '/product/:product/trend', localAuth, dropbox.trend
+router.get '/product/:product/distribution/:category', localAuth, dropbox.distribution
+router.get '/product/:product/errorrate', localAuth, dropbox.errorRate
+router.get '/product/:product/errorrate/app/*', localAuth, dropbox.errorRateOfApp
+router.get '/product/:product/errorrate/tag/*', localAuth, dropbox.errorRateOfTag
+router.get '/product/:product/trendofversion', localAuth, dropbox.trendOfVersion
+router.get '/product/:product/distributionofversion/:category', localAuth, dropbox.distributionOfVersion
+router.get '/product/:product/errorrateofversion', localAuth, dropbox.errorRateOfVersion
 
-router.get '/products', dropbox.localAuth, dropbox.productList
-router.get '/product/:product', dropbox.localAuth, dropbox.productGet
+router.get '/product/:product/app', localAuth, dropbox.apps
+router.get '/product/:product/tag', localAuth, dropbox.tags
 
-router.get "/releases", dropbox.localAuth, dropbox.versionType
+router.get '/product', localAuth, product.list
+router.get '/product/:product', localAuth, product.get
+router.get "/releases", localAuth, product.versionType
+
+router.post '/productmodel', bearerAuth, productModel.add
+router.get '/productmodel', bearerAuth, productModel.list
+router.get '/productmodel/:id', bearerAuth, productModel.get
+router.post '/productmodel/:id', bearerAuth, productModel.update
+router.delete '/productmodel/:id', bearerAuth, productModel.del
+
+router.post '/productconfig', bearerAuth, productConfig.add
+router.get '/productconfig', bearerAuth, productConfig.list
+router.get '/productconfig/:id', bearerAuth, productConfig.get
+router.post '/productconfig/:id', bearerAuth, productConfig.update
+router.delete '/productconfig/:id', bearerAuth, productConfig.del
 
 module.exports = router
