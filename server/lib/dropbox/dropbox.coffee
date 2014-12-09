@@ -194,7 +194,7 @@ exports.trend = (req, res, next) ->
     start = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() - 30))
   req.model.DropboxStat.trend product, dist, start, end, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       dist: dist
       start: start
@@ -217,10 +217,10 @@ exports.distribution = (req, res, next) ->
     when "app"
       distFunc = req.model.DropboxStat.appDistribution
     else
-      return res.send 404
+      return res.sendStatus 404
   distFunc.call req.model.DropboxStat, product, dist, start, end, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       dist: dist
       start: start
@@ -235,7 +235,7 @@ exports.errorRate = (req, res, next) ->
   drilldown = if req.param("drilldown") then true else false
   req.model.DropboxStat.errorRate product, dist, total, drilldown, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       dist: dist
       total: total
@@ -249,7 +249,7 @@ exports.errorRateOfApp = (req, res, next) ->
   app = req.params[0]
   req.model.DropboxStat.errorRateOfApp product, dist, app, total, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       dist: dist
       total: total
@@ -264,7 +264,7 @@ exports.errorRateOfTag = (req, res, next) ->
   tag = req.params[0]
   req.model.DropboxStat.errorRateOfTag product, dist, tag, total, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       dist: dist
       total: total
@@ -282,7 +282,7 @@ exports.trendOfVersion = (req, res, next) ->
   ver = req.param('version')
   req.model.DropboxStat.trendOfVersion product, ver, start, end, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       version: ver
       start: start
@@ -303,20 +303,20 @@ exports.distributionOfVersion = (req, res, next) ->
   if distFun
     distFun.call req.model.DropboxStat, product, ver, (err, data) ->
       return next err if err
-      res.json 200, {
+      res.json {
         product: product
         version: ver
         data: data
       }
   else
-    res.send 404
+    res.sendStatus 404
 
 exports.errorRateOfVersion = (req, res, next) ->
   product = req.param 'product'
   ver = req.param 'version'
   req.model.DropboxStat.errorRateOfVersion product, ver, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       version: ver
       data: data
@@ -327,7 +327,7 @@ exports.apps = (req, res, next) ->
   ver = req.param 'version'
   req.model.DropboxStat.apps product, ver, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       version: ver
       data: data
@@ -338,7 +338,7 @@ exports.tags = (req, res) ->
   ver = req.param 'version'
   req.model.DropboxStat.tags product, ver, (err, data) ->
     return next err if err
-    res.json 200, {
+    res.json {
       product: product
       version: ver
       data: data

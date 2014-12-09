@@ -8,9 +8,9 @@ Logout
 exports.logout = (req, res) ->
   if req.user
     req.logout()
-    res.send 200
+    res.sendStatus 200
   else
-    res.send 400, "Not logged in"
+    res.status(400).send "Not logged in"
 
 ###
 Login
