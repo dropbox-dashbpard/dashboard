@@ -199,9 +199,9 @@ module.exports = function (grunt) {
     // Use nodemon to run server in debug mode with an initial breakpoint
     nodemon: {
       debug: {
-        script: 'server/app.js',
+        script: 'server/app.coffee',
         options: {
-          nodeArgs: ['--debug-brk'],
+          nodeArgs: ['--nodejs', '--debug-brk'],
           env: {
             PORT: process.env.PORT || 9000
           },
@@ -250,7 +250,21 @@ module.exports = function (grunt) {
     useminPrepare: {
       html: ['<%= yeoman.client %>/index.html'],
       options: {
-        dest: '<%= yeoman.dist %>/public'
+        dest: '<%= yeoman.dist %>/public',
+        flow: {
+          html: {
+            steps: {
+              js: ['concat', 'uglifyjs'],
+              css: ['cssmin']
+            },
+            post: {}
+          }
+        }
+      }
+    },
+    cssmin: {
+      options: {
+        root: '<%= yeoman.client %>'
       }
     },
 
@@ -341,6 +355,13 @@ module.exports = function (grunt) {
     cdnify: {
       dist: {
         html: ['<%= yeoman.dist %>/*.html']
+      }
+    },
+
+    // Uglify
+    uglify: {
+      options: {
+        mangle: false
       }
     },
 
