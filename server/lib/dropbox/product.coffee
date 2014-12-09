@@ -16,7 +16,7 @@ exports.get = (req, res, next) ->
   product = req.param 'product'
   req.model.ProductConfig.findById(product).exec (err, config) ->
     return next err if err
-    return res.res.sendStatus 404 if not config?
+    return res.sendStatus 404 if not config?
     config.builds (err, builds) ->
       return next err if err
       config = JSON.parse JSON.stringify(config)
