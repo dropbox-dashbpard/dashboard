@@ -7,30 +7,36 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="/" class="navbar-brand">崩溃信息看板</a>
+      <a ui-sref="auth.board" class="navbar-brand">崩溃信息看板</a>
     </div>
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
-        <li ng-class="{active: false}" dropdown>
+        <li ui-sref-active="active" dropdown>
+          <a ui-sref="auth.board" role="button">
+            看版 </a>
+        </li>
+        <li dropdown>
           <a href class="dropdown-toggle" data-toggle="dropdown">
             产品<span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li ng-repeat="prod in products" ng-class="{active: isActive('/product/' + prod.name)}"><a href="/product/{{prod.name}}">{{prod.display}}</a></li>
+            <li ng-repeat="prod in products" ui-sref-active="active"><a ui-sref="auth.product({product: prod.name})">{{prod.display}}</a></li>
           </ul>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li ng-class="{active: isActive('/query')}" dropdown>
-          <a ng-href="/query" >查询</a>
+        <li ui-sref-active="active" dropdown>
+          <a ui-sref="auth.query" role="button">
+            <i class="glyphicon glyphicon-search"></i> 查询 </a>
         </li>
-        <li ng-class="{active: false}" dropdown>
-          <a href class="dropdown-toggle" data-toggle="dropdown">
-            {{session.user.username}}<span class="caret"></span>
+        <li dropdown>
+          <a href class="dropdown-toggle" data-toggle="dropdown" role="button">
+            <i class="glyphicon glyphicon-user"></i> {{session.user.username}} <span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="/info">个人信息</a></li>
-            <li><a href ng-click="logout()">登出</a></li>
+            <li><a href="/info"><i class="glyphicon glyphicon-info-sign"></i> 个人信息 </a></li>
+            <li><a href="/device"><i class="glyphicon glyphicon-phone"></i> 设备登记 </a></li>
+            <li><a href ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> 登出 </a></li>
           </ul>
         </li>
       </ul>

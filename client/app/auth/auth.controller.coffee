@@ -1,6 +1,8 @@
 'use strict'
 
 angular.module 'dbboardApp'
-.controller 'AuthCtrl', ($scope, Session, Products) ->
+.controller 'AuthCtrl', ($scope, $state, Session, Products) ->
   $scope.session = Session
   $scope.products = Products
+
+  $state.go "auth.board"
