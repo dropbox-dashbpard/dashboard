@@ -14,7 +14,7 @@ angular.module "dbboardApp"
         dbReleaseTypesService.get()
   .state "auth.query.dashboard",
     url: "/dashboard"
-    templateUrl: "app/partial/dashboard.html"
+    templateUrl: "app/auth/board/dashboard.html"
     controller: "QueryDashboardCtrl"
   .state "auth.query.device",
     url: "/device/:deviceId?from&to"

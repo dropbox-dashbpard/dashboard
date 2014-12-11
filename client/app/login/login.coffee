@@ -5,5 +5,5 @@ angular.module "dbboardApp"
   $stateProvider
   .state 'login',
     url: '/login'
-    templateUrl: 'app/partial/login.html'
+    templateUrl: 'app/login/login.html'
     controller: 'LoginCtrl'

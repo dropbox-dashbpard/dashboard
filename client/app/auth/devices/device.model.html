@@ -1,0 +1,54 @@
+<h3><i class="glyphicon glyphicon-list-alt"></i> 型号</h3>  
+<hr>
+<script type="text/ng-template" id="ModelEdit.html">
+  <div class="modal-header">
+    <h3 class="modal-title">型号参数</h3>
+  </div>
+  <div class="modal-body">
+    <div class="control-group">
+      <label>名称</label>
+      <div class="controls">
+        <input type="text" class="form-control" placeholder="输入名称" ng-model="model.name">
+      </div>
+    </div>
+    <div class="control-group">
+      <label>品牌</label>
+      <div class="controls">
+        <input type="text" class="form-control" placeholder="输入品牌" ng-model="model.build.brand">
+      </div>
+    </div>      
+    <div class="control-group">
+      <label>设备</label>
+      <div class="controls">
+        <input type="text" class="form-control" placeholder="输入设备" ng-model="model.build.device">
+      </div>
+    </div>
+    <div class="control-group">
+      <label>开发名称</label>
+      <div class="controls">
+        <input type="text" class="form-control" placeholder="输入开发名称" ng-model="model.build.product">
+      </div>
+    </div>
+    <div class="control-group">
+      <label>型号</label>
+      <div class="controls">
+        <input type="text" class="form-control" placeholder="输入型号" ng-model="model.build.model">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">确定</button>
+    <button class="btn btn-warning" ng-click="cancel()">取消</button>
+  </div>
+</script>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr><th>名称</th><th>品牌</th><th>设备</th><th>开发名称</th><th>型号</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="model in models"><td><a href ng-click="open(model)">{{model.name}}</a></td><td>{{model.build.brand}}</td><td>{{model.build.device}}</td><td>{{model.build.product}}</td><td>{{model.build.model}}</td><td><button type="button" class="btn btn-danger btn-xs" aria-label="Left Align" ng-click="remove(model)">删除</span></button></td></tr>
+    </tbody>
+  </table>
+  <button type="button" class="btn btn-success" aria-label="Left Align" ng-click="add()">增加</span></button>
+</div>

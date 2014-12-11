@@ -37,16 +37,16 @@ router.get '/product', localAuth, product.list
 router.get '/product/:product', localAuth, product.get
 router.get "/releases", localAuth, product.versionType
 
-router.post '/productmodel', bearerAuth, productModel.add
-router.get '/productmodel', bearerAuth, productModel.list
-router.get '/productmodel/:id', bearerAuth, productModel.get
-router.post '/productmodel/:id', bearerAuth, productModel.update
-router.delete '/productmodel/:id', bearerAuth, productModel.del
+router.post '/productmodel', localAuth, productModel.add
+router.get '/productmodel', localAuth, productModel.list
+router.get '/productmodel/:id', localAuth, productModel.get
+router.post '/productmodel/:id', localAuth, productModel.update
+router.delete '/productmodel/:id', localAuth, productModel.del
 
-router.post '/productconfig', bearerAuth, productConfig.add
-router.get '/productconfig', bearerAuth, productConfig.list
-router.get '/productconfig/:id', bearerAuth, productConfig.get
-router.post '/productconfig/:id', bearerAuth, productConfig.update
-router.delete '/productconfig/:id', bearerAuth, productConfig.del
+router.post '/productconfig', localAuth, productConfig.add
+router.get '/productconfig', localAuth, productConfig.list
+router.get '/productconfig/:id', localAuth, productConfig.get
+router.post '/productconfig/:id', localAuth, productConfig.update
+router.delete '/productconfig/:id', localAuth, productConfig.del
 
 module.exports = router

@@ -33,3 +33,5 @@ angular.module("dropbox")
       transformResponse: (data, headers) ->
         angular.fromJson(data)?.data or []
   }
+.factory 'ProductModel', ($resource) ->
+  $resource "/api/0/dropbox/productmodel/:id", {id: '@_id'}

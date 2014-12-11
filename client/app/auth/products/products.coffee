@@ -5,10 +5,5 @@ angular.module 'dbboardApp'
   $stateProvider
   .state 'auth.product',
     url: '^/product/:product'
-    templateUrl: 'app/partial/dashboard.html',
+    templateUrl: 'app/auth/board/dashboard.html',
     controller: 'ProductsCtrl'
-    resolve:
-      products: (dbProductService) ->
-        dbProductService.get()
-      releases: (dbReleaseTypesService) ->
-        dbReleaseTypesService.get()

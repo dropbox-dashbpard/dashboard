@@ -5,43 +5,29 @@ angular.module("dropbox")
 .value("dbProductApiUrl", "/api/0/dropbox/product")
 .value("dbProductVersionslApiUrl", "/api/0/dropbox/product")
 .service("dbReleaseTypesService", ($q, $http, $cacheFactory, dbReleasesApiUrl) ->
-  if not (cache = $cacheFactory.get("dropbox"))
-    cache = $cacheFactory("dropbox")
-
   get: ->
     deferred = $q.defer()
-    if cache.get(dbReleasesApiUrl)
-      deferred.resolve cache.get(dbReleasesApiUrl) 
-    else
-      $http.get(dbReleasesApiUrl).success((data) ->
-        if data and data.data
-          types = for k of data.data
-            name: k
-            display: data.data[k]
-          deferred.resolve types
-          cache.put(dbReleasesApiUrl, types)
-        else
-          deferred.reject()
-      ).error ->
+    $http.get(dbReleasesApiUrl).success((data) ->
+      if data and data.data
+        types = for k of data.data
+          name: k
+          display: data.data[k]
+        deferred.resolve types
+      else
         deferred.reject()
+    ).error ->
+      deferred.reject()
     deferred.promise
 ).service("dbProductService", ($q, $http, $cacheFactory, dbProductApiUrl) ->
-  if not (cache = $cacheFactory.get("dropbox"))
-    cache = $cacheFactory("dropbox")
-
   get: ->
     deferred = $q.defer()
-    if cache.get(dbProductApiUrl)
-      deferred.resolve cache.get(dbProductApiUrl)
-    else
-      $http.get(dbProductApiUrl).success((data) ->
-        if data and data.data
-          deferred.resolve data.data
-          cache.put(dbProductApiUrl, data.data)
-        else
-          deferred.reject()
-      ).error ->
+    $http.get(dbProductApiUrl).success((data) ->
+      if data and data.data
+        deferred.resolve data.data
+      else
         deferred.reject()
+    ).error ->
+      deferred.reject()
     deferred.promise
 ).service("dbProductVersionsService", ($q, $http, dbProductVersionslApiUrl) ->
   get: (product, dist) ->

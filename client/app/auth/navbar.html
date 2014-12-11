@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a ui-sref="auth.board" class="navbar-brand">崩溃信息看板</a>
+      <a ui-sref="auth" class="navbar-brand">崩溃信息看板</a>
     </div>
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
@@ -35,7 +35,7 @@
           </a>
           <ul class="dropdown-menu" role="menu">
             <li><a href="/info"><i class="glyphicon glyphicon-info-sign"></i> 个人信息 </a></li>
-            <li><a href="/device"><i class="glyphicon glyphicon-phone"></i> 设备登记 </a></li>
+            <li><a ui-sref="auth.device"><i class="glyphicon glyphicon-phone"></i> 设备登记 </a></li>
             <li><a href ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> 登出 </a></li>
           </ul>
         </li>

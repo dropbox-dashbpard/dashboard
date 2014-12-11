@@ -1,9 +1,9 @@
 'use strict'
 
 angular.module("dbboardApp")
-.controller "ProductsCtrl", ($scope, localStorageService, $stateParams, products, rebootTags) ->
+.controller "ProductsCtrl", ($scope, localStorageService, $stateParams, rebootTags) ->
   name = "Products#{$stateParams.product.name}"
-  for prod in products when prod.name is $stateParams.product
+  for prod in $scope.products when prod.name is $stateParams.product
     product = prod
   model = localStorageService.get(name)
 
