@@ -31,6 +31,7 @@ angular.module 'dbboardApp'
     $scope.open new UserModel(
       username: 'name'
       email: 'name@email.com'
+      guest: not $scope.session.user.admin
     ), true
 .controller 'UserEditCtrl', ($scope, $modalInstance, user, session) ->
   $scope.user =
