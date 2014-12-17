@@ -5,4 +5,3 @@ angular.module 'dbboardApp'
   $scope.session = Session
   $scope.products = Products
   $scope.releases = Releases
-  console.log JSON.stringify $scope.session.user

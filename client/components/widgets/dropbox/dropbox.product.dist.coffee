@@ -174,7 +174,7 @@ angular.module("widgets.dropbox")
 ).controller("productErrorRateOfTagCtrl", ($scope, config, errorRateOfTag, products, releaseTypes, chartsProvider) ->
   if errorRateOfTag
     seriesData = for data in errorRateOfTag
-      [data.version, if data.device is 0 then 0 else data.occurred*100/data.device]
+      [data.version, if data.devices is 0 then 0 else data.occurred*100/data.devices]
     seriesData = (d for d in seriesData by -1)
     distDisplay = _.find(releaseTypes, (dist)->
       dist.name is config.dist

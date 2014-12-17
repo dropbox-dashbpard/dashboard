@@ -109,14 +109,14 @@ angular.module("widgets.dropbox")
 
     summary =
       title: "#{prodDisplay} - #{distDisplay}: #{config.version}"
-      devices: errorRate.device
+      devices: errorRate.devices
       occurred: errorRate.occurred
-      rate: if errorRate.device then errorRate.occurred/errorRate.device else 0
+      rate: if errorRate.devices then errorRate.occurred/errorRate.devices else 0
       reboot: []
     summary.reboot = for k, v of distributionTags when k in rebootTags
       roocause: k
       value: v
-      rate: if errorRate.device then v/errorRate.device else 0
+      rate: if errorRate.devices then v/errorRate.devices else 0
     summary.rebootRate = _.reduce summary.reboot, (m, d) ->
         m + d.rate
       , 0
