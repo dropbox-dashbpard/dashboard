@@ -42,6 +42,8 @@ UserSchema.virtual('user_info').get ->
   _id: @_id
   username: @username
   email: @email
+  name: @name
+  group: @group
   admin: @admin
   guest: @guest
 
@@ -56,22 +58,6 @@ UserSchema.path('email').validate ((email) ->
   emailRegex.test email
 ), 'The specified email is invalid.'
 
-UserSchema.path('email').validate ((value, respond) ->
-  mongoose.models['User'].findOne
-    email: value
-  , (err, user) ->
-    throw err  if err
-    if user then respond(false) else respond true
-), 'The specified email address is already in use.'
-
-UserSchema.path('username').validate ((value, respond) ->
-  mongoose.models['User'].findOne
-    username: value
-  , (err, user) ->
-    throw err  if err
-    if user then respond(false) else respond true
-), 'The specified username is already in use.'
-
 ###
 Pre-save hook
 ###
@@ -81,7 +67,6 @@ UserSchema.pre 'save', (next) ->
     next new Error('Invalid password')
   else
     next()
-
 
 ###
 Methods

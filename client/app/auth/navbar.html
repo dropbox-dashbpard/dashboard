@@ -34,7 +34,8 @@
             <i class="glyphicon glyphicon-user"></i> {{session.user.username}} <span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="/info"><i class="glyphicon glyphicon-info-sign"></i> 个人信息 </a></li>
+            <!-- <li><a href="/info"><i class="glyphicon glyphicon-info-sign"></i> 个人信息 </a></li> -->
+            <li ng-show="session.user.admin || ! session.user.guest"><a ui-sref="auth.user"><i class="glyphicon glyphicon-user"></i> 用户管理 </a></li>
             <li><a ui-sref="auth.device"><i class="glyphicon glyphicon-phone"></i> 设备登记 </a></li>
             <li><a href ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> 登出 </a></li>
           </ul>

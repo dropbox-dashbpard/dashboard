@@ -54,8 +54,11 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
       return next(err) if err
       req.product = config
       req.version = config.version req.ua
-      config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
-      next()
+      if config.validVersion req.version
+        next()
+        config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
+      else
+        next new Error('Invalid version!')
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce req.body.data, (memo, entry) ->

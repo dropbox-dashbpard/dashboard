@@ -2,7 +2,7 @@
 
 angular.module 'dbboardApp'
 .controller 'DeviceCtrl', ($scope, $http) ->
-  console.log ""
+  console.log#
 .controller 'DeviceModelCtrl', ($scope, $http, $modal, ProductModel) ->
   $scope.models = ProductModel.query()
   
@@ -41,4 +41,4 @@ angular.module 'dbboardApp'
   $scope.cancel = ->
     $modalInstance.dismiss($scope.model)
 .controller 'DeviceConfigCtrl', ($scope, $http) ->
-  console.log ""
+  #

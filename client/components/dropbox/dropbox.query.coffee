@@ -35,3 +35,5 @@ angular.module("dropbox")
   }
 .factory 'ProductModel', ($resource) ->
   $resource "/api/0/dropbox/productmodel/:id", {id: '@_id'}
+.factory 'UserModel', ($resource) ->
+  $resource "/auth/users/:id", {id: '@_id'}

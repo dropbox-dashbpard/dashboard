@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-xs-12">
+    <h3><i class="glyphicon glyphicon-list-alt"></i> 型号</h3>  
+    <hr>
+    <script type="text/ng-template" id="UserEdit.html">
+      <div class="modal-header">
+        <h3 class="modal-title">用户信息</h3>
+      </div>
+      <div class="modal-body">
+        <div class="control-group">
+          <label>账号名</label>
+          <div class="controls">
+            <input type="text" class="form-control" placeholder="输入账号名称" ng-model="user.username" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Email地址</label>
+          <div class="controls">
+            <input type="text" class="form-control" placeholder="输入Email地址" ng-model="user.email" />
+          </div>
+        </div>      
+        <div class="control-group">
+          <label>姓名</label>
+          <div class="controls">
+            <input type="text" class="form-control" placeholder="输入姓名" ng-model="user.name" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label>密码</label>
+          <div class="controls">
+            <input type="text" class="form-control" placeholder="输入密码" ng-model="user.password" />
+          </div>
+        </div>
+        <div ng-show="session.user.admin" class="control-group">
+          <label>组名</label>
+          <div class="controls">
+            <input type="text" class="form-control" placeholder="输入组名" ng-model="user.group" />
+          </div>
+        </div>
+        <div ng-show="session.user.admin" class="control-group">
+          <div class="checkbox">
+            <label><input type="checkbox" ng-model="user.admin" />是否系统管理员</label>
+          </div>
+        </div>
+        <div ng-show="!session.user.guest" class="control-group">
+          <div class="checkbox">
+            <label><input type="checkbox" ng-model="user.groupadmin" />是否组管理员</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">确定</button>
+        <button class="btn btn-warning" ng-click="cancel()">取消</button>
+      </div>
+    </script>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr><th>账号名</th><th>Email地址</th><th>姓名</th><th>组名</th><th ng-show="session.user.admin">系统管理员</th><th ng-show="!session.user.guest">组管理员</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in users"><td><a href ng-click="open(user)">{{user.username}}</a></td><td>{{user.email}}</td><td>{{user.name}}</td><td>{{user.group}}</td><td ng-show="session.user.admin">{{user.admin ? '是' : '否'}}</td><td ng-show="!session.user.guest">{{user.guest ? '否' : '是'}}</td><td><button type="button" class="btn btn-danger btn-xs" aria-label="Left Align" ng-click="remove(user)">删除</span></button></td></tr>
+        </tbody>
+      </table>
+      <button type="button" class="btn btn-success" aria-label="Left Align" ng-click="add()">增加</span></button>
+    </div>
+  </div>
+</div>

@@ -29,4 +29,4 @@ exports.login = (req, res, next) ->
 User Info
 ###
 exports.session = (req, res, next) ->
-  res.json user: req.user.user_info
+  res.json user: req.user?.user_info

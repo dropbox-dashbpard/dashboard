@@ -104,6 +104,9 @@ exports = module.exports = (dbprefix) ->
       @set "versions.#{type}", _.sortBy(_.union(@versions[type] or [], ver))
       @save cb
 
+    ProductConfigSchema.methods.validVersion = (ver) ->
+      RegExp(@template.version_validation).exec ver
+
     ProductConfigSchema.methods.builds = (cb) ->
       mongoose.model("#{dbprefix}.Product").find name: @name, (err, prods) ->
         return cb err if err
