@@ -19,11 +19,11 @@ angular.module('dbboardApp')
           styleClass: "col-xs-12"
           columns: [
             {
-              styleClass: "col-xs-4"
+              styleClass: "col-xs-6"
               widgets: []
             }
             {
-              styleClass: "col-xs-8"
+              styleClass: "col-xs-6"
               widgets: []
             }
           ]
