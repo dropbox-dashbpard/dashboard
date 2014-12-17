@@ -11,11 +11,11 @@ session = require("./session.controller")
 ###
 User api
 ###
-router.post "/users", auth.ensureGroupAdmin, users.create
-router.get "/users/:userId", users.get
-router.get "/users", users.list
-router.post "/users/:userId", users.update
-router.delete "/users/:userId", auth.ensureGroupAdmin, users.del
+router.post "/users", auth.ensureAuthenticated, auth.ensureGroupAdmin, users.create
+router.get "/users/:userId", auth.ensureAuthenticated, users.get
+router.get "/users", auth.ensureAuthenticated, users.list
+router.post "/users/:userId", auth.ensureAuthenticated, users.update
+router.delete "/users/:userId", auth.ensureAuthenticated, auth.ensureGroupAdmin, users.del
 
 # Session Routes
 router.post "/login", session.login

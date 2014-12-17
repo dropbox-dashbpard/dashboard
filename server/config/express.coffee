@@ -40,6 +40,8 @@ module.exports = (app) ->
 
   app.use session(
     resave: false
+    secret: config.secrets.session
+    saveUninitialized: true
     store: new MongoStore(
         secret: config.secrets.session
         url: config.mongo.uri
