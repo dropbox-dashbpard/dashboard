@@ -50,7 +50,7 @@ angular.module('dbboardApp')
       $rootScope.$broadcast "Change:Dropbox:Items", {device_id: $scope.deviceId, from: $scope.from, to: $scope.to, limit: 500}
     else if $scope.deviceId = $stateParams.mac
       $rootScope.$broadcast "Change:Dropbox:Items", {mac: $scope.deviceId, from: $scope.from, to: $scope.to, limit: 500}
-.controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, dbProductVersionsService, DropboxItem, TypeItems) ->
+.controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, DropboxItem, TypeItems) ->
   now = new Date()
   $scope.from = new Date(now.getTime() - 24*3600*1000)
   $scope.to = new Date(now)
@@ -61,12 +61,11 @@ angular.module('dbboardApp')
     when "tag" then "类型"
 
   $scope.$watch "product", (newValue, oldValue) ->
-    $scope.versions = {}
-    total = $scope.releases.length
-    dbProductVersionsService.get(newValue).then (vers) ->
-      $scope.versions = vers
-      $timeout ->
-        $scope.version ?= $stateParams.version or _.flatten(_.map($scope.versions))[0]
+    prod = _.find $scope.products, (prod) ->
+      prod.name is newValue
+    $scope.versions = prod?.versions
+    $timeout ->
+      $scope.version ?= $stateParams.version or _.flatten(_.map($scope.versions))[0]
 
   # seect a version
   $scope.$watch "version", (newValue, oldValue) ->
@@ -183,19 +182,18 @@ angular.module('dbboardApp')
     if $stateParams.dropboxId
       $scope.dropboxId = $stateParams.dropboxId
       $rootScope.$broadcast("Change:Dropbox:Item", $scope.dropboxId)
-.controller "QueryReportCtrl", ($rootScope, $state, $scope, $stateParams, $location, $timeout, dbProductVersionsService, DropboxItem, TypeItems) ->
+.controller "QueryReportCtrl", ($rootScope, $state, $scope, $stateParams, $location, $timeout, DropboxItem, TypeItems) ->
   $scope.type = if $location.path().match(/\/app$/) then "app" else "tag"
   $scope.typeDisplay = switch $scope.type
     when "app" then "应用"
     when "tag" then "类型"
 
   $scope.$watch "product", (newValue, oldValue) ->
-    $scope.versions = {}
-    total = $scope.releases.length
-    dbProductVersionsService.get(newValue,).then (vers) ->
-      $scope.versions = vers
-      $timeout ->
-        $scope.version ?= $stateParams.version or _.flatten(_.map($scope.versions))[0]
+    prod = _.find $scope.products, (prod) ->
+      prod.name is newValue
+    $scope.versions = prod?.versions
+    $timeout ->
+      $scope.version ?= $stateParams.version or _.flatten(_.map($scope.versions))[0]
 
   # seect a version
   $scope.$watch "version", (newValue, oldValue) ->

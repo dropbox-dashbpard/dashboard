@@ -60,18 +60,16 @@ angular.module("widgets.dropbox")
       # product: ...
       # dist: ...
   , widget))
-).controller("productVersionEditCtrl", ($scope, config, products, releaseTypes, dbProductVersionsService) ->
+).controller("productVersionEditCtrl", ($scope, config, products, releaseTypes) ->
   $scope.products = products
   $scope.dists = releaseTypes
   $scope.days = [10, 20, 30, 60, 90, 120, 150, 300]
 
   updateVersions = ->
     if config.product and config.dist
-      dbProductVersionsService.get(config.product).then((data) ->
-        $scope.versions = data[config.dist]
-      , (err) ->
-        $scope.versions = []
-      )
+      prod = _.find products, (prod) ->
+        prod.name is config.product
+      $scope.versions = prod?.versions?[config.dist] or []
     else
       $scope.versions = []
     config.version = ""
