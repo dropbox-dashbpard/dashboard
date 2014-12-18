@@ -20,6 +20,6 @@ router.delete "/users/:userId", auth.ensureAuthenticated, auth.ensureGroupAdmin,
 # Session Routes
 router.post "/login", session.login
 router.post "/logout", session.logout
-router.post "/session", session.session
+router.post "/session", auth.ensureAuthenticated, session.session
 
 module.exports = router
