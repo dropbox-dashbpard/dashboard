@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module 'dbboardApp'
-.controller 'BoardCtrl', ($scope, $http, socket) ->
+.controller 'BoardCtrl', ($scope, $http, socket, Products) ->
   $scope.name = "主看板"
 
   $scope.model =
@@ -17,7 +17,7 @@ angular.module 'dbboardApp'
               product: "alps"
               dist: "development"
               selectDays: true
-              days: 90
+              days: 30
           }
         ]
       }
