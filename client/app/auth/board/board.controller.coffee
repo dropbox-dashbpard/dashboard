@@ -183,7 +183,7 @@ angular.module 'dbboardApp'
     product = Products[p_index]
     dist = Releases[d_index]
     model = DashboardModels[m_index]
-    version = product.versions[dist.name][..-1][0]
+    version = product.versions[dist.name]-1..][0]
 
     do increaseIndex
     if version
