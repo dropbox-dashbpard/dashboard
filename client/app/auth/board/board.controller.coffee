@@ -166,8 +166,6 @@ angular.module 'dbboardApp'
     }
   ]
 .controller 'BoardCtrl', ($scope, $http, $interval, DashboardModels, Products, Releases) ->
-  $scope.name = "主看板"
-
   p_index = 0
   d_index = 0
   m_index = 0
@@ -183,7 +181,7 @@ angular.module 'dbboardApp'
     product = Products[p_index]
     dist = Releases[d_index]
     model = DashboardModels[m_index]
-    version = product.versions[dist.name])[0]
+    version = product.versions[dist.name][0]
 
     do increaseIndex
     if version
@@ -202,12 +200,18 @@ angular.module 'dbboardApp'
     else
       do nextModel
 
-  $scope.model = angular.copy nextModel()
+  hasVersion = _.some Products, (prod) ->
+    _.some prod.versions or {}, (vers, dist) ->
+      vers.length > 0
 
-  $interval ->
-    model = do nextModel
-    for key, value of model
-      $scope.model[key] = value
-  , 10 * 1000
+  if hasVersion  # not empty
+    $scope.model = angular.copy nextModel()
 
-  $scope.$on '$destroy', ->
+    $scope.intervalUpdate = $interval ->
+      model = do nextModel
+      for key, value of model
+        $scope.model[key] = value
+    , 10 * 1000
+
+    $scope.$on '$destroy', ->
+      $interval.cancel $scope.intervalUpdate

@@ -26,7 +26,6 @@ angular.module("dropbox")
         for prod in data.data
           for key, vers of prod.versions or {}
             prod.versions[key] = (v for v in _.sortBy(prod.versions[key]) by -1)
-          }
         deferred.resolve data.data
       else
         deferred.reject()
