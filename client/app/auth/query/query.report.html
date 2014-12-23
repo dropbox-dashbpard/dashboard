@@ -18,28 +18,18 @@
         </select>
       </div>
       <label for="typeCtrl" class="col-xs-1 control-label">{{typeDisplay}}:</label>
-      <div class="col-xs-4">
+      <div class="col-xs-2">
         <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称">
           <option ng-repeat="v in typeValues" value="{{v}}">{{v}}</option>
         </select>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="occurredAt_from" class="col-xs-1 control-label">从:</label>
       <div class="col-xs-2">
-        <input ui-date class="form-control" id="occurredAt_from" placeholder="起始日期" ng-model="from" ng-required="true">
-      </div>
-      <label for="occurredAt_to" class="col-xs-1 control-label">到:</label>
-      <div class="col-xs-2">
-        <input ui-date class="form-control" id="occurredAt_to" placeholder="结束日期" ng-model="to" ng-required="true">
-      </div>
-      <div class="col-xs-2 col-xs-offset-1">
         <button type="submit" class="form-control btn btn-default btn-primary" ng-click="queryInAdvance(product, version, value, from, to)">查询</button>
       </div>
     </div>
   </form>
 </div>
 <div class="row">
-  <div class="col-xs-6" ng-controller="DropboxItemListCtrl" ng-include="'app/partial/query.items.html'"></div>
-  <div class="col-xs-6" ng-controller="ItemDetailCtrl" ng-include="'app/partial/query.item.html'"></div>
+  <div class="col-xs-6" ng-controller="DropboxReportDetailCtrl" ng-include="'app/auth/query/query.report.detail.html'"></div>
+  <div class="col-xs-6" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
 </div>

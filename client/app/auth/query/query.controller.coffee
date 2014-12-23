@@ -1,11 +1,11 @@
 'use strict'
 
 angular.module('dbboardApp')
-.controller "QueryCtrl", ($scope, $state, products, releases) ->
+.controller "QueryCtrl", ($scope, $state, Products, Releases) ->
   $scope.stateContains = (name) ->
     $state.includes name 
-  $scope.products = products
-  $scope.releases = releases
+  $scope.products = Products
+  $scope.releases = Releases
 .controller "QueryDashboardCtrl", ($scope, localStorageService) ->
   name = "QueryDashboard"
   model = localStorageService.get(name)
