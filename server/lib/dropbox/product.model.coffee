@@ -95,12 +95,12 @@ exports = module.exports = (dbprefix) ->
           false
 
     ProductConfigSchema.methods.addVersion = (type, ver, cb) ->
-      if not ver?
-        [type, ver] = ["development", type]
       if ver not instanceof Array
         ver = [ver]
       ver = _.filter ver, (v) =>
         RegExp(@template.version_validation).exec v
+      for dist, vers of @versions
+        @set "versions.#{dist}", _.filter(vers, (v) -> v not in ver)
       @set "versions.#{type}", _.sortBy(_.union(@versions[type] or [], ver))
       @save cb
 

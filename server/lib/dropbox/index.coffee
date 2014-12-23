@@ -20,7 +20,7 @@ router.post '/:dropbox_id/upload', bearerAuth, dropbox.upload
 router.get '/items/:dropbox_id', localAuth, dropbox.get
 router.get '/items', localAuth, dropbox.list
 
-router.get '/product/:product/version/:version', localAuth, dropbox.list
+# router.get '/product/:product/version/:version', localAuth, dropbox.list
 router.get '/product/:product/trend', localAuth, dropbox.trend
 router.get '/product/:product/distribution/:category', localAuth, dropbox.distribution
 router.get '/product/:product/errorrate', localAuth, dropbox.errorRate
@@ -35,6 +35,12 @@ router.get '/product/:product/tag', localAuth, dropbox.tags
 
 router.get '/product', localAuth, product.list
 router.get '/product/:product', localAuth, product.get
+
+router.post '/product/:product/dist/:dist/version/:version', bearerAuth, product.updateVersions
+router.delete '/product/:product/dist/:dist/version/:version', bearerAuth, product.rmVersion
+router.post '/product/:product/dist/:dist/version', bearerAuth, product.updateVersions
+router.get '/product/:product/version', bearerAuth, product.getVersions
+
 router.get "/releases", localAuth, product.versionType
 
 router.post '/productmodel', localAuth, productModel.add
