@@ -26,10 +26,10 @@ angular.module("structures", ["adf.provider"]).config (dashboardProvider) ->
   dashboardProvider.structure("6-6",
     rows: [columns: [
       {
-        styleClass: "col-xs-6"
+        styleClass: "col-sm-6"
       }
       {
-        styleClass: "col-xs-6"
+        styleClass: "col-sm-6"
       }
     ]]
   ).structure("6-6/6-6",
@@ -37,20 +37,20 @@ angular.module("structures", ["adf.provider"]).config (dashboardProvider) ->
       {
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
           }
         ]
       }
       {
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
           }
         ]
       }
@@ -58,29 +58,29 @@ angular.module("structures", ["adf.provider"]).config (dashboardProvider) ->
   ).structure("4-8",
     rows: [columns: [
       {
-        styleClass: "col-xs-4"
+        styleClass: "col-sm-4"
         widgets: []
       }
       {
-        styleClass: "col-xs-8"
+        styleClass: "col-sm-8"
         widgets: []
       }
     ]]
   ).structure("12/4-4-4",
     rows: [
       {
-        columns: [styleClass: "col-xs-12"]
+        columns: [styleClass: "col-sm-12"]
       }
       {
         columns: [
           {
-            styleClass: "col-xs-4"
+            styleClass: "col-sm-4"
           }
           {
-            styleClass: "col-xs-4"
+            styleClass: "col-sm-4"
           }
           {
-            styleClass: "col-xs-4"
+            styleClass: "col-sm-4"
           }
         ]
       }
@@ -88,15 +88,15 @@ angular.module("structures", ["adf.provider"]).config (dashboardProvider) ->
   ).structure("12/6-6",
     rows: [
       {
-        columns: [styleClass: "col-xs-12"]
+        columns: [styleClass: "col-sm-12"]
       }
       {
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
           }
         ]
       }
@@ -104,38 +104,38 @@ angular.module("structures", ["adf.provider"]).config (dashboardProvider) ->
   ).structure("12/6-6/12",
       rows: [
         {
-          columns: [styleClass: "col-xs-12"]
+          columns: [styleClass: "col-sm-12"]
         }
         {
           columns: [
             {
-              styleClass: "col-xs-6"
+              styleClass: "col-sm-6"
             }
             {
-              styleClass: "col-xs-6"
+              styleClass: "col-sm-6"
             }
           ]
         }
         {
-          columns: [styleClass: "col-xs-12"]
+          columns: [styleClass: "col-sm-12"]
         }
       ]
   ).structure("12",
     rows: [columns: [
       {
-        styleClass: "col-xs-12"
+        styleClass: "col-sm-12"
       }
     ]]
   ).structure("4-4-4",
     rows: [columns: [
       {
-        styleClass: "col-xs-4"
+        styleClass: "col-sm-4"
       }
       {
-        styleClass: "col-xs-4"
+        styleClass: "col-sm-4"
       }
       {
-        styleClass: "col-xs-4"
+        styleClass: "col-sm-4"
       }
     ]]
   )

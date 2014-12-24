@@ -1,6 +1,6 @@
 <div class="alert alert-info" ng-if="!chartConfigs">请设置必须的参数！</div>
 <div ng-if="chartConfigs" class="container-fluid">
-  <div class="col-xs-6" ng-if="summary">
+  <div class="col-sm-6" ng-if="summary">
     <div class="table-responsive">
       <div class="panel-heading"><h3 >{{summary.title}}</h3></div>
       <table class="table table-hover">
@@ -17,7 +17,7 @@
       </table>
     </div>
   </div>
-  <div ng-repeat="(i, chartConfig) in chartConfigs" class="col-xs-6">
+  <div ng-repeat="(i, chartConfig) in chartConfigs" class="col-sm-6">
     <highchart id="chart{{i}}" config="chartConfig"></highchart>
   </div>
 </div>

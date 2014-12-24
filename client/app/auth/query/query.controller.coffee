@@ -16,14 +16,14 @@ angular.module('dbboardApp')
       structure: "4-8"
       rows: [
         {
-          styleClass: "col-xs-12"
+          styleClass: "col-sm-12"
           columns: [
             {
-              styleClass: "col-xs-6"
+              styleClass: "col-sm-6"
               widgets: []
             }
             {
-              styleClass: "col-xs-6"
+              styleClass: "col-sm-6"
               widgets: []
             }
           ]

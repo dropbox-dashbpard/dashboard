@@ -3,25 +3,25 @@
     <div class="form-group">
     </div>
     <div class="form-group">
-      <label for="deviceId" class="col-xs-1 control-label">设备ID:</label>
-      <div class="col-xs-2">
+      <label for="deviceId" class="col-sm-1 control-label">设备ID:</label>
+      <div class="col-sm-2">
         <input type="text" class="form-control" id="deviceId" placeholder="请输入设备的ID！" ng-model="deviceId" ng-required="true">
       </div>
-      <label for="occurredAt_from" class="col-xs-1 control-label">从:</label>
-      <div class="col-xs-2">
+      <label for="occurredAt_from" class="col-sm-1 control-label">从:</label>
+      <div class="col-sm-2">
         <input ui-date class="form-control" id="occurredAt_from" placeholder="请输入发生的日期！" ng-model="from" ng-required="true">
       </div>
-      <label for="occurredAt_to" class="col-xs-1 control-label">到:</label>
-      <div class="col-xs-2">
+      <label for="occurredAt_to" class="col-sm-1 control-label">到:</label>
+      <div class="col-sm-2">
         <input ui-date class="form-control" id="occurredAt_to" placeholder="请输入发生的日期！" ng-model="to" ng-required="true">
       </div>
-      <div class="col-xs-2">
+      <div class="col-sm-2">
         <button type="submit" class="form-control btn btn-default btn-primary" ng-click="queryDevice(deviceId, from, to)">查询</button>
       </div>
     </div>
   </form>
 </div>
 <div class="row">
-  <div class="col-xs-6" ng-controller="DropboxItemListCtrl" ng-include="'app/auth/query/query.items.html'"></div>
-  <div class="col-xs-6" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
+  <div class="col-sm-6" ng-controller="DropboxItemListCtrl" ng-include="'app/auth/query/query.items.html'"></div>
+  <div class="col-sm-6" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
 </div>

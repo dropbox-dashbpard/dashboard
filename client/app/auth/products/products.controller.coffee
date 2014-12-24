@@ -12,10 +12,10 @@ angular.module("dbboardApp")
     structure: "6-6/4-4-4"
     rows: [
       {
-        styleClass: "col-xs-12"
+        styleClass: "col-sm-12"
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productTrendWidget"
@@ -28,7 +28,7 @@ angular.module("dbboardApp")
             ]
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productErrorRateWidget"
@@ -44,10 +44,10 @@ angular.module("dbboardApp")
         ]
       }
       {
-        styleClass: "col-xs-12"
+        styleClass: "col-sm-12"
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productDistributionWidget"
@@ -62,7 +62,7 @@ angular.module("dbboardApp")
             ]
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productDistributionWidget"
@@ -79,10 +79,10 @@ angular.module("dbboardApp")
         ]
       }
       {
-        styleClass: "col-xs-12"
+        styleClass: "col-sm-12"
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productErrorRateOfRebootWidget"
@@ -95,7 +95,7 @@ angular.module("dbboardApp")
             ]
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productErrorRateOfRebootWidget"
@@ -110,10 +110,10 @@ angular.module("dbboardApp")
         ]
       }
       {
-        styleClass: "col-xs-12"
+        styleClass: "col-sm-12"
         columns: [
           {
-            styleClass: "col-xs-12"
+            styleClass: "col-sm-12"
             widgets: [
               {
                 type: "productVersionWidget"

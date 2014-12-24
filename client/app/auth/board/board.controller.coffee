@@ -8,7 +8,7 @@ angular.module 'dbboardApp'
       rows: [
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productTrendWidget"
@@ -21,7 +21,7 @@ angular.module 'dbboardApp'
             ]
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productErrorRateWidget"
@@ -41,7 +41,7 @@ angular.module 'dbboardApp'
       rows: [
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productDistributionWidget"
@@ -56,7 +56,7 @@ angular.module 'dbboardApp'
             ]
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productDistributionWidget"
@@ -74,7 +74,7 @@ angular.module 'dbboardApp'
       ,
         columns: [
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productDistributionWidget"
@@ -89,7 +89,7 @@ angular.module 'dbboardApp'
             ]
           }
           {
-            styleClass: "col-xs-6"
+            styleClass: "col-sm-6"
             widgets: [
               {
                 type: "productDistributionWidget"
@@ -113,7 +113,7 @@ angular.module 'dbboardApp'
         {
           columns: [
             {
-              styleClass: "col-xs-6"
+              styleClass: "col-sm-6"
               widgets: [
                 {
                   type: "productErrorRateOfRebootWidget"
@@ -126,7 +126,7 @@ angular.module 'dbboardApp'
               ]
             }
             {
-              styleClass: "col-xs-6"
+              styleClass: "col-sm-6"
               widgets: [
                 {
                   type: "productErrorRateOfRebootWidget"
@@ -148,7 +148,7 @@ angular.module 'dbboardApp'
       rows: [
         columns: [
           {
-            styleClass: "col-xs-12"
+            styleClass: "col-sm-12"
             widgets: [
               {
                 type: "productVersionWidget"
