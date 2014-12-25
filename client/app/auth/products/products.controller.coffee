@@ -4,7 +4,7 @@ angular.module("dbboardApp")
 .controller "ProductsCtrl", ($scope, localStorageService, $stateParams, Products, Releases, rebootTags) ->
   product = _.find Products, (prod) ->
     prod.name is $stateParams.product
-  dist = _.find(Releases, (rel) -> product?.versions[rel.name].length > 0)?.name
+  dist = $stateParams.dist
   version = product?.versions?[dist]?[0]
 
   $scope.model =
