@@ -1,7 +1,8 @@
-requiredProcessEnv = (name) ->
-  throw new Error("You must set the " + name + " environment variable")  unless process.env[name]
-  process.env[name]
+# requiredProcessEnv = (name) ->
+#   throw new Error("You must set the " + name + " environment variable")  unless process.env[name]
+#   process.env[name]
 "use strict"
+
 path = require("path")
 _ = require("lodash")
 
@@ -22,7 +23,6 @@ all =
   # Secret for session, you will want to change this and make it an environment variable
   secrets:
     session: process.env.SESSION_SECRET or "dropbox-admin-secret"
-
   
   # List of user roles
   userRoles: [
@@ -36,7 +36,6 @@ all =
     options:
       db:
         safe: true
-
 
 # Export the config object based on the NODE_ENV
 # ==============================================
