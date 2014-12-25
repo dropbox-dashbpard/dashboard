@@ -56,7 +56,8 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
       req.version = config.version req.ua
       if config.validVersion req.version
         next()
-        # config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
+        if process.env.NODE_ENV isnt 'production'
+          config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
       else
         next new Error('Invalid version!')
 
