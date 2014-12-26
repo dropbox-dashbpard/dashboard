@@ -73,5 +73,5 @@ exports.versionType = (req, res, next) ->
   res.json
     data:
       production: "产品发布（最终用户）"
-      stable: "稳定发布（内测用户）"
+      stable: "稳定版本（内测用户）"
       development: "开发版本（工程测试）"

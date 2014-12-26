@@ -2,9 +2,10 @@
 
 angular.module("dbboardApp")
 .controller "ProductsCtrl", ($scope, localStorageService, $stateParams, Products, Releases, rebootTags) ->
-  product = _.find Products, (prod) ->
+  $scope.product = product = _.find Products, (prod) ->
     prod.name is $stateParams.product
-  dist = $stateParams.dist
+  $scope.releases = Releases
+  $scope.dist = dist = $stateParams.dist
   version = product?.versions?[dist]?[0]
 
   $scope.model =
@@ -35,7 +36,7 @@ angular.module("dbboardApp")
                 config:
                   product: product.name
                   dist: dist
-                  total: 30
+                  total: 12
                   drilldown: true
                   totalDrilldown: 12
               }
