@@ -7,3 +7,8 @@ angular.module 'dbboardApp'
     url: '^/product/:product/:dist'
     templateUrl: 'app/auth/products/products.html',
     controller: 'ProductsCtrl'
+    resolve:
+      Products: (dbProductService) ->
+        dbProductService.get()
+      Releases: (dbReleaseTypesService) ->
+        dbReleaseTypesService.get()
