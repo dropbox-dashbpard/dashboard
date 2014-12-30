@@ -145,8 +145,9 @@ exports.add = (req, res, next) ->
 # update dropbox message content
 exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
-  if req.body.content?
-    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": req.body.content}, select: "_id").exec()
+  content = req.body.content or req.body
+  if content?
+    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id").exec()
     .then (doc) ->
         res.json result: "ok"
       , (err) ->
