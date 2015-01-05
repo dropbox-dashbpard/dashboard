@@ -2,8 +2,6 @@
 
 angular.module('dbboardApp')
 .controller "QueryCtrl", ($scope, $state, Products, Releases) ->
-  $scope.stateContains = (name) ->
-    $state.includes name 
   $scope.products = Products
   $scope.releases = Releases
 .controller "QueryDashboardCtrl", ($scope, localStorageService) ->

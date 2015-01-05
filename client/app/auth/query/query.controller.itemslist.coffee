@@ -3,7 +3,7 @@
 angular.module('dbboardApp')
 .controller "DropboxItemListCtrl", ($rootScope, $scope, localStorageService, DropboxItem) ->
   $scope.selectedItems = []
-  $scope.itemPerPage = 8
+  $scope.itemPerPage = 5
   $scope.currentPage = 1
   $scope.columns = columnDefs = [
       field: "device_id"
@@ -27,6 +27,7 @@ angular.module('dbboardApp')
     else
       v
   $scope.select = (item) ->
+    $scope.selectedItem = item
     $rootScope.$broadcast "Change:Dropbox:Item", item._id
 
   $scope.reloading = false

@@ -25,9 +25,21 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li ui-sref-active="active" dropdown>
-          <a ui-sref="auth.query" role="button">
-            <i class="glyphicon glyphicon-search"></i> 查询 </a>
+        <li dropdown>
+          <a href class="dropdown-toggle" data-toggle="dropdown" role="button">
+            <i class="glyphicon glyphicon-search"></i> 查询 <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li ui-sref-active="active"><a ui-sref='auth.query.device'>设备ID</a></li>
+            <li ui-sref-active="active"><a ui-sref='auth.query.mac'>MAC地址</a></li>
+            <li ui-sref-active="active"><a ui-sref='auth.query.app'>应用</a></li>
+            <li ui-sref-active="active"><a ui-sref='auth.query.tag'>类别</a></li>
+            <li ui-sref-active="active"><a ui-sref='auth.query.dbitem'>数据ID</a></li>
+            <li class="divider"></li>
+            <li ui-sref-active="active"><a ui-sref='auth.query.report_tag'>聚类分析</a></li>
+            <li class="divider"></li>
+            <li ui-sref-active="active"><a ui-sref='auth.query.dashboard'>仪表盘</a></li>
+          </ul>
         </li>
         <li dropdown>
           <a href class="dropdown-toggle" data-toggle="dropdown" role="button">
