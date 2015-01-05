@@ -42,7 +42,7 @@ exports = module.exports = (dbprefix) ->
       .exec()
       if cb then promise.onResolve(cb) else promise
 
-    DropboxSchema.statics.findAppInAdvance = (product, version, app, from_date, to_date, limit, cb) ->
+    DropboxSchema.statics.findByAppInAdvance = (product, version, app, from_date, to_date, limit, cb) ->
       promise = @find()
       .where("created_at").gte(from_date).lt(to_date)
       .where("product").equals(product)
@@ -52,7 +52,7 @@ exports = module.exports = (dbprefix) ->
       .select("product version occurred_at device_id tag app").exec()
       if cb then promise.onResolve(cb) else promise
 
-    DropboxSchema.statics.findTagInAdvance = (product, version, tag, from_date, to_date, limit, cb) ->
+    DropboxSchema.statics.findByTagInAdvance = (product, version, tag, from_date, to_date, limit, cb) ->
       promise = @find()
       .where("created_at").gte(from_date).lt(to_date)
       .where("product").equals(product)

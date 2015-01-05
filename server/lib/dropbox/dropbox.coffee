@@ -178,9 +178,9 @@ exports.list = (req, res) ->  # query dropbox entries
   promise = if(deviceId = req.param("device_id"))
     req.model.Dropbox.findByDeviceID deviceId, from, to, limit
   else if(app = req.param("app"))
-    req.model.Dropbox.findAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
+    req.model.Dropbox.findByAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
   else if(tag = req.param("tag"))
-    req.model.Dropbox.findTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
+    req.model.Dropbox.findByTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
   else if(mac = req.param("mac"))
     req.model.Dropbox.findByMacAddress mac, from, to, limit
   else
