@@ -1,35 +1,43 @@
 <div class="row">
-  <form class="form-horizontal" role="form">
-    <div class="form-group">
-    </div>
-    <div class="form-group">
-      <label for="deviceCtrl" class="col-sm-1 control-label">产品:</label>
-      <div class="col-sm-2">
-        <select ui-select2 class="form-control" ng-model="product" id="deviceCtrl" ng-required="true" data-placeholder="请选择产品名称">
-          <option ng-repeat="prod in products" value="{{prod.name}}">{{prod.display}}</option>
-        </select>
+  <div class="col-sm-2">
+    <form class="form" role="form">
+      <div class="form-group">
       </div>
-      <label for="versionCtrl" class="col-sm-1 control-label">版本:</label>
-      <div class="col-sm-2">
-        <select ui-select2 class="form-control" ng-model="version" id="versionCtrl" ng-required="true" data-placeholder="请选择版本号">
-          <optgroup ng-repeat="rel in releases" label="{{rel.display}}">
-            <option ng-repeat="ver in versions[rel.name]" value="{{ver}}">{{ver}}</option>
-          </optgroup>
-        </select>
+      <div class="form-group">
+        <label for="deviceCtrl" class="control-label">产品:</label>
+        <div>
+          <select ui-select2 class="form-control" ng-model="product" id="deviceCtrl" ng-required="true" data-placeholder="请选择产品名称">
+            <option ng-repeat="prod in products" value="{{prod.name}}">{{prod.display}}</option>
+          </select>
+        </div>
       </div>
-      <label for="typeCtrl" class="col-sm-1 control-label">{{typeDisplay}}:</label>
-      <div class="col-sm-2">
-        <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称">
-          <option ng-repeat="v in typeValues" value="{{v}}">{{v}}</option>
-        </select>
+      <div class="form-group">
+        <label for="versionCtrl" class="control-label">版本:</label>
+        <div>
+          <select ui-select2 class="form-control" ng-model="version" id="versionCtrl" ng-required="true" data-placeholder="请选择版本号">
+            <optgroup ng-repeat="rel in releases" label="{{rel.display}}">
+              <option ng-repeat="ver in versions[rel.name]" value="{{ver}}">{{ver}}</option>
+            </optgroup>
+          </select>
+        </div>
       </div>
-      <div class="col-sm-2">
-        <button type="submit" class="form-control btn btn-default btn-primary" ng-click="queryInAdvance(product, version, value, from, to)">查询</button>
+      <div class="form-group">
+        <label for="typeCtrl" class="control-label">{{typeDisplay}}:</label>
+        <div>
+          <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称">
+            <option ng-repeat="v in typeValues" value="{{v}}">{{v}}</option>
+          </select>
+        </div>
       </div>
-    </div>
-  </form>
-</div>
-<div class="row">
-  <div class="col-sm-6" ng-controller="DropboxReportDetailCtrl" ng-include="'app/auth/query/query.report.detail.html'"></div>
-  <div class="col-sm-6" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
+      <div class="form-group">
+        <div>
+          <button type="submit" class="form-control btn btn-default btn-primary" ng-click="queryInAdvance(product, version, value, from, to)">查询</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-sm-10">
+    <div class="row" ng-controller="DropboxReportDetailCtrl" ng-include="'app/auth/query/query.report.detail.html'"></div>
+    <div class="row" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
+  </div>
 </div>
