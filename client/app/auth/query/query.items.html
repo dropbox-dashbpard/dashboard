@@ -1,7 +1,7 @@
 <div class="form-group">
 </div>
 <div class="panel panel-default">
-  <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar>
+  <!-- <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar> -->
   <div class="panel-heading">
     <i class="glyphicon glyphicon-list-alt"></i> 数据列表<input class="pull-right" type="text" placeholder="搜索" ng-model="search" />
   </div>
@@ -16,7 +16,7 @@
           <tr><th ng-repeat="col in columns">{{col.displayName}}</th></tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in items | filter: search as results" ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage" class="rowClickable" ng-class="{'info': selectedItem._id === item._id}" ng-click="select(item)">
+          <tr ng-repeat="item in items | filter: search as results" ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage" class="rowClickable item-listing" ng-class="{'info': selectedItem._id === item._id}" ng-click="select(item)">
             <td ng-repeat="col in columns">{{printValue(col.field, item[col.field])}}</td>
           </tr>
           <tr ng-if="results.length === 0"><td colspan="{{columns.length}}">空</td></tr>

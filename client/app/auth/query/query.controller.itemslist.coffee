@@ -33,6 +33,7 @@ angular.module('dbboardApp')
   $scope.reloading = false
   $scope.$on "Change:Dropbox:Items", (event, params) ->
     $scope.reloading = true
+    $scope.items = []
     DropboxItem.query params, (items) ->
       $scope.reloading = false
       $scope.items = items
