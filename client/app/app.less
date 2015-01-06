@@ -36,29 +36,23 @@
   cursor: pointer;
 }
 
-//TODO refine footer fix height css
+* {
+    margin: 0;
+}
+
 html, body {
-  height: 100%;
-  /* The html and body elements cannot have any padding or margin. */
+    height: 100%;
 }
 
-/* Wrapper for page content to push down footer */
-#wrap {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  /* Negative indent footer by it's height */
-  margin: 0 auto -150px;
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -155px; /* the bottom margin is the negative value of the footer's height */
 }
 
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-  #footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.footer, .push {
+    height: 155px; /* .push must be the same height as .footer */
 }
 
 // injector
