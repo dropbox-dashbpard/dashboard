@@ -211,7 +211,7 @@ angular.module 'dbboardApp'
       model = do nextModel
       for key, value of model
         $scope.model[key] = value
-    , 20 * 1000
+    , 10 * 1000
 
     $scope.$on '$destroy', ->
       $interval.cancel $scope.intervalUpdate
