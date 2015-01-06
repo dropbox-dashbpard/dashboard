@@ -90,8 +90,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "start": "node node_modules/.bin/coffee server/app.coffee",
-    "start-worker": "node node_modules/.bin/coffee server/worker.coffee",
+    "start": "node_modules/.bin/coffee server/app.coffee",
+    "start-worker": "node_modules/.bin/coffee server/worker.coffee",
     "test": "grunt test",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
