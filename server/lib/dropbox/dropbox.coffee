@@ -2,13 +2,16 @@
 
 _ = require 'lodash'
 mongoose = require 'mongoose'
+request = require 'request'
+crypto = require 'crypto'
 
 dateToString = require('./util').dateToString
 stringToDate = require('./util').stringToDate
+config = require '../../config/environment'
 
 exports.dbmodel = (req, res, next) ->  # 设置mongodb的model
   prefix = req.user?.group or req.user?.name  or 'default'
-  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix)
+  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix), require('./error.model')(prefix)
   next()
 
 exports.ua = (req, res, next) ->  # parse 上报数据的ua
@@ -147,9 +150,44 @@ exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   content = req.body.content or req.body
   if content?
-    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id").exec()
+    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag product version").exec()
     .then (doc) ->
         res.json result: "ok"
+        process.nextTick ->
+          request.post 
+            url: "#{config.url.errordetect}/#{doc.tag}"
+            body: content
+            headers:
+              'X-Requested-With': 'XMLHttpRequest'
+            gzip: true
+          , (e, r, body) ->
+            if e? or r.statusCode isnt 200
+              console.log "Error during detecting: #{e}"
+              return
+            body = JSON.parse(body)
+            if body.status isnt 1
+              console.log "No feature detected for id #{doc._id}"
+              return
+            md5 = body.md5?.toLowerCase() or crypto.createHash('md5').update(JSON.stringify(body.features)).digest('hex')
+            req.model.ErrorFeature.findByIdAndUpdate(md5,
+              {
+                $setOnInsert:
+                  created_at: new Date()
+                  features:body.features
+                  tag: doc.tag
+              }, upsert: true
+            ).exec().then (ef) ->
+              req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {errorfeature: md5}, select: "errorfeature").exec()
+            .then (item) ->
+              query = product: doc.product, version: doc.version
+              op = $setOnInsert: {created_at: new Date(), errorfeatures: {}}
+              req.model.ProductErrorFeature.findOneAndUpdate(query, op, upsert: true).exec()
+            .then (pef) ->
+              query = product: doc.product, version: doc.version
+              op = $inc: {}
+              op.$inc["errorfeatures.#{md5}"] = 1
+              req.model.ProductErrorFeature.findOneAndUpdate(query, op).exec()
+            .end()
       , (err) ->
         next err
   else

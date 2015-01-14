@@ -37,6 +37,9 @@ all =
       db:
         safe: true
 
+  url:
+    errordetect: process.env.URL_ERRORDETECT or "http://cr.ota.xinqitec.com/api/0/ed"
+
 # Export the config object based on the NODE_ENV
 # ==============================================
 module.exports = _.merge(all, require("./" + process.env.NODE_ENV) or {})

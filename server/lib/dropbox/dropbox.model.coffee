@@ -27,12 +27,14 @@ exports = module.exports = (dbprefix) ->
       data: Object  # detailed data of dropbox message
       attachment: Array  # URL list of binary attachment
       ua: Object  # UA object
+      errorfeature: String  # errorfeature id
     ,
       collection: "#{dbprefix}.dropboxes"
     )
 
     DropboxSchema.index {device_id: 1, created_at: -1}
     DropboxSchema.index {product: 1, version: 1, app: 1, tag: 1, created_at: -1}
+    DropboxSchema.index {product: 1, errorfeature: 1}
 
     DropboxSchema.statics.findByDeviceID = (deviceId, from_date, to_date, limit, cb) ->
       promise = @find()

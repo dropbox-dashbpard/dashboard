@@ -47,7 +47,6 @@ updateVersion = (product) ->
               console.log "Updating production versions done"
         catch e
           # ...
-        
       done(err)
 
 agenda.define 'update alps versions', updateVersion("alps")

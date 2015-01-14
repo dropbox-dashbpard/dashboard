@@ -64,6 +64,15 @@ exports = module.exports = (dbprefix) ->
             limit: 3000
           }
         ]
+      bts:  # bug tracking system
+        type:
+          type: String
+          default: 'jira'
+        username: String
+        password: String
+        url: String
+        project: String
+        components: Object
     ,
       collection: "#{dbprefix}.productconfigs"
     )

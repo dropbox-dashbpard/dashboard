@@ -9,3 +9,6 @@ module.exports =
     uri: "mongodb://localhost/dbboard-dev"
 
   seedDB: true
+
+  url:
+    errordetect: process.env.URL_ERRORDETECT or "http://cr.ota.xinqitec.com/api/0/ed"
