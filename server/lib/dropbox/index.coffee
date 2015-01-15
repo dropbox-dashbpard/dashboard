@@ -4,6 +4,7 @@ express = require('express')
 
 dropbox = require './dropbox'
 product = require './product'
+ef = require './error'
 productModel = require './model'
 productConfig = require './config'
 auth = require('../../lib/auth/auth')
@@ -17,8 +18,8 @@ router.post '/', bearerAuth, dropbox.ua, dropbox.product, dropbox.device, dropbo
 router.post '/:dropbox_id/content', bearerAuth, dropbox.updateContent
 router.post '/:dropbox_id/upload', bearerAuth, dropbox.upload
 
-router.get '/items/:dropbox_id', localAuth, dropbox.get
-router.get '/items', localAuth, dropbox.list
+router.get '/items/:dropbox_id', bearerAuth, dropbox.get
+router.get '/items', bearerAuth, dropbox.list
 
 # router.get '/product/:product/version/:version', localAuth, dropbox.list
 router.get '/product/:product/trend', localAuth, dropbox.trend
@@ -41,6 +42,9 @@ router.delete '/product/:product/dist/:dist/version/:version', bearerAuth, produ
 router.post '/product/:product/dist/:dist/version', bearerAuth, product.updateVersions
 router.get '/product/:product/version', bearerAuth, product.getVersions
 
+router.get '/product/:product/errorfeatures', bearerAuth, ef.getErrorFeatures
+router.post '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, ef.addTicket
+
 router.get "/releases", localAuth, product.versionType
 
 router.post '/productmodel', localAuth, productModel.add
@@ -49,10 +53,10 @@ router.get '/productmodel/:id', localAuth, productModel.get
 router.post '/productmodel/:id', localAuth, productModel.update
 router.delete '/productmodel/:id', localAuth, productModel.del
 
-router.post '/productconfig', localAuth, productConfig.add
-router.get '/productconfig', localAuth, productConfig.list
-router.get '/productconfig/:id', localAuth, productConfig.get
-router.post '/productconfig/:id', localAuth, productConfig.update
-router.delete '/productconfig/:id', localAuth, productConfig.del
+router.post '/productconfig', bearerAuth, productConfig.add
+router.get '/productconfig', bearerAuth, productConfig.list
+router.get '/productconfig/:id', bearerAuth, productConfig.get
+router.post '/productconfig/:id', bearerAuth, productConfig.update
+router.delete '/productconfig/:id', bearerAuth, productConfig.del
 
 module.exports = router

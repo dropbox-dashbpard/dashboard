@@ -34,13 +34,22 @@ exports = module.exports = (dbprefix) ->
 
     DropboxSchema.index {device_id: 1, created_at: -1}
     DropboxSchema.index {product: 1, version: 1, app: 1, tag: 1, created_at: -1}
-    DropboxSchema.index {product: 1, errorfeature: 1}
+    DropboxSchema.index {product: 1, errorfeature: 1, created_at: -1}
 
     DropboxSchema.statics.findByDeviceID = (deviceId, from_date, to_date, limit, cb) ->
       promise = @find()
       .where("created_at").gte(from_date).lt(to_date)
       .where("device_id").equals(deviceId).limit(limit)
-      .select("product version app tag occurred_at created_at device_id")
+      .select("product version occurred_at app tag created_at device_id errorfeature")
+      .exec()
+      if cb then promise.onResolve(cb) else promise
+
+    DropboxSchema.statics.findByErrorFeature = (product, errorfeature, from_date, to_date, limit, cb) ->
+      promise = @find()
+      .where("created_at").gte(from_date).lt(to_date)
+      .where("product").equals(product)
+      .where("errorfeature").equals(errorfeature).limit(limit)
+      .select("product version occurred_at app tag created_at device_id errorfeature")
       .exec()
       if cb then promise.onResolve(cb) else promise
 
@@ -51,7 +60,8 @@ exports = module.exports = (dbprefix) ->
       .where("version").equals(version)
       .where("app").equals(app)
       .limit(limit)
-      .select("product version occurred_at device_id tag app").exec()
+      .select("product version occurred_at app tag created_at device_id errorfeature")
+      .exec()
       if cb then promise.onResolve(cb) else promise
 
     DropboxSchema.statics.findByTagInAdvance = (product, version, tag, from_date, to_date, limit, cb) ->
@@ -61,7 +71,7 @@ exports = module.exports = (dbprefix) ->
       .where("version").equals(version)
       .where("tag").equals(tag)
       .limit(limit)
-      .select("product version app tag occurred_at created_at device_id")
+      .select("product version occurred_at app tag created_at device_id errorfeature")
       .exec()
       if cb then promise.onResolve(cb) else promise
 
@@ -70,7 +80,7 @@ exports = module.exports = (dbprefix) ->
       .where("created_at").gte(from_date).lt(to_date)
       .where("ua.mac_address").equals(mac)
       .limit(limit)
-      .select("product version app tag occurred_at created_at device_id")
+      .select("product version occurred_at app tag created_at device_id errorfeature")
       .exec()
       if cb then promise.onResolve(cb) else promise
 
@@ -78,7 +88,7 @@ exports = module.exports = (dbprefix) ->
       promise = @find()
       .where("created_at").gte(from_date).lt(to_date)
       .limit(limit)
-      .select("product version app tag occurred_at created_at device_id")
+      .select("product version occurred_at app tag created_at device_id errorfeature")
       .exec()
       if cb then promise.onResolve(cb) else promise
 

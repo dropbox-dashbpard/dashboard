@@ -8,6 +8,7 @@ exports.ensureAuthenticated = (req, res, next) ->
   res.sendStatus(401)
 
 exports.ensureToken = (req, res, next) ->
+  return next() if req.isAuthenticated()
   require('passport').authenticate('bearer', session: false)(req, res, next)
 
 exports.ensureGroupAdmin = (req, res, next) ->

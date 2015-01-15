@@ -209,7 +209,7 @@ exports.get = (req, res, next) ->  # get a dropbox entry
 # 查询dropbox列表
 exports.list = (req, res) ->  # query dropbox entries
   limit = parseInt(req.param("limit")) or 1000
-  from = new Date(req.param("from") or (Date.now() - 1000*3600*24))
+  from = new Date(req.param("from") or (Date.now() - 1000*3600*24*10))
   to = new Date(req.param("to") or Date.now())
   if from > to
     [from, to] = [to, from]
@@ -221,6 +221,8 @@ exports.list = (req, res) ->  # query dropbox entries
     req.model.Dropbox.findByTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
   else if(mac = req.param("mac"))
     req.model.Dropbox.findByMacAddress mac, from, to, limit
+  else if(errorfeature = req.param("errorfeature"))
+    req.model.Dropbox.findByErrorFeature req.param("product"), errorfeature, from, to, limit
   else
     req.model.Dropbox.findByCreatedAt from, to, limit
   promise.onResolve (err, docs) ->
