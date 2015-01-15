@@ -19,7 +19,6 @@ exports.update = (req, res, next) ->
     memo.$set[key] = req.param(key) if req.param(key)
     memo
   , $set: {}
-  console.log JSON.stringify(op)
   req.model.ProductConfig.findByIdAndUpdate req.param('id'), op, (err, doc) ->
     return next err if err
     res.json doc
