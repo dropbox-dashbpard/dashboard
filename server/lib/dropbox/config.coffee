@@ -15,7 +15,7 @@ exports.get = (req, res, next) ->
     res.json doc
 
 exports.update = (req, res, next) ->
-  op = _.reduce ['display', 'template', 'ignores', 'limits'], (memo, key) ->
+  op = _.reduce ['display', 'template', 'ignores', 'limits', 'bts'], (memo, key) ->
     memo.$set[key] = req.param(key) if req.param(key)
     memo
   , $set: {}

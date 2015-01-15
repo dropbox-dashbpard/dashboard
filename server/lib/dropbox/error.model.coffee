@@ -60,7 +60,7 @@ exports = module.exports = (dbprefix) ->
               created_at: ef.created_at
               features: ef.features
               tag: ef.tag
-              occurres: feature.count
+              count: feature.count
             }
             Ticket.find({errorfeature: feature.id}).exec()
           .then (tickets) ->
