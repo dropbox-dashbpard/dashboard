@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('dbboardApp')
-.controller "DropboxItemListCtrl", ($rootScope, $scope, localStorageService, DropboxItem) ->
+.controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem) ->
   $scope.selectedItems = []
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -32,11 +32,13 @@ angular.module('dbboardApp')
 
   $scope.reloading = false
   $scope.$on "Change:Dropbox:Items", (event, params) ->
-    $scope.reloading = true
-    $scope.items = []
-    DropboxItem.query params, (items) ->
-      $scope.reloading = false
-      $scope.items = items
+    if params
+      $scope.reloading = true
+      DropboxItem.query params, (items) ->
+        $scope.reloading = false
+        $scope.items = items
+    else
+      $scope.items = []
 .controller "ItemDetailCtrl", ($scope, DropboxItem, localStorageService) ->
   name = "ItemDetailCtrl"
   options = localStorageService.get name

@@ -27,8 +27,6 @@ exports = module.exports = (dbprefix) ->
       page = 1 if page < 1
       if pageSize > 100
         pageSize = 100
-      else if pageSize < 5
-        pageSize = 5
 
       features = _.sortBy _.map(@errorfeatures or [], (value, key) ->
         id: key
@@ -36,7 +34,11 @@ exports = module.exports = (dbprefix) ->
       ), (feature) ->
         -feature.count
       total = features.length
-      features = features[(page-1)*pageSize...page*pageSize]
+      if pageSize > 0
+        features = features[(page-1)*pageSize...page*pageSize]
+      else
+        page = 1
+        pageSize = total
       ErrorFeature = @model("#{dbprefix}.ErrorFeature")
       Ticket = @model("#{dbprefix}.Ticket")
       results =

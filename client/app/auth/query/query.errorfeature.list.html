@@ -1,0 +1,46 @@
+<div class="form-group">
+</div>
+<div class="panel panel-default" id="errorfeatureItems">
+  <!-- <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar> -->
+  <div class="panel-heading">
+    <i class="glyphicon glyphicon-list-alt"></i> 数据列表<input class="pull-right" type="text" placeholder="搜索" ng-model="search" />
+  </div>
+  <div class="panel-body">
+    <ul class="list-group">
+      <li ng-repeat="ef in errorfeatures.data | filter: search as results"
+          ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage"
+          ng-show="!selected || selected == ef.id"
+          class="list-group-item">
+        <a href class="list-group-item" ng-class="{active: selected == ef.id}"
+          ng-click="selectErrorFeature(product, version, ef.id)">
+          <strong>{{ef.tag}}<span class="badge pull-left">{{ef.count}}</span></strong>
+        </a>
+        <ul class="list-group">
+          <li ng-repeat="(key, value) in ef.features" class="list-group-item">
+            <div class="row" ng-if="isString(value)">
+              <div class="col-md-2"><strong>{{key}}</strong></div>
+              <div class="col-md-8">{{value}}</div>
+            </div>
+            <div class="row" ng-if="isArray(value)">
+              <div class="col-md-2"><strong>{{key}}</strong></div>
+              <div class="col-md-8">
+                <a href ng-click="notCollapsed = !notCollapsed"><span class="glyphicon" ng-class="{'glyphicon-chevron-up': notCollapsed, 'glyphicon-chevron-down': !notCollapsed}"></span>  {{value[0]}}</a>
+                <div collapse="!notCollapsed">
+                  <ul>
+                    <li ng-repeat="v in value track by ($index + '_' + value)">{{v}}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="row" ng-if="ef.tickets.length >= 1">
+          <div class="col-md-1"><strong>Tickets:</strong></div>
+          <div class="col-md-9"><span ng-repeat="ticket in ef.tickets"><a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;</span></div>
+        </div>
+      </li>
+    </ul>
+    </div>
+    <pagination ng-show="results.length > itemPerPage && !selected" boundary-links="true" total-items="results.length" ng-model="currentPage" items-per-page="itemPerPage" class="pagination-sm pull-left" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+  </div>
+</div>
