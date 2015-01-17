@@ -18,7 +18,7 @@ angular.module('dbboardApp')
       $rootScope.$broadcast "Change:Dropbox:ProductVersion",
         product: $stateParams.product
         version: $stateParams.version
-.controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $anchorScroll, dbProductErrorFeatureService) ->
+.controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, $anchorScroll, dbProductErrorFeatureService) ->
   $scope.itemPerPage = 5
   $scope.currentPage = 1
   $scope.$on "Change:Dropbox:ProductVersion", (event, params) ->

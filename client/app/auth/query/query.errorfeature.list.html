@@ -1,6 +1,4 @@
-<div class="form-group">
-</div>
-<div class="panel panel-default" id="errorfeatureItems">
+<div class="panel panel-default" id="errorfeatureItems" ng-if="errorfeatures">
   <!-- <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar> -->
   <div class="panel-heading">
     <i class="glyphicon glyphicon-list-alt"></i> 数据列表<input class="pull-right" type="text" placeholder="搜索" ng-model="search" />
@@ -13,7 +11,7 @@
           class="list-group-item">
         <a href class="list-group-item" ng-class="{active: selected == ef.id}"
           ng-click="selectErrorFeature(product, version, ef.id)">
-          <strong>{{ef.tag}}<span class="badge pull-left">{{ef.count}}</span></strong>
+          <strong>&nbsp;{{ef.tag}}<span class="badge pull-left">{{ef.count}}</span></strong>
         </a>
         <ul class="list-group">
           <li ng-repeat="(key, value) in ef.features" class="list-group-item">
