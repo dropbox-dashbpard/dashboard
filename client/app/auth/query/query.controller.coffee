@@ -33,7 +33,7 @@ angular.module('dbboardApp')
     localStorageService.set name, model
 .controller "QueryDataDeviceCtrl", ($rootScope, $scope, $state, DropboxItem, $stateParams) ->
   now = new Date()
-  $scope.from = new Date($stateParams.from or (now.getTime() - 24*3600*1000))
+  $scope.from = new Date($stateParams.from or (now.getTime() - 24*3600*7000))
   $scope.to = new Date($stateParams.to or now)
   $scope.queryDevice = (deviceId, from, to) ->
     $state.go("auth.query.device", {deviceId: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
@@ -50,7 +50,7 @@ angular.module('dbboardApp')
       $rootScope.$broadcast "Change:Dropbox:Items", {mac: $scope.deviceId, from: $scope.from, to: $scope.to, limit: 500}
 .controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, DropboxItem, TypeItems) ->
   now = new Date()
-  $scope.from = new Date(now.getTime() - 24*3600*1000)
+  $scope.from = new Date(now.getTime() - 24*3600*7000)
   $scope.to = new Date(now)
 
   $scope.type = if $location.path().match(/\/app$/) then "app" else "tag"
