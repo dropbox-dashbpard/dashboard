@@ -37,6 +37,6 @@ angular.module "dbboardApp"
     templateUrl: "app/auth/query/query.dropboxid.html"
     controller: "QueryDropboxItemCtrl"
   .state "auth.query.errorfeature",
-    url: "/report/errorfeature?product&version"
+    url: "/report/errorfeature?product&version&errorfeature"
     templateUrl: "app/auth/query/query.errorfeature.html"
     controller: "QueryDropboxProductErrorFeaturesCtrl"

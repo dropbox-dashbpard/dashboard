@@ -29,3 +29,18 @@ exports.addTicket = (req, res, next) ->
   ).save (err, ticket) ->
     return next err if err?
     res.json ticket
+
+exports.queryTickets = (req, res, next) ->
+  query = req.model.Ticket.find(product: req.param('product'))
+  if req.param('errorfeature')
+    query = query.where('errorfeature').equals(req.param('errorfeature'))
+  query.sort("-created_at")
+  .limit(Number(req.param('limit')) or 10)
+  .exec (err, tickets) ->
+    return next err if err?
+    res.json data: _.map tickets, (ticket) ->
+      id: ticket._id
+      url: ticket.url
+      product: ticket.product
+      errorfeature: ticket.errorfeature
+      created_at: ticket.created_at

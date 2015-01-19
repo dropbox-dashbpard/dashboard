@@ -18,6 +18,7 @@ angular.module('dbboardApp')
       $rootScope.$broadcast "Change:Dropbox:ProductVersion",
         product: $stateParams.product
         version: $stateParams.version
+        errorfeature: $stateParams.errorfeature
 .controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, $anchorScroll, dbProductErrorFeatureService) ->
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -26,7 +27,7 @@ angular.module('dbboardApp')
     $scope.version = params.version
     dbProductErrorFeatureService.get(params.product, params.version, 1, 0).then (ef) ->
       $scope.errorfeatures = ef
-      $scope.currentPage = ef.page
+      $scope.search = params.errorfeature if params.errorfeature
   $scope.isString = (value) ->
     typeof(value) is "string"
   $scope.isArray = (value) ->

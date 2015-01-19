@@ -37,7 +37,7 @@
             <div class="pull-right">{{item.count}}</div>
           </a>
           <a class="list-group-item" href="{{item.attachment}}" ng-if="item.attachment.length > 0">
-            <i class="glyphicon glyphicon-time"></i><span> 附件:</span>
+            <i class="glyphicon glyphicon-paperclip"></i><span> 附件:</span>
             <div class="pull-right">{{"下载"}}</div>
           </a>
           <a class="list-group-item">
@@ -57,6 +57,16 @@
             <div class="pull-right">{{item.tag}}</div>
           </a>
         </div>
+        <ul class="list-group" ng-if="item.errorfeature">
+          <a class="list-group-item list-group-item-info" ui-sref="auth.query.errorfeature({product: item.product.name, version: item.version, errorfeature: item.errorfeature})">
+            <i class="glyphicon glyphicon-tag"></i><span> 错误特征:</span>
+            <div class="pull-right">{{item.errorfeature}}</div>
+          </a>
+          <li class="list-group-item" ng-controller="TicketsCtrl" ng-init="initTickets(item.product.name, item.errorfeature)">
+            <i class="glyphicon"></i><span> Tickets:</span>
+            <div class="pull-right"><span ng-repeat="ticket in tickets"><a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;</span></div>
+          </li>
+        </ul>
         <div class="list-group">
           <a class="list-group-item">
             <i class="glyphicon glyphicon-globe"></i><span> IP地址:</span>

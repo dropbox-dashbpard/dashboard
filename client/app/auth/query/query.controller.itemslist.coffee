@@ -70,6 +70,7 @@ angular.module('dbboardApp')
           "app": "app"
           "version": "version"
           "attachment": "attachment"
+          "errorfeature": "errorfeature"
           "tag": "tag"} when item?[key]?
           data[value] = item[key]
         for prod in $scope.products when prod.name is item?.product
@@ -83,3 +84,7 @@ angular.module('dbboardApp')
         data.count = item?.data?.count or 1
         data.ip = item?.ua?.ip
         $scope.item = data
+.controller "TicketsCtrl", ($scope, dbTicketsService) ->
+  $scope.initTickets = (product, ef) ->
+    dbTicketsService.get(product, ef).then (tickets) ->
+      $scope.tickets = tickets
