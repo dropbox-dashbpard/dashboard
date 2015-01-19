@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('dbboardApp')
-.controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem) ->
+.controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem, ngProgress) ->
   $scope.selectedItems = []
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -31,17 +31,16 @@ angular.module('dbboardApp')
     $scope.selectedItem = item
     $rootScope.$broadcast "Change:Dropbox:Item", item._id
 
-  $scope.reloading = false
   $scope.$on "Change:Dropbox:Items", (event, params) ->
     if params
-      $scope.reloading = true
+      ngProgress.start()
       DropboxItem.query params, (items) ->
-        $scope.reloading = false
+        ngProgress.complete()
         $scope.items = items
     else
       $scope.items = []
     $rootScope.$broadcast "Change:Dropbox:Item", null
-.controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService) ->
+.controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService, ngProgress) ->
   name = "ItemDetailCtrl"
   options = localStorageService.get name
   unless options
@@ -56,9 +55,9 @@ angular.module('dbboardApp')
 
   $scope.$on "Change:Dropbox:Item", (event, itemId) ->
     if itemId
-      $scope.reloading = true
+      ngProgress.start()
       DropboxItem.get itemId: itemId, (item) ->
-        $scope.reloading = false
+        ngProgress.complete()
         data = {}
         if item?.data?.content
           data.mdContent = item.data.content

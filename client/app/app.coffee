@@ -15,6 +15,7 @@ angular.module "dbboardApp", [
   "btford.markdown"
   "ui.date"
   "ui.select2"
+  "ngProgress"
   "http-auth-interceptor"
 ]
 .config ($stateProvider, $urlRouterProvider, $locationProvider) ->
