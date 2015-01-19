@@ -72,8 +72,8 @@ angular.module('dbboardApp')
           "attachment": "attachment"
           "tag": "tag"} when item?[key]?
           data[value] = item[key]
-        for prod in $scope.products when prod.sys_name is item?.sys_name
-          data.product = prod 
+        for prod in $scope.products when prod.name is item?.product
+          data.product = prod
           break
         data.occurred_at = new Date(item.occurred_at)
         data.mac_address = item?.ua?.mac_address
