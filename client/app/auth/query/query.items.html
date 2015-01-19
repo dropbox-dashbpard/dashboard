@@ -21,7 +21,7 @@
           <tr ng-if="results.length === 0"><td colspan="{{columns.length}}">空</td></tr>
         </tbody>
       </table>
-      <pagination ng-show="results.length > itemPerPage" boundary-links="true" total-items="results.length" ng-model="currentPage" items-per-page="itemPerPage" class="pagination-sm pull-left" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+      <pagination ng-show="results.length > itemPerPage" boundary-links="true" total-items="results.length" ng-model="currentPage" items-per-page="itemPerPage" max-size="maxSize" class="pagination-sm pull-left" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
     </div>
   </div>
 </div>

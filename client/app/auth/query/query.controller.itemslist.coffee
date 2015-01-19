@@ -5,6 +5,7 @@ angular.module('dbboardApp')
   $scope.selectedItems = []
   $scope.itemPerPage = 5
   $scope.currentPage = 1
+  $scope.maxSize = 20
   $scope.columns = columnDefs = [
       field: "device_id"
       displayName: "设备ID"
@@ -39,7 +40,8 @@ angular.module('dbboardApp')
         $scope.items = items
     else
       $scope.items = []
-.controller "ItemDetailCtrl", ($scope, DropboxItem, localStorageService) ->
+    $rootScope.$broadcast "Change:Dropbox:Item", null
+.controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService) ->
   name = "ItemDetailCtrl"
   options = localStorageService.get name
   unless options
@@ -84,7 +86,21 @@ angular.module('dbboardApp')
         data.count = item?.data?.count or 1
         data.ip = item?.ua?.ip
         $scope.item = data
+    else
+      $scope.item = null
 .controller "TicketsCtrl", ($scope, dbTicketsService) ->
-  $scope.initTickets = (product, ef) ->
-    dbTicketsService.get(product, ef).then (tickets) ->
-      $scope.tickets = tickets
+  $scope.$watch 'item', (newValue, oldValue) ->
+    if $scope.item
+      dbTicketsService.get($scope.item.product.name, $scope.item.errorfeature).then (tickets) ->
+        $scope.tickets = tickets
+      , (err) ->
+        $scope.tickets = []
+    else
+      $scope.tickets = []
+.controller "IpLocationCtrl", ($scope, ipLocationResource) ->
+  $scope.$watch 'item', (newValue, oldValue) ->
+    if $scope.item
+      ipLocationResource.get {ip: $scope.item.ip}, (location) ->
+        $scope.location = location 
+    else
+      $scope.location = {}

@@ -9,6 +9,5 @@ angular.module("dropbox")
         try
           JSON.parse(body)
         catch error
-          console.log "Error to get location."
           {}
   }

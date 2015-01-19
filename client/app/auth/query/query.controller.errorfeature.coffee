@@ -14,12 +14,14 @@ angular.module('dbboardApp')
     prod = _.find $scope.products, (prod) ->
       prod.name is newValue
     $scope.versions = prod?.versions
-    $scope.version ?= $stateParams.version or _.flatten(_.map($scope.versions))[0]
+    $timeout ->
+      $scope.version = $stateParams.version or _.flatten(_.map($scope.versions))[0]
   $scope.product ?= $stateParams.product or $scope.products[0].name
   $scope.errorfeature = $stateParams.errorfeature
 .controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, $anchorScroll, dbProductErrorFeatureService) ->
   $scope.itemPerPage = 5
   $scope.currentPage = 1
+  $scope.maxSize = 20
   $scope.$on "Change:Dropbox:ProductVersion", (event, params) ->
     $scope.product = params.product
     $scope.version = params.version

@@ -62,7 +62,7 @@
             <i class="glyphicon glyphicon-tag"></i><span> 错误特征:</span>
             <div class="pull-right">{{item.errorfeature}}</div>
           </a>
-          <li class="list-group-item" ng-controller="TicketsCtrl" ng-init="initTickets(item.product.name, item.errorfeature)">
+          <li class="list-group-item" ng-controller="TicketsCtrl">
             <i class="glyphicon"></i><span> Tickets:</span>
             <div class="pull-right"><span ng-repeat="ticket in tickets"><a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;</span></div>
           </li>
@@ -70,7 +70,7 @@
         <div class="list-group">
           <a class="list-group-item">
             <i class="glyphicon glyphicon-globe"></i><span> IP地址:</span>
-            <div class="pull-right" ng-controller="IpLocationCtrl" ng-init="initLocation(item.ip)">{{item.ip}} <span ng-if="location && location.country">{{location.country}}/{{location.region}}/{{location.city}}</span></div>
+            <div class="pull-right" ng-controller="IpLocationCtrl">{{item.ip}} <span ng-if="location && location.country">{{location.country}}/{{location.region}}/{{location.city}}</span></div>
           </a>
         </div>
       </tab>
