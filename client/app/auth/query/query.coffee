@@ -10,8 +10,6 @@ angular.module "dbboardApp"
     resolve:
       Products: (dbProductService) ->
         dbProductService.get()
-      Releases: (dbReleaseTypesService) ->
-        dbReleaseTypesService.get()
   .state "auth.query.dashboard",
     url: "/dashboard"
     templateUrl: "app/auth/board/dashboard.html"

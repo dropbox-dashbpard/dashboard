@@ -12,5 +12,3 @@ angular.module "dbboardApp"
         SessionService.get()
       Products: (dbProductService) ->
         dbProductService.get()
-      Releases: (dbReleaseTypesService) ->
-        dbReleaseTypesService.get()

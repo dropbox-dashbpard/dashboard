@@ -1,6 +1,6 @@
 <div class="row">
   <ul class="nav nav-tabs" role="tablist">
-    <li ng-repeat="rel in releases" ng-class="{active: dist === rel.name}">
+    <li ng-repeat="rel in product.versionTypes" ng-class="{active: dist === rel.name}">
       <a ui-sref="auth.product({product: product.name, dist: rel.name})">{{rel.display}}</a>
     </li>
   </ul>

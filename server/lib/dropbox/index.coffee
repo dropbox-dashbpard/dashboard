@@ -47,8 +47,6 @@ router.post '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, 
 router.get '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, ef.queryTickets
 router.get '/product/:product/ticket', bearerAuth, ef.queryTickets
 
-router.get "/releases", localAuth, product.versionType
-
 router.post '/productmodel', localAuth, productModel.add
 router.get '/productmodel', localAuth, productModel.list
 router.get '/productmodel/:id', localAuth, productModel.get

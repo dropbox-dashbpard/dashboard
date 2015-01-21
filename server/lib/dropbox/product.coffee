@@ -10,6 +10,7 @@ exports.list = (req, res, next) ->
       display: config.display or config.name
       name: config.name
       versions: config.versions
+      versionTypes: config.versionTypes
       template: config.template
       ignores: config.ignores
       limits: config.limits
@@ -32,20 +33,13 @@ exports.get = (req, res, next) ->
 exports.updateVersions = (req, res, next) ->
   product = req.param 'product'
   dist = req.param 'dist'
-  versions = req.param 'versions'
-  version = req.param 'version'
+  version = req.param('version') or req.param('versions')
   req.model.ProductConfig.findById(product).exec (err, config) ->
     return next err if err
     return res.sendStatus 404 if not config?
-    if version
-      config.addVersion dist, version, (err, doc) ->
-        return next err if err
-        res.json doc
-    else
-      config.set "versions.#{dist}", _.sortBy(versions)
-      config.save (err, doc) ->
-        return next err if err
-        res.json doc
+    config.addVersion dist, version, (err, doc) ->
+      return next err if err
+      res.json doc
 
 # list产品版本号
 exports.getVersions = (req, res, next) ->
@@ -67,11 +61,3 @@ exports.rmVersion = (req, res, next) ->
     config.save (err, doc) ->
       return next err if err
       res.json doc
-
-# 产品版本类型
-exports.versionType = (req, res, next) ->
-  res.json
-    data:
-      production: "产品发布（最终用户）"
-      stable: "稳定版本（内测用户）"
-      development: "开发版本（工程测试）"

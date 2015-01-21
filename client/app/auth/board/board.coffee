@@ -10,5 +10,3 @@ angular.module 'dbboardApp'
     resolve:
       Products: (dbProductService) ->
         dbProductService.get()
-      Releases: (dbReleaseTypesService) ->
-        dbReleaseTypesService.get()

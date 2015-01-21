@@ -4,8 +4,6 @@ angular.module("widgets.dropbox")
 .config((dashboardProvider) ->
   products = (dbProductService, config) ->
     dbProductService.get()
-  releaseTypes = (dbReleaseTypesService, config) ->
-    dbReleaseTypesService.get()
   trend = (dbProdTrendOfVersionService, config) ->
     end = new Date()
     end = new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate()))
@@ -26,7 +24,6 @@ angular.module("widgets.dropbox")
       controller: "productVersionEditCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
 
   dashboardProvider.widget("productVersionWidget", angular.extend(
     title: "单版本状态图"
@@ -36,7 +33,6 @@ angular.module("widgets.dropbox")
     resolve:
       products: products
       trend: trend
-      releaseTypes: releaseTypes
       distributionTags: distributionTags
       distributionApps: distributionApps
       errorRate: errorRate
@@ -53,16 +49,14 @@ angular.module("widgets.dropbox")
     templateUrl: "components/widgets/dropbox/versionrate.html"
     resolve:
       products: products
-      releaseTypes: releaseTypes
       distributionTags: distributionTags
       distributionApps: distributionApps
     config: {}
       # product: ...
       # dist: ...
   , widget))
-).controller("productVersionEditCtrl", ($scope, config, products, releaseTypes) ->
+).controller("productVersionEditCtrl", ($scope, config, products) ->
   $scope.products = products
-  $scope.dists = releaseTypes
   $scope.days = [10, 20, 30, 60, 90, 120, 150, 300]
 
   updateVersions = ->
@@ -76,15 +70,19 @@ angular.module("widgets.dropbox")
 
   do updateVersions
   $scope.$watch "config.product", (newValue, oldValue) ->
+    prod = _.find products, (prod) ->
+      prod.name is config.product
+    $scope.dists = prod.versionTypes
     do updateVersions
   $scope.$watch "config.dist", (newValue, oldValue) ->
     do updateVersions
-).controller("productVersionCtrl", ($scope, config, rebootTags, products, releaseTypes, trend, distributionTags, distributionApps, errorRate, chartsProvider) ->
+).controller("productVersionCtrl", ($scope, config, rebootTags, products, trend, distributionTags, distributionApps, errorRate, chartsProvider) ->
   if trend and distributionTags and distributionApps and errorRate
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
-    ).display
-    distDisplay = _.find(releaseTypes, (dist)->
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
       dist.name is config.dist
     ).display
 
@@ -119,12 +117,13 @@ angular.module("widgets.dropbox")
         m + d.rate
       , 0
     $scope.summary = summary
-).controller("productVersionRateDetailCtrl", ($scope, config, products, releaseTypes, distributionTags, distributionApps) ->
+).controller("productVersionRateDetailCtrl", ($scope, config, products, distributionTags, distributionApps) ->
   if distributionTags and distributionApps
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
-    ).display
-    distDisplay = _.find(releaseTypes, (dist)->
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
       dist.name is config.dist
     ).display
 

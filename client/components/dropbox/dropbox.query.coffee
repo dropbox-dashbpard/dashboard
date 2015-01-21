@@ -17,14 +17,6 @@ angular.module("dropbox")
       transformResponse: (body, header) ->
         angular.fromJson(body)?.data or []
   }
-.factory "DropboxReport", ($resource) ->
-  $resource "/api/0/dropbox/ea/product/:product", {}, {
-    query:
-      method: "GET"
-      isArray: false
-      transformResponse: (body, header) ->
-        angular.fromJson(body)
-  }
 .factory 'Product', ($resource, dbProductApiUrl) ->
   $resource "dbProductApiUrl/:product", {}, {
     query:

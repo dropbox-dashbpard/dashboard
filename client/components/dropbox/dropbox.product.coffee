@@ -4,21 +4,7 @@ angular.module("dropbox")
 .value("dbReleasesApiUrl", "/api/0/dropbox/releases")
 .value("dbProductApiUrl", "/api/0/dropbox/product")
 .value("dbProductVersionslApiUrl", "/api/0/dropbox/product")
-.service("dbReleaseTypesService", ($q, $http, $cacheFactory, dbReleasesApiUrl) ->
-  get: ->
-    deferred = $q.defer()
-    $http.get(dbReleasesApiUrl).success((data) ->
-      if data and data.data
-        types = for k of data.data
-          name: k
-          display: data.data[k]
-        deferred.resolve types
-      else
-        deferred.reject()
-    ).error ->
-      deferred.reject()
-    deferred.promise
-).service("dbProductService", ($q, $http, $cacheFactory, dbProductApiUrl) ->
+.service("dbProductService", ($q, $http, $cacheFactory, dbProductApiUrl) ->
   get: ->
     deferred = $q.defer()
     $http.get(dbProductApiUrl).success((data) ->

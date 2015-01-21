@@ -6,6 +6,7 @@ angular.module('dbboardApp')
   $scope.$watch "product", (newValue, oldValue) ->
     prod = _.find $scope.products, (prod) ->
       prod.name is newValue
+    $scope.releases = prod.versionTypes
     $scope.versions = prod?.versions
     $timeout ->
       $scope.version = $stateParams.version or _.flatten(_.map($scope.versions))[0]
