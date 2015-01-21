@@ -24,15 +24,12 @@ exports = module.exports = (dbprefix) ->
     ProductErrorFeatureSchema.index {product: 1, version: -1}, {unique: true}
     ProductErrorFeatureSchema.index {created_at: -1}, {expires: '365d'}
     ProductErrorFeatureSchema.methods.getErrorFeatures = (cb=null, page=1, pageSize=10) ->
-      page = 1 if page < 1
-      if pageSize > 100
-        pageSize = 100
-
       features = _.sortBy _.map(@errorfeatures or [], (value, key) ->
         id: key
         count: value
       ), (feature) ->
         -feature.count
+      page = 1 if page < 1
       total = features.length
       if pageSize > 0
         features = features[(page-1)*pageSize...page*pageSize]

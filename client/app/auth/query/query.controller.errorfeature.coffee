@@ -33,6 +33,7 @@ angular.module('dbboardApp')
       $scope.search = params.errorfeature if params.errorfeature
       $rootScope.$broadcast "Change:Dropbox:Items", null
     , (err) ->
+      ngProgress.complete()
       $scope.errorfeatures = []
       $scope.search = params.errorfeature if params.errorfeature
       $rootScope.$broadcast "Change:Dropbox:Items", null
