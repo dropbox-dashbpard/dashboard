@@ -1,8 +1,11 @@
 <div id="dropboxItems"></div>
 <div class="panel panel-default" ng-if="items.length">
   <!-- <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar> -->
-  <div class="panel-heading">
-    <i class="glyphicon glyphicon-list-alt"></i> 数据列表<input class="pull-right" type="text" placeholder="搜索" ng-model="search" />
+  <div class="panel-heading clearfix">
+    <h5 class="pull-left"><i class="glyphicon glyphicon-list-alt"></i> 数据列表</h5>
+    <div class="input-group pull-right">
+      <input class="form-control" type="text" placeholder="搜索" ng-model="search" />
+    </div>
   </div>
 <!--     <div class="input-group">
       <span class="input-group-addon"><i class="glyphicon glyphicon-search" /></span>
