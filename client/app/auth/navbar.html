@@ -20,7 +20,7 @@
             产品<span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li ng-repeat="prod in products" ui-sref-active="active"><a ui-sref="auth.product({product: prod.name, dist: 'production'})">{{prod.display}}</a></li>
+            <li ng-repeat="prod in products" ui-sref-active="active"><a ui-sref="auth.product({product: prod.name, dist: prod.versionTypes[0].name})">{{prod.display}}</a></li>
           </ul>
         </li>
       </ul>
