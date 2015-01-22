@@ -150,7 +150,7 @@ exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   content = req.body.content or req.body
   if content?
-    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag product version").exec()
+    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag ua product version").exec()
     .then (doc) ->
         res.json result: "ok"
         process.nextTick ->
@@ -159,6 +159,10 @@ exports.updateContent = (req, res, next) ->
             body: content
             headers:
               'X-Requested-With': 'XMLHttpRequest'
+              'X-Dropbox-UA': _.map(doc.ua, (v, k)->"#{k}=#{v}").join(';')
+            qs:
+              product: doc.product
+              version: doc.version
             gzip: true
           , (e, r, body) ->
             if e? or r.statusCode isnt 200
