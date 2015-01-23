@@ -2,6 +2,7 @@
 
 angular.module('dbboardApp')
 .controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem, ngProgress) ->
+  $scope.show = false
   $scope.selectedItems = []
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -37,8 +38,10 @@ angular.module('dbboardApp')
       DropboxItem.query params, (items) ->
         ngProgress.complete()
         $scope.items = items
+        $scope.show = items?.length > 0
     else
       $scope.items = []
+      $scope.show = false
     $rootScope.$broadcast "Change:Dropbox:Item", null
 .controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService, ngProgress) ->
   name = "ItemDetailCtrl"
@@ -53,6 +56,7 @@ angular.module('dbboardApp')
     $scope.options.activeTab[tab] = true
     localStorageService.set name, $scope.options
 
+  $scope.show = false
   $scope.$on "Change:Dropbox:Item", (event, itemId) ->
     if itemId
       ngProgress.start()
@@ -85,8 +89,9 @@ angular.module('dbboardApp')
         data.count = item?.data?.count or 1
         data.ip = item?.ua?.ip
         $scope.item = data
+        $scope.show = true
     else
-      $scope.item = null
+      $scope.show = false
 .controller "TicketsCtrl", ($scope, dbTicketsService) ->
   $scope.$watch 'item', (newValue, oldValue) ->
     if $scope.item
