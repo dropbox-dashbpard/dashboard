@@ -26,6 +26,6 @@ angular.module "dbboardApp", [
 #   markdownConverterProvider.config extensions: ["twitter"]
 .run ($rootScope, $location, $state) ->
   $rootScope.$on 'event:auth-loginRequired', ->
-    $rootScope.originUrl = $location.url()
+    $rootScope.originUrl ?= $location.url()
     $state.go "login"
     false
