@@ -49,6 +49,7 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
         template: dc.template,
         limits: dc.limits
         versions: dc.versions
+        versionTypes: dc.versionTypes
         ignores: dc.ignores
       }
     }, {
@@ -60,7 +61,7 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
       if config.validVersion req.version
         next()
         if process.env.NODE_ENV isnt 'production'
-          config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
+          config.addVersion _.last(config.versionTypes)?.name or 'development', req.version, (err, doc) ->  # TODO debug only
       else
         next new Error('Invalid version!')
 
