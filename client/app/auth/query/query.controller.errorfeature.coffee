@@ -19,7 +19,7 @@ angular.module('dbboardApp')
       $scope.version = $stateParams.version or _.flatten(_.map($scope.versions))[0]
   $scope.product ?= $stateParams.product or $scope.products[0].name
   $scope.errorfeature = $stateParams.errorfeature
-.controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, $anchorScroll, ngProgress, dbProductErrorFeatureService) ->
+.controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, ngProgress, dbProductErrorFeatureService) ->
   $scope.show = false
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -52,5 +52,3 @@ angular.module('dbboardApp')
     else
       $scope.selected = ef
       $rootScope.$broadcast "Change:Dropbox:Items", {product: product, version: version, errorfeature: ef}
-    $location.hash('errorfeatureItems')
-    $anchorScroll()
