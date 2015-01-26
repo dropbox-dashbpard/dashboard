@@ -63,7 +63,7 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
         if process.env.NODE_ENV isnt 'production'
           config.addVersion _.last(config.versionTypes)?.name or 'development', req.version, (err, doc) ->  # TODO debug only
       else
-        next new Error('Invalid version!')
+        next new Error("Invalid version: #{config.name} - #{req.version}!")
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce req.body.data, (memo, entry) ->
