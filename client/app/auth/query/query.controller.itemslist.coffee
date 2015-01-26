@@ -31,6 +31,15 @@ angular.module('dbboardApp')
   $scope.select = (item) ->
     $scope.selectedItem = item
     $rootScope.$broadcast "Change:Dropbox:Item", item._id
+  $scope.order = (field) ->
+    if field is $scope.predicate
+      if $scope.reverse
+        $scope.predicate = null
+      else
+        $scope.reverse = not $scope.reverse
+    else
+      $scope.predicate = field
+      $scope.reverse = false
 
   $scope.$on "Change:Dropbox:Items", (event, params) ->
     if params

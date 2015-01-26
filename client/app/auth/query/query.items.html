@@ -15,10 +15,25 @@
     <div class="table-responsive">
       <table class="table table-hover table-striped">
         <thead>
-          <tr><th ng-repeat="col in columns">{{col.displayName}}</th></tr>
+          <tr>
+            <th ng-repeat="col in columns">{{col.displayName}}
+              <a href ng-click="order(col.field)">
+                <i class="glyphicon" ng-class="{
+                  'glyphicon-sort': col.field !== predicate,
+                  'glyphicon-sort-by-attributes': col.field === predicate && !reverse,
+                  'glyphicon-sort-by-attributes-alt': col.field === predicate && reverse
+                  }"></i>
+              </a>
+            </th>
+          </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in items | filter: search as results" ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage" class="rowClickable item-listing" ng-class="{'info': selectedItem._id === item._id}" ng-click="select(item)">
+          <tr ng-repeat="item in items| filter: search| orderBy:predicate:reverse as results"
+            ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage"
+            class="rowClickable item-listing"
+            ng-class="{'info': selectedItem._id === item._id}"
+            ng-click="select(item)"
+            ng-animate-children>
             <td ng-repeat="col in columns">{{printValue(col.field, item[col.field])}}</td>
           </tr>
           <tr ng-if="results.length === 0"><td colspan="{{columns.length}}">空</td></tr>
