@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('dbboardApp')
-.controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, DropboxItem, TypeItems) ->
+.controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, DropboxItem, TypeItems, queryUtilsFactory) ->
   # select a product, then update product versions
   $scope.$watch "product", (newValue, oldValue) ->
     prod = _.find $scope.products, (prod) ->
@@ -25,9 +25,7 @@ angular.module('dbboardApp')
   $scope.$watch "value", (newValue, oldValue) ->
     $scope.update()
 
-  now = new Date()
-  $scope.from = new Date(now.getTime() - 7*24*3600*1000)
-  $scope.to = new Date(now)
+  [$scope.from, $scope.to] = queryUtilsFactory.defaultDateOfQuery()
 
   $scope.type = if $location.path().match(/\/app$/) then "app" else "tag"
   $scope.typeDisplay = switch $scope.type
