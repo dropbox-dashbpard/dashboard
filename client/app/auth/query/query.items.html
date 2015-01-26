@@ -29,11 +29,10 @@
         </thead>
         <tbody>
           <tr ng-repeat="item in items| filter: search| orderBy:predicate:reverse as results"
-            ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage"
+            ng-show="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage"
             class="rowClickable item-listing"
             ng-class="{'info': selectedItem._id === item._id}"
-            ng-click="select(item)"
-            ng-animate-children>
+            ng-click="select(item)">
             <td ng-repeat="col in columns">{{printValue(col.field, item[col.field])}}</td>
           </tr>
           <tr ng-if="results.length === 0"><td colspan="{{columns.length}}">空</td></tr>
