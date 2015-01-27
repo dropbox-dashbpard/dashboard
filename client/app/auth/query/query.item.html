@@ -8,7 +8,26 @@
         <div class="markdown" btf-markdown="'```\r\n' + item.mdContent + '\r\n```'"></div>
       </tab>
       <tab heading="调用路径" ng-click="active('trace')" active="options.activeTab['trace']" ng-if='item.traces.length > 0'>
-        <div class="markdown" btf-markdown="trace(item.traces)"></div>
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>方法</th>
+                <th>文件</th>
+                <th>行号</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="t in item.traces">
+                <th>{{$index}}</th>
+                <td>{{t.func}}</td>
+                <td>{{t.file}}</td>
+                <td>{{t.line}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </tab>
       <tab heading="详情" ng-click="active('detail')" active="options.activeTab['detail']">
         <div class="list-group">

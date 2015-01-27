@@ -64,10 +64,20 @@ angular.module('dbboardApp')
     localStorageService.set name, $scope.options
 
   $scope.trace = (traces) ->
-    _.map(traces, (t, i) ->
-      i = if i < 10 then "0#{i}" else i
-      "    ##{i}\t#{t.trim()}"
-    ).join('\n')
+    _.map traces, (t) ->
+      [func, file] = t.replace(/[\r\n]/g, '').trim().split /\s+at\s+/
+      if not file
+        [func, file] = [null, func]
+      [file, line] = file.split(':')
+      if file?.length > 0 and file[0] is '/'
+        paths = file.split '/'
+        index = _.findIndex paths, (p) ->
+          p in ["bionic", "cts", "development", "external", "kernel", "ndk", "pdk", "system", "abi", "bootable", "dalvik", "device", "frameworks", "libcore", "prebuilts", "tools", "art", "build", "developers", "docs", "hardware", "libnativehelper", "packages", "sdk", "vendor"]
+        file = paths[index...].join('/') if index >= 0
+
+      func: func
+      file: file
+      line: line
 
   $scope.show = false
   $scope.$on "Change:Dropbox:Item", (event, itemId) ->
@@ -100,8 +110,8 @@ angular.module('dbboardApp')
         data.device = item.ua?.device
         data.buildtype = item.ua?.type
         data.count = item.data?.count or 1
-        data.traces = item.data?.traces or []
         data.ip = item.ua?.ip
+        data.traces = $scope.trace(item.data?.traces or [])
         $scope.item = data
         $scope.show = true
     else
