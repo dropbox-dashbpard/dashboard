@@ -54,16 +54,20 @@ angular.module('dbboardApp')
     $rootScope.$broadcast "Change:Dropbox:Item", null
 .controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService, ngProgress) ->
   name = "ItemDetailCtrl"
-  options = localStorageService.get name
-  unless options
-    options =
-      activeTab:
-        data: true
-        detail: false
-  $scope.options = options
+  $scope.options = localStorageService.get(name) or activeTab: {
+    data: true
+    trace: false
+    detail: false
+  }
   $scope.active = (tab) ->
     $scope.options.activeTab[tab] = true
     localStorageService.set name, $scope.options
+
+  $scope.trace = (traces) ->
+    _.map(traces, (t, i) ->
+      i = if i < 10 then "0#{i}" else i
+      "    ##{i}\t#{t.trim()}"
+    ).join('\n')
 
   $scope.show = false
   $scope.$on "Change:Dropbox:Item", (event, itemId) ->
@@ -72,11 +76,11 @@ angular.module('dbboardApp')
       DropboxItem.get itemId: itemId, (item) ->
         ngProgress.complete()
         data = {}
-        if item?.data?.content
+        if item.data?.content
           data.mdContent = item.data.content
-        else if item?.digest?
+        else if item.digest?
           data.mdContent = item.digest
-        else if item?.data?.jsonContent?
+        else if item.data?.jsonContent?
           data.mdContent = "#{JSON.stringify(item.data.jsonContent, undefined, 2)}"
         for key, value of {
           "_id": "id"
@@ -85,18 +89,19 @@ angular.module('dbboardApp')
           "version": "version"
           "attachment": "attachment"
           "errorfeature": "errorfeature"
-          "tag": "tag"} when item?[key]?
+          "tag": "tag"} when item[key]?
           data[value] = item[key]
-        for prod in $scope.products when prod.name is item?.product
+        for prod in $scope.products when prod.name is item.product
           data.product = prod
           break
         data.occurred_at = new Date(item.occurred_at)
-        data.mac_address = item?.ua?.mac_address
-        data.board = item?.ua?.board
-        data.device = item?.ua?.device
-        data.buildtype = item?.ua?.type
-        data.count = item?.data?.count or 1
-        data.ip = item?.ua?.ip
+        data.mac_address = item.ua?.mac_address
+        data.board = item.ua?.board
+        data.device = item.ua?.device
+        data.buildtype = item.ua?.type
+        data.count = item.data?.count or 1
+        data.traces = item.data?.traces or []
+        data.ip = item.ua?.ip
         $scope.item = data
         $scope.show = true
     else

@@ -3,10 +3,12 @@
     <h5 class="pull-left"><i class="glyphicon glyphicon-list-alt"></i> 详细信息</h5>
   </div>
   <div class="panel-body">
-<!--     <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar>
- -->    <tabset>
+    <tabset>
       <tab heading="数据" ng-click="active('data')" active="options.activeTab['data']">
         <div class="markdown" btf-markdown="'```\r\n' + item.mdContent + '\r\n```'"></div>
+      </tab>
+      <tab heading="调用路径" ng-click="active('trace')" active="options.activeTab['trace']" ng-if='item.traces.length > 0'>
+        <div class="markdown" btf-markdown="trace(item.traces)"></div>
       </tab>
       <tab heading="详情" ng-click="active('detail')" active="options.activeTab['detail']">
         <div class="list-group">
