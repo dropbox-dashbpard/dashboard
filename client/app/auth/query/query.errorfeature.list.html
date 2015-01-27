@@ -12,11 +12,11 @@
           ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage"
           ng-show="!selected || selected == ef.id"
           class="list-group-item">
-        <a href class="list-group-item" ng-class="{active: selected == ef.id}"
-          ng-click="selectErrorFeature(product, version, ef.id)">
-          <strong>&nbsp;{{ef.tag}}<span class="badge pull-left">{{ef.count}}</span></strong>
-        </a>
         <ul class="list-group">
+          <a href class="list-group-item list-group-item-info" ng-class="{active: selected == ef.id}"
+            ng-click="selectErrorFeature(product, version, ef.id)">
+            <strong>&nbsp;{{ef.tag}}<span class="badge pull-left">{{ef.count}}</span></strong>
+          </a>
           <li ng-repeat="(key, value) in ef.features" class="list-group-item">
             <div class="row" ng-if="isString(value)">
               <div class="col-md-2"><strong>{{key}}</strong></div>
@@ -34,11 +34,17 @@
               </div>
             </div>
           </li>
+          <li class="list-group-item" ng-if="ef.tickets.length >= 1">
+            <div class="row">
+              <div class="col-md-2"><strong>Tickets:</strong></div>
+              <div class="col-md-8">
+                <span ng-repeat="ticket in ef.tickets">
+                  <a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;
+                </span>
+              </div>
+            </div>
+          </li>
         </ul>
-        <div class="row" ng-if="ef.tickets.length >= 1">
-          <div class="col-md-1"><strong>Tickets:</strong></div>
-          <div class="col-md-9"><span ng-repeat="ticket in ef.tickets"><a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;</span></div>
-        </div>
       </li>
     </ul>
   </div>
