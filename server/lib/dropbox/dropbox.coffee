@@ -182,7 +182,10 @@ exports.updateContent = (req, res, next) ->
                   tag: doc.tag
               }, upsert: true
             ).exec().then (ef) ->
-              req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {errorfeature: md5}, select: "errorfeature").exec()
+              op = $set: {errorfeature: md5}
+              if body.traces?.length > 0
+                op.$set['data.traces'] = body.traces
+              req.model.Dropbox.findByIdAndUpdate(dropbox_id, op, select: "errorfeature").exec()
             .then (item) ->
               query = product: doc.product, version: doc.version
               op = $setOnInsert: {created_at: new Date(), errorfeatures: {}}
