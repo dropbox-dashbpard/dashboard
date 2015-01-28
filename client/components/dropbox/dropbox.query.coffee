@@ -27,5 +27,9 @@ angular.module("dropbox")
   }
 .factory 'ProductModel', ($resource) ->
   $resource "/api/0/dropbox/productmodel/:id", {id: '@_id'}
+.factory 'ProductConfigModel', ($resource) ->
+  $resource "/api/0/dropbox/productconfig/:id", {id: '@_id'},
+    'update':
+      method: 'POST'
 .factory 'UserModel', ($resource) ->
   $resource "/auth/users/:id", {id: '@_id'}

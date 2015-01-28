@@ -1,0 +1,27 @@
+<div ng-include="'app/auth/devices/alertdialog.html'"></div>
+
+</br>
+<div class="row" ng-repeat="ignore in config.ignores">
+    <div class="col-sm-3">
+      <i class="glyphicon glyphicon-tag"></i> 忽略规则 {{ $index + 1}}
+    </div>
+    <div class="col-sm-9">
+        <div class="row">
+            <div class='col-sm-6'>
+                <div class="input-group">
+                  <span class="input-group-addon">App </span>
+                  <input type="text" class="form-control" placeholder="输入名称" ng-model="ignore.app">
+                </div>
+            </div>
+            <div class='col-sm-6'>
+                <div class="input-group">
+                  <span class="input-group-addon">Tag </span>
+                  <input type="text" class="form-control" placeholder="输入名称" ng-model="ignore.tag">
+                </div>
+            </div>
+        </div>
+    </div>
+    </br></br></br>
+</div>
+<hr>
+<button type="button" class="btn btn-success" aria-label="Left Align" ng-click="update()">Update</button>

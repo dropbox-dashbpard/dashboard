@@ -1,3 +1,33 @@
-<h3><i class="glyphicon glyphicon-list-alt"></i> 配置</h3>  
-<hr>
-<div ui-view class="view-frame"></div>
+<div class="row">
+  <h3><i class="glyphicon glyphicon-list-alt"></i> 配置 {{id | uppercase}}</h3>  
+  <hr>
+</div>
+<div class="row">
+  <ul class="nav nav-tabs">
+    <li ui-sref-active="active">
+      <a ui-sref="auth.device.config.bts({id: id})">
+        <i class="glyphicon glyphicon-cog"></i> Bug系统 
+      </a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref="auth.device.config.limits({id: id})">
+        <i class="glyphicon glyphicon-cog"></i> 流量控制
+      </a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref="auth.device.config.ignores({id: id})">
+        <i class="glyphicon glyphicon-cog"></i> 忽略控制
+      </a>
+    </li>
+    <li ui-sref-active="active">
+      <a ui-sref="auth.device.config.templates({id: id})">
+        <i class="glyphicon glyphicon-cog"></i> 模版
+      </a>
+    </li>           
+  </ul>
+</div>
+<div class="row">
+  <div class="col-sm-9">
+    <div ui-view class="view-frame"></div>
+  </div>
+</div>

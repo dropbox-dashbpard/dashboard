@@ -1,8 +1,9 @@
 'use strict'
 
 angular.module 'dbboardApp'
-.controller 'DeviceCtrl', ($scope, $http) ->
-  console.log#
+.controller 'DeviceCtrl', ($scope, $http, ProductConfigModel) ->
+  $scope.isCollapsed = true
+  $scope.devices = ProductConfigModel.query()
 .controller 'DeviceModelCtrl', ($scope, $http, $modal, ProductModel) ->
   $scope.models = ProductModel.query()
   
@@ -40,5 +41,50 @@ angular.module 'dbboardApp'
     $modalInstance.close($scope.model)
   $scope.cancel = ->
     $modalInstance.dismiss($scope.model)
-.controller 'DeviceConfigCtrl', ($scope, $http) ->
-  #
+
+
+.controller 'DeviceConfigCtrl', ($scope, $http, $stateParams, ProductConfigModel) ->
+  $scope.id = $stateParams.id
+.controller 'DeviceConfigBtsCtrl', ($scope, $http, $stateParams, $modal, ProductConfigModel) ->
+  $scope.config = ProductConfigModel.get({id: $stateParams.id})
+  $scope.update = ->
+    ProductConfigModel.update({id: $stateParams.id}, $scope.config)
+    modalInstance = $modal.open
+      templateUrl: 'alertDialog.html'
+      controller: 'DeviceConfigAlertCtrl'
+      size: 'sm'
+    modalInstance.result.then ->
+      console.log "Job done."   
+.controller 'DeviceConfigLimitsCtrl', ($scope, $http, $stateParams, $modal, ProductConfigModel) ->
+  $scope.config = ProductConfigModel.get({id: $stateParams.id})
+  $scope.update = ->
+    ProductConfigModel.update({id: $stateParams.id}, $scope.config)
+    modalInstance = $modal.open
+      templateUrl: 'alertDialog.html'
+      controller: 'DeviceConfigAlertCtrl'
+      size: 'sm'
+    modalInstance.result.then ->
+      console.log "Job done."        
+.controller 'DeviceConfigIgnoresCtrl', ($scope, $http, $stateParams, $modal, ProductConfigModel) ->
+  $scope.config = ProductConfigModel.get({id: $stateParams.id})
+  $scope.update = ->
+    ProductConfigModel.update({id: $stateParams.id}, $scope.config)
+    modalInstance = $modal.open
+      templateUrl: 'alertDialog.html'
+      controller: 'DeviceConfigAlertCtrl'
+      size: 'sm'
+    modalInstance.result.then ->
+      console.log "Job done."    
+.controller 'DeviceConfigTemplatesCtrl', ($scope, $http, $stateParams, $modal, ProductConfigModel) ->
+  $scope.config = ProductConfigModel.get({id: $stateParams.id})
+  $scope.update = ->
+    ProductConfigModel.update({id: $stateParams.id}, $scope.config)
+    modalInstance = $modal.open
+      templateUrl: 'alertDialog.html'
+      controller: 'DeviceConfigAlertCtrl'
+      size: 'sm'
+    modalInstance.result.then ->
+      console.log "Job done."
+.controller 'DeviceConfigAlertCtrl', ($scope, $modalInstance) ->
+  $scope.ok = ->
+    $modalInstance.close()

@@ -1,0 +1,16 @@
+<div ng-include="'app/auth/devices/alertdialog.html'"></div>
+</br>
+<div class="row" ng-repeat="(temp, value) in config.template">
+    <div class="col-sm-3">
+        <i class="glyphicon glyphicon-tag"></i> 模版 {{ $index + 1}}
+    </div>
+    <div class="col-sm-9">
+      <div class="input-group">
+        <span class="input-group-addon">{{temp}}</span>
+        <input type="text" class="form-control" placeholder="输入名称" ng-model="config.template[temp]">
+      </div>
+    </div>
+    </br></br></br>
+</div>
+<hr>
+<button type="button" class="btn btn-success" aria-label="Left Align" ng-click="update()">Update</button>
