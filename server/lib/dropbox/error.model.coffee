@@ -54,20 +54,11 @@ exports = module.exports = (dbprefix) ->
         memo.then (results) ->
           p = new mongoose.Promise
           ErrorFeature.findById(feature.id).exec().then (ef) ->
-            results.data.push {
-              id: ef._id
-              created_at: ef.created_at
-              features: ef.features
-              tag: ef.tag
-              count: feature.count
-            }
+            results.data.push _.assign(ef.toJson(), count: feature.count)
             Ticket.find({errorfeature: feature.id}).exec()
           .then (tickets) ->
             results.data[results.data.length-1].tickets = _.map tickets or [], (t) ->
-              id: t._id
-              url: t.url
-              product: t.product
-              created_at: t.created_at
+              t.toJson()
             p.fulfill results
           .end()
           p
@@ -87,6 +78,12 @@ exports = module.exports = (dbprefix) ->
         collection: "#{dbprefix}.errorfeatures"
     )
 
+    ErrorFeatureSchema.methods.toJson = ->
+      id: @_id
+      created_at: @created_at
+      features: @features
+      tag: @tag
+
     TicketSchema = new Schema(
         _id: String
         url: String
@@ -100,6 +97,12 @@ exports = module.exports = (dbprefix) ->
     )
     TicketSchema.index {errorfeature: 1}
     TicketSchema.index {created_at: -1}, {expires: '365d'}
+    TicketSchema.methods.toJson = ->
+      id: @_id
+      url: @url
+      product: @product
+      errorfeature: @errorfeature
+      created_at: @created_at
 
     ErrorFeature: mongoose.model("#{dbprefix}.ErrorFeature", ErrorFeatureSchema)
     ProductErrorFeature: mongoose.model("#{dbprefix}.ProductErrorFeature", ProductErrorFeatureSchema)

@@ -29,3 +29,17 @@ angular.module("dropbox")
   $resource "/api/0/dropbox/productmodel/:id", {id: '@_id'}
 .factory 'UserModel', ($resource) ->
   $resource "/auth/users/:id", {id: '@_id'}
+.factory 'ErrorFeature', ($resource) ->
+  $resource "/api/0/dropbox/errorfeature/:id", {}, {
+    query:
+      method: 'GET'
+      isArray: false
+  }
+.factory 'Ticket', ($resource) ->
+  $resource "/api/0/dropbox/ticket/:id", {}, {
+    query:
+      method: 'GET'
+      isArray: true
+      transformResponse: (data, headers) ->
+        angular.fromJson(data)?.data or []
+  }

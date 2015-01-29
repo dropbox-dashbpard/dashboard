@@ -8,15 +8,26 @@ exports.getErrorFeatures = (req, res, next) ->
   version = req.param('version')
   page = Number(req.param('page') or 1)
   pageSize = Number(req.param('pageSize') or 10)
-  req.model.ProductErrorFeature.findOne {product: product, version: version}, (err, pef) ->
+  if product? and version?
+    req.model.ProductErrorFeature.findOne {product: product, version: version}, (err, pef) ->
+      return next(err) if err?
+      if pef
+        pef.getErrorFeatures (err, results) ->
+          if err?
+            next err
+          else
+            res.json results
+        , page, pageSize
+      else
+        res.sendStatus(404)
+  else
+    res.send 400
+
+exports.getErrorFeature = (req, res, next) ->
+  req.model.ErrorFeature.findById req.param('errorfeature'), (err, ef) ->
     return next(err) if err?
-    if pef
-      pef.getErrorFeatures (err, results) ->
-        if err?
-          next err
-        else
-          res.json results
-      , page, pageSize
+    if ef
+      res.json ef.toJson()
     else
       res.sendStatus(404)
 
@@ -31,16 +42,14 @@ exports.addTicket = (req, res, next) ->
     res.json ticket
 
 exports.queryTickets = (req, res, next) ->
-  query = req.model.Ticket.find(product: req.param('product'))
+  query = req.model.Ticket.find()
+  if req.param('product')
+    query = query.where('product').equals req.param('product')
   if req.param('errorfeature')
-    query = query.where('errorfeature').equals(req.param('errorfeature'))
+    query = query.where('errorfeature').equals req.param('errorfeature')
   query.sort("-created_at")
   .limit(Number(req.param('limit')) or 10)
   .exec (err, tickets) ->
     return next err if err?
     res.json data: _.map tickets, (ticket) ->
-      id: ticket._id
-      url: ticket.url
-      product: ticket.product
-      errorfeature: ticket.errorfeature
-      created_at: ticket.created_at
+      ticket.toJson()

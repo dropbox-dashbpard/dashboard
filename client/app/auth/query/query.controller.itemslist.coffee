@@ -51,11 +51,12 @@ angular.module('dbboardApp')
     else
       $scope.show = false
     $rootScope.$broadcast "Change:Dropbox:Item", null
-.controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService, ngProgress) ->
+.controller "ItemDetailCtrl", ($scope, DropboxItem, Ticket, ErrorFeature, localStorageService, ngProgress) ->
   name = "ItemDetailCtrl"
   $scope.options = localStorageService.get(name) or activeTab: {
     data: true
     trace: false
+    efforfeature: false
     detail: false
   }
   $scope.active = (tab) ->
@@ -78,6 +79,8 @@ angular.module('dbboardApp')
       file: file
       line: line
 
+  $scope.isString = angular.isString
+  $scope.isArray = angular.isArray
   $scope.show = false
   $scope.$on "Change:Dropbox:Item", (event, itemId) ->
     if itemId
@@ -112,18 +115,12 @@ angular.module('dbboardApp')
         data.ip = item.ua?.ip
         data.traces = $scope.trace(item.data?.traces or [])
         $scope.item = data
+        if data.errorfeature?
+          $scope.errorfeature = ErrorFeature.get id: data.errorfeature
+          $scope.tickets = Ticket.query errorfeature: data.errorfeature
         $scope.show = true
     else
       $scope.show = false
-.controller "TicketsCtrl", ($scope, dbTicketsService) ->
-  $scope.$watch 'item', (newValue, oldValue) ->
-    if $scope.item
-      dbTicketsService.get($scope.item.product.name, $scope.item.errorfeature).then (tickets) ->
-        $scope.tickets = tickets
-      , (err) ->
-        $scope.tickets = []
-    else
-      $scope.tickets = []
 .controller "IpLocationCtrl", ($scope, ipLocationResource) ->
   $scope.$watch 'item', (newValue, oldValue) ->
     if $scope.item

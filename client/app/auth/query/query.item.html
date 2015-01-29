@@ -29,6 +29,49 @@
           </table>
         </div>
       </tab>
+      <tab heading="特征" ng-click="active('efforfeature')" active="options.activeTab['efforfeature']" ng-if="item.errorfeature">
+        <ul class="list-group">
+          <a class="list-group-item list-group-item-info" ui-sref="auth.query.errorfeature({product: item.product.name, version: item.version, errorfeature: item.errorfeature})">
+            <div class="row">
+              <div class="col-md-2"><strong>特征ID</strong></div>
+              <div class="col-md-8">{{item.errorfeature}}</div>
+            </div>
+          </a>
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-md-2"><strong>类型</strong></div>
+              <div class="col-md-8">{{errorfeature.tag}}</div>
+            </div>
+          </li>
+          <li ng-repeat="(key, value) in errorfeature.features" class="list-group-item">
+            <div class="row" ng-if="isString(value)">
+              <div class="col-md-2"><strong>{{key}}</strong></div>
+              <div class="col-md-8">{{value}}</div>
+            </div>
+            <div class="row" ng-if="isArray(value)">
+              <div class="col-md-2"><strong>{{key}}</strong></div>
+              <div class="col-md-8">
+                <a href ng-click="notCollapsed = !notCollapsed"><span class="glyphicon" ng-class="{'glyphicon-chevron-up': notCollapsed, 'glyphicon-chevron-down': !notCollapsed}"></span>  {{value[0]}}</a>
+                <div collapse="!notCollapsed">
+                  <ul>
+                    <li ng-repeat="v in value track by ($index + '_' + value)">{{v}}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="list-group-item" ng-if="tickets.length >= 1">
+            <div class="row">
+              <div class="col-md-2"><strong>Tickets</strong></div>
+              <div class="col-md-8">
+                <span ng-repeat="ticket in tickets">
+                  <a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;
+                </span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </tab>
       <tab heading="详情" ng-click="active('detail')" active="options.activeTab['detail']">
         <div class="list-group">
           <a class="list-group-item">
@@ -78,16 +121,6 @@
             <div class="pull-right">{{item.tag}}</div>
           </a>
         </div>
-        <ul class="list-group" ng-if="item.errorfeature">
-          <a class="list-group-item list-group-item-info" ui-sref="auth.query.errorfeature({product: item.product.name, version: item.version, errorfeature: item.errorfeature})">
-            <i class="glyphicon glyphicon-tag"></i><span> 错误特征:</span>
-            <div class="pull-right">{{item.errorfeature}}</div>
-          </a>
-          <li class="list-group-item" ng-controller="TicketsCtrl">
-            <i class="glyphicon"></i><span> Tickets:</span>
-            <div class="pull-right"><span ng-repeat="ticket in tickets"><a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;</span></div>
-          </li>
-        </ul>
         <div class="list-group">
           <a class="list-group-item">
             <i class="glyphicon glyphicon-globe"></i><span> IP地址:</span>

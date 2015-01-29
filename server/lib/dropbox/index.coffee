@@ -47,6 +47,10 @@ router.post '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, 
 router.get '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, ef.queryTickets
 router.get '/product/:product/ticket', bearerAuth, ef.queryTickets
 
+router.get '/ticket', bearerAuth, ef.queryTickets
+router.get '/errorfeature', bearerAuth, ef.getErrorFeatures
+router.get '/errorfeature/:errorfeature', bearerAuth, ef.getErrorFeature
+
 router.post '/productmodel', localAuth, productModel.add
 router.get '/productmodel', localAuth, productModel.list
 router.get '/productmodel/:id', localAuth, productModel.get

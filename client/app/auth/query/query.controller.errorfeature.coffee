@@ -19,7 +19,7 @@ angular.module('dbboardApp')
       $scope.version = $stateParams.version or _.flatten(_.map($scope.versions))[0]
   $scope.product ?= $stateParams.product or $scope.products[0].name
   $scope.errorfeature = $stateParams.errorfeature
-.controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, ngProgress, dbProductErrorFeatureService) ->
+.controller "DropboxProductErrorFeaturesCtrl", ($rootScope, $scope, $location, ngProgress, ErrorFeature) ->
   $scope.show = false
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -29,22 +29,23 @@ angular.module('dbboardApp')
     $scope.version = params.version
     $scope.selected = null
     ngProgress.start()
-    dbProductErrorFeatureService.get(params.product, params.version, 1, 0).then (ef) ->
+    $scope.errorfeatures = ErrorFeature.query
+      product: params.product
+      version: params.version
+      page: 1
+      pageSize: 0
+    , (ef) ->
       ngProgress.complete()
-      $scope.errorfeatures = ef
       $scope.show = ef?.data?.length > 0
       $scope.search = params.errorfeature if params.errorfeature
       $rootScope.$broadcast "Change:Dropbox:Items", null
     , (err) ->
       ngProgress.complete()
-      $scope.errorfeatures = []
       $scope.show = false
       $scope.search = params.errorfeature if params.errorfeature
       $rootScope.$broadcast "Change:Dropbox:Items", null
-  $scope.isString = (value) ->
-    typeof(value) is "string"
-  $scope.isArray = (value) ->
-    value instanceof Array
+  $scope.isString = angular.isString
+  $scope.isArray = angular.isArray
   $scope.selectErrorFeature = (product, version, ef) ->
     if $scope.selected is ef
       $scope.selected = null
