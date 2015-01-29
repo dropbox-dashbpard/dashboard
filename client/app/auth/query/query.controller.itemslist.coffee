@@ -47,9 +47,8 @@ angular.module('dbboardApp')
       DropboxItem.query params, (items) ->
         ngProgress.complete()
         $scope.items = items
-        $scope.show = items?.length > 0
+        $scope.show = true
     else
-      $scope.items = []
       $scope.show = false
     $rootScope.$broadcast "Change:Dropbox:Item", null
 .controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService, ngProgress) ->
