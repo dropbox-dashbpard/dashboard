@@ -100,15 +100,7 @@ angular.module 'dbboardApp'
         'tag': ignore_tag
       $scope.app = null
       $scope.tag = null
-.controller 'DeviceConfigTemplatesCtrl', ($scope, $http) ->
-  $scope.tempRemove = (temp) ->
-    delete $scope.config.template[temp]
-  $scope.tempAdd = (temp_name, temp_value) ->
-    if temp_name and temp_value
-      $scope.config.template ?= {}
-      $scope.config.template[temp_name] = temp_value
-      $scope.temp_name = null
-      $scope.temp_value = null
+.controller('DeviceConfigTemplatesCtrl', ($scope, $http) -> )
 .controller 'DeviceConfigAlertCtrl', ($scope, $modalInstance) ->
   $scope.ok = ->
     $modalInstance.close()
