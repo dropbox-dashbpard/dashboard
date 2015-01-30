@@ -116,8 +116,10 @@ angular.module('dbboardApp')
         data.traces = $scope.trace(item.data?.traces or [])
         $scope.item = data
         if data.errorfeature?
-          $scope.errorfeature = ErrorFeature.get id: data.errorfeature
-          $scope.tickets = Ticket.query errorfeature: data.errorfeature
+          ErrorFeature.get id: data.errorfeature, (ef) ->
+            $scope.errorfeature = ef
+          Ticket.query errorfeature: data.errorfeature, (tickets) ->
+            $scope.tickets = tickets
         $scope.show = true
     else
       $scope.show = false
