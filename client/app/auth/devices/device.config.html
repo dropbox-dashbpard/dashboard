@@ -1,33 +1,27 @@
+<div ng-include="'app/auth/devices/alertdialog.html'"></div>
 <div class="row">
   <h3><i class="glyphicon glyphicon-list-alt"></i> 配置 {{id | uppercase}}</h3>  
   <hr>
 </div>
 <div class="row">
-  <ul class="nav nav-tabs">
-    <li ui-sref-active="active">
-      <a ui-sref="auth.device.config.bts({id: id})">
-        <i class="glyphicon glyphicon-cog"></i> Bug系统 
-      </a>
-    </li>
-    <li ui-sref-active="active">
-      <a ui-sref="auth.device.config.limits({id: id})">
-        <i class="glyphicon glyphicon-cog"></i> 流量控制
-      </a>
-    </li>
-    <li ui-sref-active="active">
-      <a ui-sref="auth.device.config.ignores({id: id})">
-        <i class="glyphicon glyphicon-cog"></i> 忽略控制
-      </a>
-    </li>
-    <li ui-sref-active="active">
-      <a ui-sref="auth.device.config.templates({id: id})">
-        <i class="glyphicon glyphicon-cog"></i> 模版
-      </a>
-    </li>           
-  </ul>
+  <tabset>
+    <tab ng-controller="DeviceConfigBtsCtrl">
+      <tab-heading><i class="glyphicon glyphicon-cog"></i> Bug系统</tab-heading>
+      <div ng-include="'/app/auth/devices/device.config.bts.html'" />
+    </tab>
+    <tab ng-controller="DeviceConfigLimitsCtrl">
+       <tab-heading><i class="glyphicon glyphicon-cog"></i> 流量控制</tab-heading>
+      <div ng-include="'/app/auth/devices/device.config.limits.html'" />
+    </tab>
+    <tab ng-controller="DeviceConfigIgnoresCtrl">
+      <tab-heading><i class="glyphicon glyphicon-cog"></i> 忽略控制</tab-heading>
+      <div ng-include="'/app/auth/devices/device.config.ignores.html'" />
+    </tab>
+    <tab ng-controller="DeviceConfigTemplatesCtrl">
+      <tab-heading><i class="glyphicon glyphicon-cog"></i> 模版</tab-heading>
+      <div ng-include="'/app/auth/devices/device.config.templates.html'" />
+    </tab>
+  </tabset>
 </div>
-<div class="row">
-  <div class="col-sm-9">
-    <div ui-view class="view-frame"></div>
-  </div>
-</div>
+<hr>
+<button type="button" class="btn btn-success" aria-label="Left Align" ng-click="update()">保存</button>

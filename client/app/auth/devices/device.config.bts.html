@@ -1,110 +1,126 @@
-<div ng-include="'app/auth/devices/alertdialog.html'"></div>
-</br>
+<br/>
 <div class="row">
-    <div class='col-sm-3'>
-      <i class="glyphicon glyphicon-tag"></i> 基本信息
-    </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">Type</span>
-              <input type="text" class="form-control" placeholder="输入Type" ng-model="config.bts.type">
-            </div>
-        </div>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">URL</span>
-              <input type="text" class="form-control" placeholder="输入URL" ng-model="config.bts.url">
-            </div>
-        </div>
-        </br></br>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">Username</span>
-              <input type="text" class="form-control" placeholder="输入用户名" ng-model="config.bts.username">
-            </div>
-        </div>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">Password</span>
-              <input type="text" class="form-control" placeholder="输入密码" ng-model="config.bts.password">
-            </div>
-        </div>
-      </div>
-    </div>
-</div>
-
-<hr>
-
-<div class="row">
-  <div class="col-sm-3">
-    <i class="glyphicon glyphicon-tag"></i> 上报规则
-  </div>
-  <div class='col-sm-9'>
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="input-group">
-          <span class="input-group-addon">Project</span>
-          <input type="text" class="form-control" placeholder="输入项目名称" ng-model="config.bts.project">
-        </div>
-      </div>
-    </div>
-    </br>
-    <div class="input-group" ng-repeat="vt in config.versionTypes">
-      <span class="input-group-addon">{{vt.display}}</span>
-      <input type="number" class="form-control" placeholder="输入版本数量" ng-model="config.bts.ver_control[vt.name]">
-    </div>
-    </br>
-    <div class='row'>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">system_app_crash</span>
-              <input type="number" class="form-control" placeholder="输入阀值" ng-model="config.bts.threshold.system_app_crash">
-            </div>
-        </div>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">system_app_wtf</span>
-              <input type="number" class="form-control" placeholder="输入阀值" ng-model="config.bts.threshold.system_app_wtf">
-            </div>
-        </div>
-    </div>
-    </br>
-    <div class='row'>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">system_app_anr</span>
-              <input type="number" class="form-control" placeholder="输入阀值" ng-model="config.bts.threshold.system_app_anr">
-            </div>
-        </div>
-        <div class='col-sm-6'>
-            <div class="input-group">
-              <span class="input-group-addon">system_tombstones</span>
-              <input type="number" class="form-control" placeholder="输入阀值" ng-model="config.bts.threshold.SYSTEM_TOMBSTONE">
-            </div>
-        </div>
-    </div>
-  </div>
-</div>
-
-<hr>
-
-<div class="row">
-  <div class='col-sm-3'>
-    <i class="glyphicon glyphicon-tag"></i> Component对照表
-  </div>
-  <div class="col-sm-9">
+  <div class="col-sm-6">
     <div class="row">
       <div class='col-sm-12'>
-        <div class="input-group" ng-repeat="(comp, value) in config.bts.components">
-          <span class="input-group-addon">{{comp}}</span>
-          <input type="text" class="form-control" placeholder="输入名称" ng-model="config.bts.components[comp]">
-        </div>
+        <i class="glyphicon glyphicon-tag"></i> 基本信息
+        <p>
+      </div>
+      <div class="col-sm-12">
+        <table class="table table-condensed">
+          <tr>
+            <td>Type</td>
+            <td>
+              <select ui-select2 ng-model="config.bts.type" data-placeholder="选择类型" style="width:100%">
+                <option value=""></option>
+                <option ng-repeat="mode in modes" value="{{mode}}">{{mode}}</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>URL</td>
+            <td><input type="text" class="form-control" placeholder="输入URL" ng-model="config.bts.url"></td>
+          </tr>
+          <tr>
+            <td>Username</td>
+            <td><input type="text" class="form-control" placeholder="输入用户名" ng-model="config.bts.username"></td>
+          </tr>
+          <tr>
+            <td>Password</td>
+            <td><input type="text" class="form-control" placeholder="输入密码" ng-model="config.bts.password"></td>
+          </tr>
+          <tr>
+            <td>Project</td>
+            <td><input type="text" class="form-control" placeholder="输入项目名称" ng-model="config.bts.project"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="row">
+      <div class='col-sm-12'>
+        <i class="glyphicon glyphicon-tag"></i> 版本控制
+        <p>
+      </div>
+      <div class="col-sm-12">
+        <table class="table table-condensed">
+          <tr ng-repeat="vt in config.versionTypes">
+            <td>{{vt.display}}</td>
+            <td><input type="number" class="form-control" placeholder="输入版本数量" ng-model="config.bts.ver_control[vt.name]"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12"><hr></div>
+  <div class="col-sm-11">
+    <div class="row">
+      <div class='col-sm-12'>
+        <i class="glyphicon glyphicon-tag"></i> 上报规则
+        <p>
+      </div>
+      <div class="col-sm-12">
+        <table class="table table-condensed">
+          <tbody>
+            <tr ng-repeat="(tag, value) in config.bts.threshold">
+              <td>{{tag}}</td>
+              <td>
+                  <input type="number" class="form-control" placeholder="输入阀值" ng-model="config.bts.threshold[tag]">
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" type="button" ng-click="tagRemove(tag)">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="text" class="form-control" placeholder="输入Tag" ng-model="$parent.new_tag">
+              </td>
+              <td>
+                <input type="number" class="form-control" placeholder="输入阀值" ng-model="$parent.new_value">
+              </td>
+              <td>
+                <button type="submit" class="btn btn-default btn-sm" ng-click="tagAdd($parent.new_tag, $parent.new_value)">+</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12"><hr></div>  
+  <div class="col-sm-11">
+    <div class="row">
+      <div class='col-sm-12'>
+        <i class="glyphicon glyphicon-tag"></i> Component对照
+        <p>
+      </div>
+      <div class="col-sm-12">
+        <table class="table table-condensed">
+          <tbody>
+            <tr ng-repeat="(comp, value) in config.bts.components">
+              <td>{{comp}}</td>
+              <td>
+                <input type="text" class="form-control" placeholder="输入名称" ng-model="config.bts.components[comp]">
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" type="button" ng-click="compRemove(comp)">-</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="text" class="form-control" placeholder="输入Component" ng-model="$parent.new_comp">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="输入名称" ng-model="$parent.new_process">
+              </td>
+              <td>
+                <button type="submit" class="btn btn-default btn-sm" ng-click="compAdd($parent.new_comp, $parent.new_process)">+</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
-</br>
-<hr>
-<button type="button" class="btn btn-success" aria-label="Left Align" ng-click="update()">Update</button>
