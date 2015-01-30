@@ -11,7 +11,8 @@ angular.module 'dbboardApp'
     url: '/model'
     templateUrl: 'app/auth/devices/device.model.html',
     controller: 'DeviceModelCtrl'
+
   .state 'auth.device.config',
-    url: '/config'
-    templateUrl: 'app/auth/devices/device.config.html',
+    url: '/config/:id'
+    templateUrl: 'app/auth/devices/device.config.html'
     controller: 'DeviceConfigCtrl'

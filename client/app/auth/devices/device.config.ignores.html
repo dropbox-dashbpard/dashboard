@@ -1,0 +1,33 @@
+</br>
+<div class="row">
+  <div class="col-sm-11">
+    <i class="glyphicon glyphicon-tag"></i> 忽略规则
+    <p>
+  </div>
+  <div class="col-sm-11">
+    <table class='table table-condensed'>
+      <tr ng-repeat="ignore in config.ignores">
+        <td>
+          <input type="text" class="form-control" placeholder="输入App" ng-model="ignore.app">
+        </td>
+        <td>
+          <input type="text" class="form-control" placeholder="输入Tag" ng-model="ignore.tag">
+        </td>
+        <td>
+          <button type="submit" class="btn btn-danger btn-sm" ng-click="ignoreRemove(ignore)">-</button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="text" class="form-control" placeholder="输入App" ng-model="$parent.app">
+        </td>
+        <td>
+          <input type="text" class="form-control" placeholder="输入Tag" ng-model="$parent.tag">
+        </td>
+        <td>
+          <button type="submit" class="btn btn-default btn-sm" ng-click="ignoreAdd($parent.app, $parent.tag)">+</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

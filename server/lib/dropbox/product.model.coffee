@@ -88,6 +88,8 @@ exports = module.exports = (dbprefix) ->
         password: String
         url: String
         project: String
+        ver_control: Object
+        threshold: Object
         components: Object
     ,
       collection: "#{dbprefix}.productconfigs"
