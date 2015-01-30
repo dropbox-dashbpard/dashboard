@@ -195,24 +195,27 @@ exports = module.exports = (dbprefix) ->
       doc = $inc: {}
       total = 0
       _.each entries, (entry) =>
-        if not config.shouldIgnore entry.app, entry.tag  # not ignore
-          [app, tag, count] = [@toKey(entry.app), @toKey(entry.tag), entry.data?.count or 1]
-          if doc.$inc["app.#{app}.occurred"]?
-            doc.$inc["app.#{app}.occurred"] += count
-          else
-            doc.$inc["app.#{app}.occurred"] = count
-          doc.$inc["app.#{app}.devices"] = 1 if newDevice
-          if doc.$inc["app.#{app}.tag.#{tag}.occurred"]?
-            doc.$inc["app.#{app}.tag.#{tag}.occurred"] += count
-          else
-            doc.$inc["app.#{app}.tag.#{tag}.occurred"] = count
-          doc.$inc["app.#{app}.tag.#{tag}.devices"] = 1 if newDevice
-          if doc.$inc["tag.#{tag}.occurred"]?
-            doc.$inc["tag.#{tag}.occurred"] += count
-          else
-            doc.$inc["tag.#{tag}.occurred"] = count
-          doc.$inc["tag.#{tag}.devices"] = 1 if newDevice
-          total += count
+        [app, tag, count] = if config.shouldIgnore(entry.app, entry.tag)  # ignore
+           [@toKey(entry.app), @toKey(entry.tag), 0]
+        else  # not ignore
+          [@toKey(entry.app), @toKey(entry.tag), entry.data?.count or 1]
+
+        if doc.$inc["app.#{app}.occurred"]?
+          doc.$inc["app.#{app}.occurred"] += count
+        else
+          doc.$inc["app.#{app}.occurred"] = count
+        doc.$inc["app.#{app}.devices"] = 1 if newDevice
+        if doc.$inc["app.#{app}.tag.#{tag}.occurred"]?
+          doc.$inc["app.#{app}.tag.#{tag}.occurred"] += count
+        else
+          doc.$inc["app.#{app}.tag.#{tag}.occurred"] = count
+        doc.$inc["app.#{app}.tag.#{tag}.devices"] = 1 if newDevice
+        if doc.$inc["tag.#{tag}.occurred"]?
+          doc.$inc["tag.#{tag}.occurred"] += count
+        else
+          doc.$inc["tag.#{tag}.occurred"] = count
+        doc.$inc["tag.#{tag}.devices"] = 1 if newDevice
+        total += count
       doc.$inc["all.occurred"] = total
       doc.$inc["all.devices"] = 1 if newDevice
       @findOneAndUpdate({

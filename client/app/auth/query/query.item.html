@@ -1,12 +1,33 @@
-<div ng-if="(undefined != item && null != item) || reloading" class="panel panel-default">
-  <div class="panel-heading">
-    <span class="glyphicon glyphicon-info-sign"> 详细信息</span>
+<div ng-show="show" class="animate-show panel panel-default">
+  <div class="panel-heading clearfix">
+    <h5 class="pull-left"><i class="glyphicon glyphicon-list-alt"></i> 详细信息</h5>
   </div>
   <div class="panel-body">
-<!--     <progressbar class="progress-striped active" max="100" value="100" type="success" ng-if="reloading"></progressbar>
- -->    <tabset>
+    <tabset>
       <tab heading="数据" ng-click="active('data')" active="options.activeTab['data']">
         <div class="markdown" btf-markdown="'```\r\n' + item.mdContent + '\r\n```'"></div>
+      </tab>
+      <tab heading="调用路径" ng-click="active('trace')" active="options.activeTab['trace']" ng-if='item.traces.length > 0'>
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>方法</th>
+                <th>文件</th>
+                <th>行号</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="t in item.traces">
+                <th>{{$index}}</th>
+                <td>{{t.func}}</td>
+                <td>{{t.file}}</td>
+                <td>{{t.line}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </tab>
       <tab heading="详情" ng-click="active('detail')" active="options.activeTab['detail']">
         <div class="list-group">

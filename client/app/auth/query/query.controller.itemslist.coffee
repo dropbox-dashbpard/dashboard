@@ -2,6 +2,7 @@
 
 angular.module('dbboardApp')
 .controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem, ngProgress) ->
+  $scope.show = false
   $scope.selectedItems = []
   $scope.itemPerPage = 5
   $scope.currentPage = 1
@@ -30,6 +31,15 @@ angular.module('dbboardApp')
   $scope.select = (item) ->
     $scope.selectedItem = item
     $rootScope.$broadcast "Change:Dropbox:Item", item._id
+  $scope.order = (field) ->
+    if field is $scope.predicate
+      if $scope.reverse
+        $scope.predicate = null
+      else
+        $scope.reverse = not $scope.reverse
+    else
+      $scope.predicate = field
+      $scope.reverse = false
 
   $scope.$on "Change:Dropbox:Items", (event, params) ->
     if params
@@ -37,33 +47,50 @@ angular.module('dbboardApp')
       DropboxItem.query params, (items) ->
         ngProgress.complete()
         $scope.items = items
+        $scope.show = items?.length > 0
     else
       $scope.items = []
+      $scope.show = false
     $rootScope.$broadcast "Change:Dropbox:Item", null
 .controller "ItemDetailCtrl", ($scope, DropboxItem, dbTicketsService, localStorageService, ngProgress) ->
   name = "ItemDetailCtrl"
-  options = localStorageService.get name
-  unless options
-    options =
-      activeTab:
-        data: true
-        detail: false
-  $scope.options = options
+  $scope.options = localStorageService.get(name) or activeTab: {
+    data: true
+    trace: false
+    detail: false
+  }
   $scope.active = (tab) ->
     $scope.options.activeTab[tab] = true
     localStorageService.set name, $scope.options
 
+  $scope.trace = (traces) ->
+    _.map traces, (t) ->
+      [func, file] = t.replace(/[\r\n]/g, '').trim().split /\s+at\s+/
+      if not file
+        [func, file] = [null, func]
+      [file, line] = file.split(':')
+      if file?.length > 0 and file[0] is '/'
+        paths = file.split '/'
+        index = _.findIndex paths, (p) ->
+          p in ["bionic", "cts", "development", "external", "kernel", "ndk", "pdk", "system", "abi", "bootable", "dalvik", "device", "frameworks", "libcore", "prebuilts", "tools", "art", "build", "developers", "docs", "hardware", "libnativehelper", "packages", "sdk", "vendor"]
+        file = paths[index...].join('/') if index >= 0
+
+      func: func
+      file: file
+      line: line
+
+  $scope.show = false
   $scope.$on "Change:Dropbox:Item", (event, itemId) ->
     if itemId
       ngProgress.start()
       DropboxItem.get itemId: itemId, (item) ->
         ngProgress.complete()
         data = {}
-        if item?.data?.content
+        if item.data?.content
           data.mdContent = item.data.content
-        else if item?.digest?
+        else if item.digest?
           data.mdContent = item.digest
-        else if item?.data?.jsonContent?
+        else if item.data?.jsonContent?
           data.mdContent = "#{JSON.stringify(item.data.jsonContent, undefined, 2)}"
         for key, value of {
           "_id": "id"
@@ -72,21 +99,23 @@ angular.module('dbboardApp')
           "version": "version"
           "attachment": "attachment"
           "errorfeature": "errorfeature"
-          "tag": "tag"} when item?[key]?
+          "tag": "tag"} when item[key]?
           data[value] = item[key]
-        for prod in $scope.products when prod.name is item?.product
+        for prod in $scope.products when prod.name is item.product
           data.product = prod
           break
         data.occurred_at = new Date(item.occurred_at)
-        data.mac_address = item?.ua?.mac_address
-        data.board = item?.ua?.board
-        data.device = item?.ua?.device
-        data.buildtype = item?.ua?.type
-        data.count = item?.data?.count or 1
-        data.ip = item?.ua?.ip
+        data.mac_address = item.ua?.mac_address
+        data.board = item.ua?.board
+        data.device = item.ua?.device
+        data.buildtype = item.ua?.type
+        data.count = item.data?.count or 1
+        data.ip = item.ua?.ip
+        data.traces = $scope.trace(item.data?.traces or [])
         $scope.item = data
+        $scope.show = true
     else
-      $scope.item = null
+      $scope.show = false
 .controller "TicketsCtrl", ($scope, dbTicketsService) ->
   $scope.$watch 'item', (newValue, oldValue) ->
     if $scope.item

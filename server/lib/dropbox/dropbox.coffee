@@ -49,6 +49,7 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
         template: dc.template,
         limits: dc.limits
         versions: dc.versions
+        versionTypes: dc.versionTypes
         ignores: dc.ignores
       }
     }, {
@@ -60,9 +61,9 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
       if config.validVersion req.version
         next()
         if process.env.NODE_ENV isnt 'production'
-          config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
+          config.addVersion _.last(config.versionTypes)?.name or 'development', req.version, (err, doc) ->  # TODO debug only
       else
-        next new Error('Invalid version!')
+        next new Error("Invalid version: #{config.name} - #{req.version}!")
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce req.body.data, (memo, entry) ->
@@ -150,7 +151,7 @@ exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
   content = req.body.content or req.body
   if content?
-    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag product version").exec()
+    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag ua product version").exec()
     .then (doc) ->
         res.json result: "ok"
         process.nextTick ->
@@ -159,6 +160,10 @@ exports.updateContent = (req, res, next) ->
             body: content
             headers:
               'X-Requested-With': 'XMLHttpRequest'
+              'X-Dropbox-UA': _.map(doc.ua, (v, k)->"#{k}=#{v}").join(';')
+            qs:
+              product: doc.product
+              version: doc.version
             gzip: true
           , (e, r, body) ->
             if e? or r.statusCode isnt 200
@@ -177,7 +182,10 @@ exports.updateContent = (req, res, next) ->
                   tag: doc.tag
               }, upsert: true
             ).exec().then (ef) ->
-              req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {errorfeature: md5}, select: "errorfeature").exec()
+              op = $set: {errorfeature: md5}
+              if body.traces?.length > 0
+                op.$set['data.traces'] = body.traces
+              req.model.Dropbox.findByIdAndUpdate(dropbox_id, op, select: "errorfeature").exec()
             .then (item) ->
               query = product: doc.product, version: doc.version
               op = $setOnInsert: {created_at: new Date(), errorfeatures: {}}

@@ -13,14 +13,14 @@
       <ul class="nav navbar-nav">
         <li ui-sref-active="active" dropdown>
           <a ui-sref="auth.board" role="button">
-            <i class="glyphicon glyphicon-time"></i> 看版 </a>
+            <i class="glyphicon glyphicon-time"></i> 动态看版 </a>
         </li>
         <li dropdown>
           <a href class="dropdown-toggle" data-toggle="dropdown">
             产品<span class="caret"></span>
           </a>
           <ul class="dropdown-menu" role="menu">
-            <li ng-repeat="prod in products" ui-sref-active="active"><a ui-sref="auth.product({product: prod.name, dist: 'production'})">{{prod.display}}</a></li>
+            <li ng-repeat="prod in products" ui-sref-active="active"><a ui-sref="auth.product({product: prod.name, dist: prod.versionTypes[0].name})">{{prod.display}}</a></li>
           </ul>
         </li>
       </ul>

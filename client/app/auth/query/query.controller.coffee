@@ -30,10 +30,11 @@ angular.module('dbboardApp')
   $scope.model = model
   $scope.$on "adfDashboardChanged", (event, name, model) ->
     localStorageService.set name, model
-.controller "QueryDataDeviceCtrl", ($rootScope, $scope, $state, DropboxItem, $stateParams) ->
-  now = new Date()
-  $scope.from = new Date($stateParams.from or (now.getTime() - 24*3600*7000))
-  $scope.to = new Date($stateParams.to or now)
+.controller "QueryDataDeviceCtrl", ($rootScope, $scope, $state, DropboxItem, $stateParams, queryUtilsFactory) ->
+  [$scope.from, $scope.to] = if $stateParams.from and $stateParams.to
+    [$stateParams.from, $stateParams.to]
+  else
+    queryUtilsFactory.defaultDateOfQuery()
   $scope.queryDevice = (deviceId, from, to) ->
     $state.go("auth.query.device", {deviceId: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
   $scope.queryMac = (deviceId, from, to) ->
