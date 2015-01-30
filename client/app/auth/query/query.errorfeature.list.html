@@ -17,12 +17,12 @@
         </a>
         <li ng-repeat="(key, value) in ef.features" class="list-group-item">
           <div class="row" ng-if="isString(value)">
-            <div class="col-md-2"><strong>{{key}}</strong></div>
-            <div class="col-md-8">{{value}}</div>
+            <div class="col-sm-2"><strong>{{key}}</strong></div>
+            <div class="col-sm-8">{{value}}</div>
           </div>
           <div class="row" ng-if="isArray(value)">
-            <div class="col-md-2"><strong>{{key}}</strong></div>
-            <div class="col-md-8">
+            <div class="col-sm-2"><strong>{{key}}</strong></div>
+            <div class="col-sm-8">
               <a href ng-click="notCollapsed = !notCollapsed"><span class="glyphicon" ng-class="{'glyphicon-chevron-up': notCollapsed, 'glyphicon-chevron-down': !notCollapsed}"></span>  {{value[0]}}</a>
               <div collapse="!notCollapsed">
                 <ul>
@@ -34,8 +34,8 @@
         </li>
         <li class="list-group-item" ng-if="ef.tickets.length >= 1">
           <div class="row">
-            <div class="col-md-2"><strong>Tickets</strong></div>
-            <div class="col-md-8">
+            <div class="col-sm-2"><strong>Tickets</strong></div>
+            <div class="col-sm-8">
               <span ng-repeat="ticket in ef.tickets">
                 <a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;
               </span>

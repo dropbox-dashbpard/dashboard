@@ -75,56 +75,80 @@
       <tab heading="详情" ng-click="active('detail')" active="options.activeTab['detail']">
         <div class="list-group">
           <a class="list-group-item">
-            <i class="glyphicon glyphicon-phone"></i><span> 产品:</span>
-            <div class="pull-right">{{item.product.display}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-phone"></i>产品</strong></div>
+              <div class="col-md-8">{{item.product.display}}</div>
+            </div>
           </a>
           <a class="list-group-item list-group-item-info" ui-sref="auth.query.device({deviceId: item.device_id})">
-            <i class="glyphicon glyphicon-star"></i><span> 设备ID:</span>
-            <div class="pull-right">{{item.device_id}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-star"></i>设备ID</strong></div>
+              <div class="col-md-8">{{item.device_id}}</div>
+            </div>
           </a>
           <a class="list-group-item list-group-item-info" ui-sref="auth.query.mac({mac: item.mac_address})">
-            <i class="glyphicon glyphicon-record"></i><span> 设备网卡地址:</span>
-            <div class="pull-right">{{item.mac_address}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-record"></i>网卡地址</strong></div>
+              <div class="col-md-8">{{item.mac_address}}</div>
+            </div>
           </a>
         </div>
         <div class="list-group">
           <a class="list-group-item list-group-item-info" ui-sref="auth.query.dbitem({dropboxId: item.id})">
-            <i class="glyphicon glyphicon-font"></i><span> 数据ID:</span>
-            <div class="pull-right">{{item.id}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-plus"></i>数据ID</strong></div>
+              <div class="col-md-8">{{item.id}}</div>
+            </div>
           </a>
           <a class="list-group-item">
-            <i class="glyphicon glyphicon-time"></i><span> 发生时间:</span>
-            <div class="pull-right">{{item.occurred_at.toLocaleString()}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-time"></i>发生时间</strong></div>
+              <div class="col-md-8">{{item.occurred_at.toLocaleString()}}</div>
+            </div>
           </a>
           <a class="list-group-item">
-            <i class="glyphicon glyphicon-time"></i><span> 发生次数:</span>
-            <div class="pull-right">{{item.count}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-repeat"></i>重复次数</strong></div>
+              <div class="col-md-8">{{item.count}}</div>
+            </div>
           </a>
           <a class="list-group-item" href="{{item.attachment}}" ng-if="item.attachment.length > 0">
-            <i class="glyphicon glyphicon-paperclip"></i><span> 附件:</span>
-            <div class="pull-right">{{"下载"}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-paperclip"></i>附件</strong></div>
+              <div class="col-md-8">下载</div>
+            </div>
           </a>
           <a class="list-group-item">
-            <i class="glyphicon glyphicon-file"></i><span> 软件构建版本:</span>
-            <div class="pull-right">{{item.version}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-file"></i>软件版本</strong></div>
+              <div class="col-md-8">{{item.version}}</div>
+            </div>
           </a>
           <a class="list-group-item">
-            <i class="glyphicon glyphicon-file"></i><span> 软件构建属性:</span>
-            <div class="pull-right">{{item.board}}/{{item.device}}/{{item.buildtype}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-info-sign"></i>构建属性</strong></div>
+              <div class="col-md-8">{{item.board}}/{{item.device}}/{{item.buildtype}}</div>
+            </div>
           </a>
           <a class="list-group-item list-group-item-info" ui-sref="auth.query.app({product: item.product.name, version: item.version, value: item.app})">
-            <i class="glyphicon glyphicon-font"></i><span> 应用:</span>
-            <div class="pull-right">{{item.app}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-font"></i>应用</strong></div>
+              <div class="col-md-8">{{item.app}}</div>
+            </div>
           </a>
           <a class="list-group-item list-group-item-info" ui-sref="auth.query.tag({product: item.product.name, version: item.version, value: item.tag})">
-            <i class="glyphicon glyphicon-tag"></i><span> 类型:</span>
-            <div class="pull-right">{{item.tag}}</div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-tag"></i>类型</strong></div>
+              <div class="col-md-8">{{item.tag}}</div>
+            </div>
           </a>
         </div>
         <div class="list-group">
           <a class="list-group-item">
-            <i class="glyphicon glyphicon-globe"></i><span> IP地址:</span>
-            <div class="pull-right" ng-controller="IpLocationCtrl">{{item.ip}} <span ng-if="location && location.country">{{location.country}}/{{location.region}}/{{location.city}}</span></div>
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-globe"></i>IP地址</strong></div>
+              <div class="col-md-8" ng-controller="IpLocationCtrl">{{item.ip}} <span ng-if="location && location.country">{{location.country}}/{{location.region}}/{{location.city}}</span></div>
+            </div>
           </a>
         </div>
       </tab>

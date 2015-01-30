@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('dbboardApp')
-.controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem, ngProgress) ->
+.controller "DropboxItemListCtrl", ($rootScope, $scope, DropboxItem, queryUtilsFactory, ngProgress) ->
   $scope.show = false
   $scope.selectedItems = []
   $scope.itemPerPage = 5
@@ -25,7 +25,7 @@ angular.module('dbboardApp')
     ]
   $scope.printValue = (k, v) ->
     if k is "occurred_at"
-      new Date(v).toLocaleString()
+      queryUtilsFactory.durationDisplay(new Date(v))
     else
       v
   $scope.select = (item) ->
