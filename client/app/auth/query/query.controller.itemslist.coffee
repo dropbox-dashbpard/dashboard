@@ -7,6 +7,8 @@ angular.module('dbboardApp')
   $scope.itemPerPage = 5
   $scope.currentPage = 1
   $scope.maxSize = 20
+  $scope.predicate = 'created_at'
+  $scope.reverse = true
   $scope.columns = columnDefs = [
       field: "device_id"
       displayName: "设备ID"
@@ -34,7 +36,8 @@ angular.module('dbboardApp')
   $scope.order = (field) ->
     if field is $scope.predicate
       if $scope.reverse
-        $scope.predicate = null
+        $scope.predicate = 'created_at'
+        $scope.reverse = true
       else
         $scope.reverse = not $scope.reverse
     else
