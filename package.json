@@ -19,7 +19,7 @@
     "lodash": "~2.4.1",
     "memory-cache": "0.0.5",
     "method-override": "^1.0.2",
-    "mongoose": "^3.8.20",
+    "mongoose": "3.8.26",
     "morgan": "^1.5.0",
     "node-uuid": "^1.4.2",
     "passport": "^0.2.1",
