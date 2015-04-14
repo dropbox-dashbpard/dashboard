@@ -29,6 +29,22 @@ exports.add = (req, res, next) ->
   ).save (err, doc) ->
     return next err if err
     res.json doc
+    process.nextTick ->
+      dc = new req.model.ProductConfig()
+      req.model.ProductConfig.findOneAndUpdate {
+        _id: doc.name
+      }, {
+        $setOnInsert: {
+          display: doc.name,
+          template: dc.template,
+          limits: dc.limits
+          versions: dc.versions
+          versionTypes: dc.versionTypes
+          ignores: dc.ignores
+        }
+      }, {
+        upsert: true
+      }, (err, config) ->
 
 exports.del = (req, res, next) ->
   req.model.Product.findByIdAndRemove req.param('id'), (err) ->
