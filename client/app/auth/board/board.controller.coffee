@@ -131,7 +131,7 @@ angular.module 'dbboardApp'
                 {
                   type: "productErrorRateOfRebootWidget"
                   config:
-                    tag: "APANIC_CONSOLE"
+                    tag: "SYSTEM_LAST_KMSG"
                     product: ""
                     dist: ""
                     total: 8

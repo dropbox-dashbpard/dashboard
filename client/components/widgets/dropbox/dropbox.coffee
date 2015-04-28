@@ -1,7 +1,7 @@
 "use strict"
 
 angular.module("widgets.dropbox", ["adf.provider", "dropbox", "highcharts-ng", "ngGrid"])
-.value("rebootTags", ["SYSTEM_RESTART", "APANIC_CONSOLE"])
+.value("rebootTags", ["SYSTEM_RESTART", "SYSTEM_LAST_KMSG"])
 .provider("chartsProvider", ->
   @colors = colors =
     device: "#8888FF"
