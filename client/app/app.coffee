@@ -8,7 +8,7 @@ angular.module "dbboardApp", [
   "btford.socket-io"
   "ui.router"
   "ui.bootstrap"
-  "structures"
+  "adf.structures.base"
   "adf"
   "LocalStorageModule"
   "widgets.dropbox"

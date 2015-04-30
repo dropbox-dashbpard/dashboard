@@ -21,6 +21,10 @@
 // @font-size-h5:            @font-size-base;
 // @font-size-h6:            ceil((@font-size-base * 0.85)); // ~12px
 
+body {
+    padding-top: @navbar-height;
+}
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
@@ -60,5 +64,4 @@ html, body {
 @import 'auth/auth.less';
 @import 'auth/query/query.items.less';
 @import 'bootstrap-select2.less';
-@import 'adf/adf.less';
 // endinjector

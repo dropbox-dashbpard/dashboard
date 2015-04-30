@@ -13,10 +13,12 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
+      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
       <link rel="stylesheet" href="bower_components/jquery-ui/themes/cupertino/jquery-ui.css" />
       <link rel="stylesheet" href="bower_components/ng-grid/ng-grid.css" />
       <link rel="stylesheet" href="bower_components/select2/select2.css" />
       <link rel="stylesheet" href="bower_components/ngprogress/ngProgress.css" />
+      <link rel="stylesheet" href="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -58,8 +60,9 @@
     <script src="socket.io/socket.io.js"></script>
     <!-- build:js(client) app/vendor.js -->
       <!-- bower:js -->
-      <script src="bower_components/jquery/jquery.js"></script>
+      <script src="bower_components/jquery/dist/jquery.js"></script>
       <script src="bower_components/angular/angular.js"></script>
+      <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
       <script src="bower_components/angular-resource/angular-resource.js"></script>
       <script src="bower_components/angular-cookies/angular-cookies.js"></script>
       <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
@@ -84,6 +87,9 @@
       <script src="bower_components/mdo-http-auth-interceptor/http-auth-interceptor.js"></script>
       <script src="bower_components/angular-animate/angular-animate.js"></script>
       <script src="bower_components/ngprogress/build/ngProgress.js"></script>
+      <script src="bower_components/Sortable/Sortable.js"></script>
+      <script src="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.js"></script>
+      <script src="bower_components/adf-structures-base/dist/adf-structures-base.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
 
@@ -99,8 +105,6 @@
           <script src="app/login/controlle.js"></script>
           <script src="app/login/login.js"></script>
           <script src="app/login/service.js"></script>
-          <script src="app/structures.js"></script>
-          <script src="components/adf/adf.js"></script>
           <script src="components/dropbox/dropbox.js"></script>
           <script src="components/socket/socket.js"></script>
           <script src="components/widgets/dropbox/dropbox.js"></script>
