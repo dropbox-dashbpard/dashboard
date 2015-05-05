@@ -1,10 +1,9 @@
 'use strict'
 
 angular.module("dbboardApp")
-.controller "ProductsCtrl", ($scope, localStorageService, $stateParams, Products, Releases, rebootTags) ->
+.controller "ProductsCtrl", ($scope, localStorageService, $stateParams, Products, rebootTags) ->
   $scope.product = product = _.find Products, (prod) ->
     prod.name is $stateParams.product
-  $scope.releases = Releases
   $scope.dist = dist = $stateParams.dist
   version = product?.versions?[dist]?[0]
 

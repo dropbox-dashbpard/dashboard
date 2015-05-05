@@ -4,12 +4,17 @@
     <h3><i class="glyphicon glyphicon-briefcase"></i> 分类 </h3>
     <hr>
     <ul class="nav nav-stacked">
-      <li ui-sref-active="active"><a ui-sref="auth.device.model"><i class="glyphicon glyphicon-phone"></i> 设备型号 </a></li>
-      <li ui-sref-active="active"><a ui-sref="auth.device.config"><i class="glyphicon glyphicon-th-list"></i> 设备配置</a></li>
+      <li ui-sref-active="active" ng-click="isCollapsed = true"><a ui-sref="auth.device.model"><i class="glyphicon glyphicon-phone"></i> 设备型号 </a></li>
+      <li ui-sref-active="active" ng-click="isCollapsed = !isCollapsed"><a><i class="glyphicon glyphicon-th-list"></i> 设备配置</a></li>
+      <ul class="nav nav-stacked" collapse="isCollapsed">
+        <li ui-sref-active="active" ng-repeat="device in devices">
+          <a ui-sref="auth.device.config({id: device._id})" ><i class="glyphicon glyphicon-edit"></i> {{device._id | uppercase}}</a></li>
+        </li>
+      </ul>
     </ul>
   </div><!-- /span-3 -->
   <div class="col-sm-10">
     <!-- column 2 --> 
-    <div ui-view=""></div>
+    <div ui-view class="view-frame"></div>
   </div>
 </div>

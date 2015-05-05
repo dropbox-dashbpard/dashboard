@@ -25,6 +25,7 @@ module.exports = (app) ->
   app.use compression()
   app.use bodyParser.urlencoded {extended: false, limit: '10mb'}
   app.use bodyParser.json {limit: '10mb'}
+  app.use bodyParser.text {limit: '10mb'}
   app.use methodOverride()
   app.use cookieParser(config.secrets.session)
 

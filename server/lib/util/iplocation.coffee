@@ -264,8 +264,11 @@ exports.ip2location = (req, res) ->
     if err or response.statusCode isnt 200
       res.send 500
     else
-      body = JSON.parse body
-      if body.code is 0
-        res.json 200, body.data
-      else
-        res.send 404
+      try
+        body = JSON.parse body
+        if body.code is 0
+          res.status(200).json body.data
+        else
+          res.send 404
+      catch e
+        res.send 500

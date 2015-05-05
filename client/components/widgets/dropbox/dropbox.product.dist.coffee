@@ -16,8 +16,6 @@ angular.module("widgets.dropbox")
     dbProdDistributionService.get(config.product, config.dist, config.category, start, end) if config.product and config.dist and config.category
   errorRate = (dbProdErrorRateService, config) ->
     dbProdErrorRateService.get(config.product, config.dist, config.total or 20, config.drilldown) if config.product and config.dist
-  releaseTypes = (dbReleaseTypesService, config) ->
-    dbReleaseTypesService.get()
   errorRateOfTag = (dbProdErrorRateOfTagService, config) ->
     dbProdErrorRateOfTagService.get(config.product, config.dist, config.tag, config.total or 20) if config.product and config.dist and config.tag
   errorRateOfApp = (dbProdErrorRateOfAppService, config) ->
@@ -32,7 +30,6 @@ angular.module("widgets.dropbox")
       controller: "productsDistCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
 
   dashboardProvider.widget("productTrendWidget", angular.extend(
       title: "缺陷趋势图"
@@ -40,7 +37,6 @@ angular.module("widgets.dropbox")
       controller: "productTrendCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
         trend: trend
       config:
         # product: "mitv_tv2" or "mibox1" ...
@@ -54,7 +50,6 @@ angular.module("widgets.dropbox")
       controller: "productDistributionCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
         distribution: distribution
       config:
         # category: "app" or "tag"
@@ -71,7 +66,6 @@ angular.module("widgets.dropbox")
       controller: "productErrorRateCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
         errorRate: errorRate
       config:
         # product: "mitv_tv2" or "mibox1" ...
@@ -86,7 +80,6 @@ angular.module("widgets.dropbox")
       controller: "productErrorRateOfTagCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
         errorRateOfTag: errorRateOfTag
       config:
         # product: "mitv_tv2" or "mibox1" ...
@@ -101,7 +94,6 @@ angular.module("widgets.dropbox")
       controller: "productErrorRateOfAppCtrl"
       resolve:
         products: products
-        releaseTypes: releaseTypes
         errorRateOfApp: errorRateOfApp
       config:
         # product: "mitv_tv2" or "mibox1" ...
@@ -112,9 +104,13 @@ angular.module("widgets.dropbox")
         totalDrilldown: 12
         total: 30
     , widget))
-).controller("productsDistCtrl", ($scope, config, products, releaseTypes, rebootTags, TypeItems) ->
+).controller("productsDistCtrl", ($scope, config, products, rebootTags, TypeItems) ->
   $scope.products = products
-  $scope.dists = releaseTypes
+  $scope.$watch "config.product", (newValue, oldValue) ->
+    prod = _.find(products, (prod)->
+      prod.name is config.product
+    )
+    $scope.dists = prod.versionTypes
   $scope.days = [10, 20, 30, 60, 90, 120, 150, 300]
   $scope.categories = ["app", "tag"]
   $scope.tags = rebootTags
@@ -122,13 +118,14 @@ angular.module("widgets.dropbox")
     $scope.$watch "config.product", (newValue, oldValue) ->
       if config.product
         $scope.apps = TypeItems.query {type: config.category, product: config.product}
-).controller("productTrendCtrl", ($scope, config, trend, products, releaseTypes, chartsProvider) ->
+).controller("productTrendCtrl", ($scope, config, trend, products, chartsProvider) ->
   if trend
-    distDisplay = _.find(releaseTypes, (dist)->
-      dist.name is config.dist
-    ).display
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
+      dist.name is config.dist
     ).display
 
     $scope.chartConfig = chartsProvider.chartTrend {
@@ -136,13 +133,14 @@ angular.module("widgets.dropbox")
         subtitle: "#{prodDisplay} - #{distDisplay}"
       }, trend
 
-).controller("productDistributionCtrl", ($scope, config, distribution, products, releaseTypes, chartsProvider) ->
+).controller("productDistributionCtrl", ($scope, config, distribution, products, chartsProvider) ->
   if distribution
-    distDisplay = _.find(releaseTypes, (dist)->
-      dist.name is config.dist
-    ).display
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
+      dist.name is config.dist
     ).display
     categoryDisplay = switch config.category
       when "tag" then "类型"
@@ -154,13 +152,14 @@ angular.module("widgets.dropbox")
         totalDisplay: config.totalDisplay or 12
       }, distribution
 
-).controller("productErrorRateCtrl", ($scope, config, errorRate, products, releaseTypes, chartsProvider) ->
+).controller("productErrorRateCtrl", ($scope, config, errorRate, products, chartsProvider) ->
   if errorRate
-    distDisplay = _.find(releaseTypes, (dist)->
-      dist.name is config.dist
-    ).display
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
+      dist.name is config.dist
     ).display
 
     $scope.chartConfig = chartsProvider.chartRate {
@@ -171,28 +170,30 @@ angular.module("widgets.dropbox")
           enabled: config.drilldown
           max: config.totalDrilldown
       }, errorRate
-).controller("productErrorRateOfTagCtrl", ($scope, config, errorRateOfTag, products, releaseTypes, chartsProvider) ->
+).controller("productErrorRateOfTagCtrl", ($scope, config, errorRateOfTag, products, chartsProvider) ->
   if errorRateOfTag
     seriesData = for data in errorRateOfTag
       [data.version, if data.devices is 0 then 0 else data.occurred*100/data.devices]
     seriesData = (d for d in seriesData by -1)
-    distDisplay = _.find(releaseTypes, (dist)->
-      dist.name is config.dist
-    ).display
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
+      dist.name is config.dist
     ).display
     $scope.chartConfig = chartsProvider.chartRateWithTotal {
       title: "重启率/天 - #{config.tag}"
       subtitle: "#{prodDisplay} - #{distDisplay}"
     }, errorRateOfTag
-).controller("productErrorRateOfAppCtrl", ($scope, config, errorRateOfApp, products, releaseTypes, chartsProvider) ->
+).controller("productErrorRateOfAppCtrl", ($scope, config, errorRateOfApp, products, chartsProvider) ->
   if errorRateOfApp
-    distDisplay = _.find(releaseTypes, (dist)->
-      dist.name is config.dist
-    ).display
-    prodDisplay = _.find(products, (prod)->
+    prod = _.find(products, (prod)->
       prod.name is config.product
+    )
+    prodDisplay = prod.display
+    distDisplay = _.find(prod.versionTypes, (dist)->
+      dist.name is config.dist
     ).display
 
     $scope.chartConfig = chartsProvider.chartRate {

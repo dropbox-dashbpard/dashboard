@@ -9,7 +9,7 @@
  */
 
 @font-size-base:          14px;
-@navbar-height:           @font-size-base*50/14px;
+@navbar-height:           @font-size-base*50/@font-size-base;
 
 // @font-size-large:         ceil((@font-size-base * 1.15)); // ~18px
 // @font-size-small:         ceil((@font-size-base * 0.85)); // ~12px
@@ -21,6 +21,10 @@
 // @font-size-h5:            @font-size-base;
 // @font-size-h6:            ceil((@font-size-base * 0.85)); // ~12px
 
+body {
+    padding-top: @navbar-height;
+}
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
@@ -28,12 +32,36 @@
     padding: 0.2em 0;
 }
 
-.gridStyle {
-    border: 1px solid rgb(212,212,212);
-    height: 640px;
+// .gridStyle {
+//     border: 1px solid rgb(212,212,212);
+//     height: 640px;
+// }
+.rowClickable {
+  cursor: pointer;
 }
+
+* {
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -155px; /* the bottom margin is the negative value of the footer's height */
+}
+
+.footer, .push {
+    height: 155px; /* .push must be the same height as .footer */
+}
+
 // injector
+@import 'animate.less';
 @import 'auth/auth.less';
+@import 'auth/query/query.items.less';
 @import 'bootstrap-select2.less';
-@import 'adf/adf.less';
 // endinjector

@@ -1,10 +1,9 @@
 'use strict'
 
 angular.module 'dbboardApp'
-.controller 'AuthCtrl', ($scope, $state, $location, LoginService, Session, Products, Releases) ->
+.controller 'AuthCtrl', ($scope, $state, $location, LoginService, Session, Products) ->
   $scope.session = Session
   $scope.products = Products
-  $scope.releases = Releases
 
   $scope.isCollapsed = false
 

@@ -1,7 +1,7 @@
 "use strict"
 
 angular.module("widgets.dropbox", ["adf.provider", "dropbox", "highcharts-ng", "ngGrid"])
-.value("rebootTags", ["SYSTEM_RESTART", "APANIC_CONSOLE"])
+.value("rebootTags", ["SYSTEM_RESTART", "SYSTEM_LAST_KMSG"])
 .provider("chartsProvider", ->
   @colors = colors =
     device: "#8888FF"
@@ -75,8 +75,6 @@ angular.module("widgets.dropbox", ["adf.provider", "dropbox", "highcharts-ng", "
       seriesData.push(["其他", others])
     _.each seriesData, (data) ->
       name = data[0]
-      if name is "/system/bin/mediaserver"
-        console.log "nameMapping[#{name}] = #{nameMapping[name]}"
       if data[0] of nameMapping
         [keys[nameMapping[data[0]]], data[0]] = [data[0], nameMapping[data[0]]]
       else if m = /([\w:$]+)$/g.exec(data[0])

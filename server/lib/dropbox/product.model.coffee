@@ -41,6 +41,22 @@ exports = module.exports = (dbprefix) ->
           production: []  # 产品正式发布版本
           stable: []  # 稳定版本，类似于weekly stable build
           development: []  # 开发版本，可以使daily build
+      versionTypes:
+        type: Array
+        default: [
+          {
+            name: 'production'
+            display: '产品发布（最终用户）'
+          }
+          {
+            name: 'stable'
+            display: '稳定版本（内测用户）'
+          }
+          {
+            name: 'development'
+            display: '开发版本（工程测试）'
+          }
+        ]
       ignores:
         type: Array
         default: [
@@ -64,6 +80,17 @@ exports = module.exports = (dbprefix) ->
             limit: 3000
           }
         ]
+      bts:  # bug tracking system
+        type:
+          type: String
+          default: 'jira'
+        username: String
+        password: String
+        url: String
+        project: String
+        ver_control: Object
+        threshold: Object
+        components: Object
     ,
       collection: "#{dbprefix}.productconfigs"
     )
@@ -98,10 +125,19 @@ exports = module.exports = (dbprefix) ->
       if ver not instanceof Array
         ver = [ver]
       ver = _.filter ver, (v) =>
-        RegExp(@template.version_validation).exec v
-      for dist, vers of @versions
-        @set "versions.#{dist}", _.filter(vers, (v) -> v not in ver)
-      @set "versions.#{type}", _.sortBy(_.union(@versions[type] or [], ver))
+        @validVersion v
+
+      moreStable = true
+      for vt in @versionTypes
+        if vt.name is type
+          if ver.length > 0
+            @set "versions.#{type}", _.sortBy(_.union(@versions[type] or [], ver))[-64..]  # up to 64 versions for each type
+          moreStable = false
+        else if moreStable
+          ver = _.difference ver, @versions[vt.name]
+        else
+          if ver.length > 0
+            @set "versions.#{vt.name}", _.difference(@versions[vt.name], ver)
       @save cb
 
     ProductConfigSchema.methods.validVersion = (ver) ->

@@ -21,36 +21,18 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <label for="typeCtrl" class="control-label">{{typeDisplay}}:</label>
-        <div>
-          <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称">
-            <option ng-repeat="v in typeValues" value="{{v}}">{{v}}</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="occurredAt_from" class="control-label">从:</label>
-        <div>
-          <input ui-date class="form-control" id="occurredAt_from" placeholder="起始日期" ng-model="from" ng-required="true">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="occurredAt_to" class="control-label">到:</label>
-        <div>
-          <input ui-date class="form-control" id="occurredAt_to" placeholder="结束日期" ng-model="to" ng-required="true">
-        </div>
-      </div>
 <!--       <div class="form-group">
         <div>
-          <button type="submit" class="form-control btn btn-default btn-primary" ng-click="queryInAdvance(product, version, value, from, to)">查询</button>
+          <button type="submit" class="form-control btn btn-default btn-primary" ng-click="update()">查询</button>
         </div>
       </div>
  -->    </form>
   </div>
   <div class="col-sm-10">
     <div class="row form-group"></div>
+    <div class="row" ng-controller="DropboxProductErrorFeaturesCtrl" ng-include="'app/auth/query/query.errorfeature.list.html'"></div>
     <div class="row" ng-controller="DropboxItemListCtrl" ng-include="'app/auth/query/query.items.html'"></div>
     <div class="row" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
+    <!-- <div class="row" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div> -->
   </div>
 </div>

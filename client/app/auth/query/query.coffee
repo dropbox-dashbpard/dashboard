@@ -10,8 +10,6 @@ angular.module "dbboardApp"
     resolve:
       Products: (dbProductService) ->
         dbProductService.get()
-      Releases: (dbReleaseTypesService) ->
-        dbReleaseTypesService.get()
   .state "auth.query.dashboard",
     url: "/dashboard"
     templateUrl: "app/auth/board/dashboard.html"
@@ -36,7 +34,7 @@ angular.module "dbboardApp"
     url: "/dbitem/:dropboxId"
     templateUrl: "app/auth/query/query.dropboxid.html"
     controller: "QueryDropboxItemCtrl"
-  .state "auth.query.report_tag",
-    url: "/report/tag?product&version&value"
-    templateUrl: "app/auth/query/query.report.html"
-    controller: "QueryReportCtrl"
+  .state "auth.query.errorfeature",
+    url: "/report/errorfeature?product&version&errorfeature"
+    templateUrl: "app/auth/query/query.errorfeature.html"
+    controller: "QueryDropboxProductErrorFeaturesCtrl"

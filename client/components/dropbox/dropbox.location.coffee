@@ -6,5 +6,8 @@ angular.module("dropbox")
     get:
       method: "GET"
       transformResponse: (body, header) ->
-        JSON.parse(body)
+        try
+          JSON.parse(body)
+        catch error
+          {}
   }

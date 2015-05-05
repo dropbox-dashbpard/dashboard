@@ -131,7 +131,7 @@ angular.module 'dbboardApp'
                 {
                   type: "productErrorRateOfRebootWidget"
                   config:
-                    tag: "APANIC_CONSOLE"
+                    tag: "SYSTEM_LAST_KMSG"
                     product: ""
                     dist: ""
                     total: 8
@@ -165,10 +165,12 @@ angular.module 'dbboardApp'
       ]
     }
   ]
-.controller 'BoardCtrl', ($scope, $http, $interval, DashboardModels, Products, Releases) ->
+.controller 'BoardCtrl', ($scope, $http, $interval, DashboardModels, Products) ->
   p_index = 0
   d_index = 0
   m_index = 0
+
+  Releases = []
 
   increaseIndex = ->
     m_index = (m_index + 1) % DashboardModels.length
@@ -179,6 +181,7 @@ angular.module 'dbboardApp'
 
   nextModel = ->
     product = Products[p_index]
+    Releases = product.versionTypes
     dist = Releases[d_index]
     model = DashboardModels[m_index]
     version = product.versions[dist.name][0]
@@ -211,7 +214,7 @@ angular.module 'dbboardApp'
       model = do nextModel
       for key, value of model
         $scope.model[key] = value
-    , 20 * 1000
+    , 10 * 1000
 
     $scope.$on '$destroy', ->
       $interval.cancel $scope.intervalUpdate

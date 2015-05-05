@@ -17,14 +17,6 @@ angular.module("dropbox")
       transformResponse: (body, header) ->
         angular.fromJson(body)?.data or []
   }
-.factory "DropboxReport", ($resource) ->
-  $resource "/api/0/dropbox/ea/product/:product", {}, {
-    query:
-      method: "GET"
-      isArray: false
-      transformResponse: (body, header) ->
-        angular.fromJson(body)
-  }
 .factory 'Product', ($resource, dbProductApiUrl) ->
   $resource "dbProductApiUrl/:product", {}, {
     query:
@@ -35,5 +27,23 @@ angular.module("dropbox")
   }
 .factory 'ProductModel', ($resource) ->
   $resource "/api/0/dropbox/productmodel/:id", {id: '@_id'}
+.factory 'ProductConfigModel', ($resource) ->
+  $resource "/api/0/dropbox/productconfig/:id", {id: '@_id'},
+    'update':
+      method: 'POST'
 .factory 'UserModel', ($resource) ->
   $resource "/auth/users/:id", {id: '@_id'}
+.factory 'ErrorFeature', ($resource) ->
+  $resource "/api/0/dropbox/errorfeature/:id", {}, {
+    query:
+      method: 'GET'
+      isArray: false
+  }
+.factory 'Ticket', ($resource) ->
+  $resource "/api/0/dropbox/ticket/:id", {}, {
+    query:
+      method: 'GET'
+      isArray: true
+      transformResponse: (data, headers) ->
+        angular.fromJson(data)?.data or []
+  }

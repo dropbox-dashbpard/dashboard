@@ -2,13 +2,16 @@
 
 _ = require 'lodash'
 mongoose = require 'mongoose'
+request = require 'request'
+crypto = require 'crypto'
 
 dateToString = require('./util').dateToString
 stringToDate = require('./util').stringToDate
+config = require '../../config/environment'
 
 exports.dbmodel = (req, res, next) ->  # 设置mongodb的model
   prefix = req.user?.group or req.user?.name  or 'default'
-  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix)
+  req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix), require('./error.model')(prefix)
   next()
 
 exports.ua = (req, res, next) ->  # parse 上报数据的ua
@@ -46,6 +49,7 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
         template: dc.template,
         limits: dc.limits
         versions: dc.versions
+        versionTypes: dc.versionTypes
         ignores: dc.ignores
       }
     }, {
@@ -57,9 +61,9 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
       if config.validVersion req.version
         next()
         if process.env.NODE_ENV isnt 'production'
-          config.addVersion 'development', req.version, (err, doc) ->  # TODO debug only
+          config.addVersion _.last(config.versionTypes)?.name or 'development', req.version, (err, doc) ->  # TODO debug only
       else
-        next new Error('Invalid version!')
+        next new Error("Invalid version: #{config.name} - #{req.version}!")
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce req.body.data, (memo, entry) ->
@@ -145,10 +149,53 @@ exports.add = (req, res, next) ->
 # update dropbox message content
 exports.updateContent = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
-  if req.body.content?
-    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": req.body.content}, select: "_id").exec()
+  content = req.body.content or req.body
+  if content?
+    req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag ua product version").exec()
     .then (doc) ->
         res.json result: "ok"
+        process.nextTick ->
+          request.post 
+            url: "#{config.url.errordetect}/#{doc.tag}"
+            body: content
+            headers:
+              'X-Requested-With': 'XMLHttpRequest'
+              'X-Dropbox-UA': _.map(doc.ua, (v, k)->"#{k}=#{v}").join(';')
+            qs:
+              product: doc.product
+              version: doc.version
+            gzip: true
+          , (e, r, body) ->
+            if e? or r.statusCode isnt 200
+              console.log "Error during detecting: #{e}"
+              return
+            body = JSON.parse(body)
+            if body.status isnt 1
+              console.log "No feature detected for id #{doc._id}"
+              return
+            md5 = body.md5?.toLowerCase() or crypto.createHash('md5').update(JSON.stringify(body.features)).digest('hex')
+            req.model.ErrorFeature.findByIdAndUpdate(md5,
+              {
+                $setOnInsert:
+                  created_at: new Date()
+                  features:body.features
+                  tag: doc.tag
+              }, upsert: true
+            ).exec().then (ef) ->
+              op = $set: {errorfeature: md5}
+              if body.traces?.length > 0
+                op.$set['data.traces'] = body.traces
+              req.model.Dropbox.findByIdAndUpdate(dropbox_id, op, select: "errorfeature").exec()
+            .then (item) ->
+              query = product: doc.product, version: doc.version
+              op = $setOnInsert: {created_at: new Date(), errorfeatures: {}}
+              req.model.ProductErrorFeature.findOneAndUpdate(query, op, upsert: true).exec()
+            .then (pef) ->
+              query = product: doc.product, version: doc.version
+              op = $inc: {}
+              op.$inc["errorfeatures.#{md5}"] = 1
+              req.model.ProductErrorFeature.findOneAndUpdate(query, op).exec()
+            .end()
       , (err) ->
         next err
   else
@@ -170,18 +217,20 @@ exports.get = (req, res, next) ->  # get a dropbox entry
 # 查询dropbox列表
 exports.list = (req, res) ->  # query dropbox entries
   limit = parseInt(req.param("limit")) or 1000
-  from = new Date(req.param("from") or (Date.now() - 1000*3600*24))
+  from = new Date(req.param("from") or (Date.now() - 1000*3600*24*120))
   to = new Date(req.param("to") or Date.now())
   if from > to
     [from, to] = [to, from]
   promise = if(deviceId = req.param("device_id"))
     req.model.Dropbox.findByDeviceID deviceId, from, to, limit
   else if(app = req.param("app"))
-    req.model.Dropbox.findAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
+    req.model.Dropbox.findByAppInAdvance req.param("product"), req.param("version"), app, from, to, limit
   else if(tag = req.param("tag"))
-    req.model.Dropbox.findTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
+    req.model.Dropbox.findByTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
   else if(mac = req.param("mac"))
     req.model.Dropbox.findByMacAddress mac, from, to, limit
+  else if(errorfeature = req.param("errorfeature"))
+    req.model.Dropbox.findByErrorFeature req.param("product"), errorfeature, from, to, limit
   else
     req.model.Dropbox.findByCreatedAt from, to, limit
   promise.onResolve (err, docs) ->
