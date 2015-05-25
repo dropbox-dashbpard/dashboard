@@ -39,8 +39,8 @@ angular.module("widgets.dropbox")
         products: products
         trend: trend
       config:
-        # product: "mitv_tv2" or "mibox1" ...
-        # dist: "weekly" or "release" or "internal"
+        # product:  ...
+        # dist: "production", "stable", "development"
         selectDays: true
         # days: 30
     , widget)
@@ -53,8 +53,8 @@ angular.module("widgets.dropbox")
         distribution: distribution
       config:
         # category: "app" or "tag"
-        # product: "mitv_tv2" or "mibox1" ...
-        # dist: "weekly" or "release" or "internal"
+        # product:  ...
+        # dist: "production", "stable", "development"
         selectCategory: true
         selectDays: true
         totalDisplay: 12
@@ -68,8 +68,8 @@ angular.module("widgets.dropbox")
         products: products
         errorRate: errorRate
       config:
-        # product: "mitv_tv2" or "mibox1" ...
-        # dist: "weekly" or "release" or "internal"
+        # product:  ...
+        # dist: "production", "stable", "development"
         drilldown: true
         totalDrilldown: 12
         total: 30
@@ -82,8 +82,8 @@ angular.module("widgets.dropbox")
         products: products
         errorRateOfTag: errorRateOfTag
       config:
-        # product: "mitv_tv2" or "mibox1" ...
-        # dist: "weekly" or "release" or "internal"
+        # product:  ...
+        # dist: "production", "stable", "development"
         # tag: ["SYSTEM_RESTART", "DEVICE_REBOOT", "APANIC_CONSOLE"]
         selectTag: true
         total: 20
@@ -96,8 +96,8 @@ angular.module("widgets.dropbox")
         products: products
         errorRateOfApp: errorRateOfApp
       config:
-        # product: "mitv_tv2" or "mibox1" ...
-        # dist: "weekly" or "release" or "internal"
+        # product:  ...
+        # dist: "production", "stable", "development"
         category: "app"
         selectApp: true
         drilldown: true

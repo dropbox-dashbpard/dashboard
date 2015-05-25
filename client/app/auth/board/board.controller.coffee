@@ -181,7 +181,8 @@ angular.module 'dbboardApp'
 
   nextModel = ->
     product = Products[p_index]
-    Releases = product.versionTypes
+    Releases = _.filter product.versionTypes, (dist) ->
+      dist.name not in ['development', 'test', 'engineering']
     dist = Releases[d_index]
     model = DashboardModels[m_index]
     version = product.versions[dist.name][0]
