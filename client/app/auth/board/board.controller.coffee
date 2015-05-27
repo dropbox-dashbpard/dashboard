@@ -50,7 +50,7 @@ angular.module 'dbboardApp'
                   product: ""
                   dist: ""
                   selectDays: true
-                  totalDisplay: 12
+                  totalDisplay: 30
                   days: 7
               }
             ]
@@ -83,7 +83,7 @@ angular.module 'dbboardApp'
                   product: ""
                   dist: ""
                   selectDays: true
-                  totalDisplay: 12
+                  totalDisplay: 30
                   days: 30
               }
             ]

@@ -37,7 +37,7 @@ angular.module("dbboardApp")
                   dist: dist
                   total: 12
                   drilldown: true
-                  totalDrilldown: 12
+                  totalDrilldown: 30
               }
             ]
           }
@@ -56,7 +56,7 @@ angular.module("dbboardApp")
                   dist: dist
                   category: "app"
                   selectDays: true
-                  totalDisplay: 12
+                  totalDisplay: 30
                   days: 30
               }
             ]
