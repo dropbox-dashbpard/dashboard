@@ -216,7 +216,7 @@ exports.get = (req, res, next) ->  # get a dropbox entry
 
 # 查询dropbox列表
 exports.list = (req, res) ->  # query dropbox entries
-  limit = parseInt(req.param("limit")) or 1000
+  limit = parseInt(req.param("limit")) or 3000
   from = new Date(req.param("from") or (Date.now() - 1000*3600*24*120))
   to = new Date(req.param("to") or Date.now())
   if from > to
