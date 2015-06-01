@@ -86,6 +86,12 @@
               <div class="col-md-8">{{item.device_id}}</div>
             </div>
           </a>
+          <a class="list-group-item list-group-item-info" ng-if="item.imei">
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-barcode"></i>IMEI</strong></div>
+              <div class="col-md-8">{{item.imei}}</div>
+            </div>
+          </a>
           <a class="list-group-item list-group-item-info" ui-sref="auth.query.mac({mac: item.mac_address})">
             <div class="row">
               <div class="col-md-2"><strong><i class="glyphicon glyphicon-record"></i>网卡地址</strong></div>
