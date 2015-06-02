@@ -24,10 +24,9 @@
       <div class="form-group">
         <label for="typeCtrl" class="control-label">{{typeDisplay}}:</label>
         <div>
-          <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称" ng-if="typeValues.length >= 1000">
+          <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称">
             <option ng-repeat="v in typeValues" value="{{v}}">{{v}}</option>
           </select>
-          <input type="text" ng-model="value" typeahead="state for state in typeValues | filter:$viewValue | limitTo:16" class="form-control" ng-if="typeValues.length < 1000">
         </div>
       </div>
       <div class="form-group">
