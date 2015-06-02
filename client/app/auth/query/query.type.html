@@ -6,7 +6,7 @@
       <div class="form-group">
         <label for="deviceCtrl" class="control-label">产品:</label>
         <div>
-          <select ui-select2 class="form-control" ng-model="product" id="deviceCtrl" ng-required="true" data-placeholder="请选择产品名称">
+          <select ui-select2 class="form-control" ng-model="product" id="deviceCtrl" ng-required="true" data-placeholder="请选择产品名称"">
             <option ng-repeat="prod in products" value="{{prod.name}}">{{prod.display}}</option>
           </select>
         </div>
@@ -14,7 +14,7 @@
       <div class="form-group">
         <label for="versionCtrl" class="control-label">版本:</label>
         <div>
-          <select ui-select2 class="form-control" ng-model="version" id="versionCtrl" ng-required="true" data-placeholder="请选择版本号">
+          <select ui-select2 class="form-control" ng-model="version" id="versionCtrl" ng-required="true" data-placeholder="请选择版本号"">
             <optgroup ng-repeat="rel in releases" label="{{rel.display}}">
               <option ng-repeat="ver in versions[rel.name]" value="{{ver}}">{{ver}}</option>
             </optgroup>
@@ -24,9 +24,10 @@
       <div class="form-group">
         <label for="typeCtrl" class="control-label">{{typeDisplay}}:</label>
         <div>
-          <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称">
+          <select ui-select2 class="form-control" ng-model="value" id="typeCtrl" ng-required="true" data-placeholder="请选择应用名称" ng-change="changeValue(value)" ng-if="showSelect">
             <option ng-repeat="v in typeValues" value="{{v}}">{{v}}</option>
           </select>
+          <input type="text" id="typeCtrl" ng-model="value" typeahead-editable="false" typeahead="ver for ver in typeValues | filter:$viewValue | limitTo:24" class="form-control" typeahead-on-select="changeValue(value)" ng-if="!showSelect">
         </div>
       </div>
       <div class="form-group">
