@@ -31,7 +31,6 @@ angular.module('dbboardApp')
         $scope.value ?= $stateParams.value
 
   $scope.changeValue = (v)->
-    console.log "value changed: #{v}"
     if $scope.value isnt v
       if v in $scope.typeValues
         $scope.value = v
@@ -55,6 +54,5 @@ angular.module('dbboardApp')
     if from > to
       [from, to] = [to, from]
     params = {product: product, version: version, from: from, to: to, limit: 1000}
-    console.log params, value
     params[$scope.type] = value
     $rootScope.$broadcast "Change:Dropbox:Items", params if product and version and value and from and to
