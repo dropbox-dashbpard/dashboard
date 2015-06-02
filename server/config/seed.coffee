@@ -41,7 +41,7 @@ User.find({}).remove ->
     group: 'test'
   ).save (err, doc)->
 
-model = require('../lib/dropbox/product.model')('test')
+model = require('../lib/dropbox/product.model')('default')
 
 model.Product.find({}).remove ->
   new model.Product(
