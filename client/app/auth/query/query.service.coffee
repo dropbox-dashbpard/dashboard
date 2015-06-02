@@ -2,7 +2,7 @@
 
 angular.module('dbboardApp')
 .factory 'queryUtilsFactory', ->
-  defaultDateOfQuery: (duration=1)->
+  defaultDateOfQuery: (duration=2)->
     now = new Date()
     return [
       new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - duration, now.getUTCHours())

@@ -12,12 +12,13 @@ angular.module('dbboardApp')
       $scope.version = $stateParams.version or _.flatten(_.map($scope.versions))[0]
   # select a version then update values
   $scope.$watch "version", (newValue, oldValue) ->
-    TypeItems.query {type: $scope.type, product: $scope.product, version: newValue}, (values) ->
-      $scope.typeValues = values
-      if $scope.value and $scope.value is ($stateParams.value or values[0])
-        $scope.update()
-      else
-        $scope.value = $stateParams.value or values[0]
+    if newValue?
+      TypeItems.query {type: $scope.type, product: $scope.product, version: newValue}, (values) ->
+        $scope.typeValues = values
+        if $scope.value and $scope.value is ($stateParams.value or values[0])
+          $scope.update()
+        else
+          $scope.value = $stateParams.value or values[0]
   $scope.$watch "from", (newValue, oldValue) ->
     $scope.update()
   $scope.$watch "to", (newValue, oldValue) ->
