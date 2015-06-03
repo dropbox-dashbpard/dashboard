@@ -229,6 +229,8 @@ exports.list = (req, res) ->  # query dropbox entries
     req.model.Dropbox.findByTagInAdvance req.param("product"), req.param("version"), tag, from, to, limit
   else if(mac = req.param("mac"))
     req.model.Dropbox.findByMacAddress mac, from, to, limit
+  else if(imei = req.param("imei"))
+    req.model.Dropbox.findByImei imei, from, to, limit
   else if(errorfeature = req.param("errorfeature"))
     req.model.Dropbox.findByErrorFeature req.param("product"), errorfeature, from, to, limit
   else

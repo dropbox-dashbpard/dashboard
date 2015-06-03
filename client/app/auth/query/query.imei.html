@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-sm-2">
+    <form class="form" role="form">
+      <div class="form-group">
+      </div>
+      <div class="form-group">
+        <label for="deviceId">IMEI:</label>
+        <div>
+          <input type="text" class="form-control" id="deviceId" placeholder="请输入设备IMEI！" ng-model="deviceId" ng-required="true">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="occurredAt_from" class="control-label">从:</label>
+        <div>
+          <input ui-date class="form-control" id="occurredAt_from" placeholder="请输入发生的日期！" ng-model="from" ng-required="true">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="occurredAt_to" class="control-label">到:</label>
+        <div>
+          <input ui-date class="form-control" id="occurredAt_to" placeholder="请输入发生的日期！" ng-model="to" ng-required="true">
+        </div>
+      </div>
+      <div class="form-group">
+        <div>
+          <button type="submit" class="form-control btn btn-default btn-primary" ng-click="queryImei(deviceId, from, to)">查询</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-sm-10">
+    <div class="row form-group"></div>
+    <div class="row" ng-controller="DropboxItemListCtrl" ng-include="'app/auth/query/query.items.html'"></div>
+    <div class="row" ng-controller="ItemDetailCtrl" ng-include="'app/auth/query/query.item.html'"></div>
+  </div>
+</div>

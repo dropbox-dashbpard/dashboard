@@ -84,6 +84,15 @@ exports = module.exports = (dbprefix) ->
       .exec()
       if cb then promise.onResolve(cb) else promise
 
+    DropboxSchema.statics.findByImei = (imei, from_date, to_date, limit, cb) ->
+      promise = @find()
+      .where("created_at").gte(from_date).lt(to_date)
+      .where("ua.imei").equals(imei)
+      .limit(limit)
+      .select("product version occurred_at app tag created_at device_id errorfeature")
+      .exec()
+      if cb then promise.onResolve(cb) else promise
+
     DropboxSchema.statics.findByCreatedAt = (from_date, to_date, limit, cb) ->
       promise = @find()
       .where("created_at").gte(from_date).lt(to_date)

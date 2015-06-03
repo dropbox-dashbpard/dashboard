@@ -39,6 +39,8 @@ angular.module('dbboardApp')
     $state.go("auth.query.device", {deviceId: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
   $scope.queryMac = (deviceId, from, to) ->
     $state.go("auth.query.mac", {mac: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
+  $scope.queryImei = (deviceId, from, to) ->
+    $state.go("auth.query.imei", {imei: deviceId, from: from, to: to}, {reload: true}) if deviceId and from and to
   # When the controller is running, the child controller isn't. If we broadcase event here,
   # the child will not receive it. so we have to broadcase event to child controller after viewContentLoaded.
   $scope.$on "$viewContentLoaded", (event) ->
@@ -48,6 +50,8 @@ angular.module('dbboardApp')
       $rootScope.$broadcast "Change:Dropbox:Items", {device_id: $scope.deviceId, from: $scope.from, to: $scope.to, limit: 500}
     else if $scope.deviceId = $stateParams.mac
       $rootScope.$broadcast "Change:Dropbox:Items", {mac: $scope.deviceId, from: $scope.from, to: $scope.to, limit: 500}
+    else if $scope.deviceId = $stateParams.imei
+      $rootScope.$broadcast "Change:Dropbox:Items", {imei: $scope.deviceId, from: $scope.from, to: $scope.to, limit: 500}
 .controller "QueryDropboxItemCtrl", ($rootScope, $scope, $state, $stateParams) ->
   $scope.query = (id) ->
     $state.go("auth.query.dbitem", {dropboxId: id}, {reload: true}) if id

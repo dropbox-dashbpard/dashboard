@@ -22,6 +22,10 @@ angular.module "dbboardApp"
     url: "/mac/:mac?from&to"
     templateUrl: "app/auth/query/query.mac.html"
     controller: "QueryDataDeviceCtrl"
+  .state "auth.query.imei",
+    url: "/imei/:imei?from&to"
+    templateUrl: "app/auth/query/query.imei.html"
+    controller: "QueryDataDeviceCtrl"
   .state "auth.query.app",
     url: "/app?product&version&value"
     templateUrl: "app/auth/query/query.type.html"

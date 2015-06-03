@@ -113,6 +113,7 @@ angular.module('dbboardApp')
         data.mac_address = item.ua?.mac_address
         data.board = item.ua?.board
         data.device = item.ua?.device
+        data.imei = item.ua?.imei
         data.buildtype = item.ua?.type
         data.count = item.data?.count or 1
         data.ip = item.ua?.ip
