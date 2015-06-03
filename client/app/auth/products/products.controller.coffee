@@ -123,6 +123,7 @@ angular.module("dbboardApp")
                   selectDays: true
                   days: 30
                   version: version
+                  totalDisplay: 30
               }
             ]
           }

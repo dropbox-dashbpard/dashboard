@@ -158,6 +158,7 @@ angular.module 'dbboardApp'
                   selectDays: true
                   days: 30
                   version: ""
+                  totalDisplay: 30
               }
             ]
           }
