@@ -66,9 +66,9 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
         next new Error("Invalid version: #{config.name} - #{req.version}!")
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
-  total = _.reduce req.body.data, (memo, entry) ->
+  total = _.reduce(req.body.data, (memo, entry) ->
     memo + (entry.data?.count or 1)
-  , 0
+  , 0) or 1
   device_id = req.product.device_id req.ua
   req.model.DeviceStat.addDevice device_id, req.version, req.report_at, total, (err, device, key) ->
     return next(err) if err
@@ -155,7 +155,7 @@ exports.updateContent = (req, res, next) ->
     .then (doc) ->
         res.json result: "ok"
         process.nextTick ->
-          request.post 
+          request.post
             url: "#{config.url.errordetect}/#{doc.tag}"
             body: content
             headers:

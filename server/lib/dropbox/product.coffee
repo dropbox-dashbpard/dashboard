@@ -4,7 +4,7 @@ _ = require 'lodash'
 
 # 产品列表清单
 exports.list = (req, res, next) ->
-  req.model.ProductConfig.find().exec (err, docs) ->
+  req.model.ProductConfig.find().sort("_id").exec (err, docs) ->
     return next err if err
     products = _.map docs, (config) ->
       display: config.display or config.name
