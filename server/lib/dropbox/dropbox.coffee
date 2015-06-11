@@ -78,6 +78,18 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
       res.status(403).send 'Forbidden!'  # drop all entries in black_list, and don't count it on dropbox summary
     else
       next()
+      # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
+      if req.body.uptime?
+        uptime = req.body.uptime
+        date = req.report_at
+        process.nextTick ->
+          while (uptime -= 1000*3600*24) > 0
+            date = new Date(date.getTime() - 1000*3600*24)
+            do (date) ->
+              req.model.DeviceStat.addDevice device_id, req.version, date, 1, (err, device, key) ->
+                return next(err) if err
+                if device.counter[key] <= 1
+                  req.model.DropboxStat.addDropboxEntry req.product.name, req.version, date, [], true, req.product
 
 exports.add = (req, res, next) ->
   isUnderLimits = (kvs) ->  # 判断是否超出上报限额
