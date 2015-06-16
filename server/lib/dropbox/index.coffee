@@ -17,6 +17,8 @@ bearerAuth = [auth.ensureToken, dropbox.dbmodel]
 router.post '/', bearerAuth, dropbox.ua, dropbox.product, dropbox.device, dropbox.add
 router.post '/:dropbox_id/content', bearerAuth, dropbox.updateContent
 router.post '/:dropbox_id/upload', bearerAuth, dropbox.upload
+router.get '/file/:id', bearerAuth, dropbox.download
+router.delete '/file/:id', bearerAuth, dropbox.removeFile
 
 router.get '/items/:dropbox_id', bearerAuth, dropbox.get
 router.get '/items', bearerAuth, dropbox.list

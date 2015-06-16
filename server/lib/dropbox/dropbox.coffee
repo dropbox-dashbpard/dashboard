@@ -2,6 +2,7 @@
 
 _ = require 'lodash'
 mongoose = require 'mongoose'
+Grid = require 'gridfs-stream'
 request = require 'request'
 crypto = require 'crypto'
 
@@ -12,6 +13,7 @@ config = require '../../config/environment'
 exports.dbmodel = (req, res, next) ->  # 设置mongodb的model
   prefix = req.user?.group or req.user?.name  or 'default'
   req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix), require('./error.model')(prefix)
+  req.gfs = Grid(mongoose.connection.db, mongoose.mongo)
   next()
 
 exports.ua = (req, res, next) ->  # parse 上报数据的ua
@@ -216,7 +218,40 @@ exports.updateContent = (req, res, next) ->
 # upload attachment of dropbox
 exports.upload = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
-  res.send "TODO"  #TODO upload log file
+  if req.busboy?
+    req.busboy.on 'file', (fieldname, file, filename, encoding, mimetype) ->
+      writestream = req.gfs.createWriteStream(
+        content_type: mimetype
+        filename: filename
+        chunkSize: 4096
+        metadata:
+          dropbox_id: dropbox_id
+      )
+      file.on 'data', (data) ->
+        writestream.write data, encoding
+      file.on 'end', ->
+        writestream.end()
+        req.model.Dropbox.findByIdAndUpdate dropbox_id, $push: {attachment: "/api/0/dropbox/file/#{writestream.id}"}, (err, db) ->
+    req.busboy.on 'finish', ->
+      res.status(200).send()
+    req.pipe(req.busboy)
+  else
+    res.send ""
+
+# download attachment of dropbox
+exports.download = (req, res, next) ->
+  req.gfs.findOne _id: req.params.id, (err, file) ->
+    return next err if err?
+    res.set 'content-type', file.contentType
+    readstream = req.gfs.createReadStream( _id: req.params.id).on 'error', (err) ->
+      next err
+    .pipe res
+
+# remove attachment of dropbox
+exports.removeFile = (req, res, next) ->
+  req.gfs.remove _id: req.params.id, (err) ->
+    return next err if err?
+    res.send()
 
 exports.get = (req, res, next) ->  # get a dropbox entry
   dropbox_id = req.param('dropbox_id')
