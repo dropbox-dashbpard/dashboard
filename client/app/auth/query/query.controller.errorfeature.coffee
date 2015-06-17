@@ -24,26 +24,44 @@ angular.module('dbboardApp')
   $scope.itemPerPage = 5
   $scope.currentPage = 1
   $scope.maxSize = 20
+
+  $scope.$on "$destroy", ->
+    $scope.destroy = true
+
   $scope.$on "Change:Dropbox:ProductVersion", (event, params) ->
     $scope.product = params.product
     $scope.version = params.version
     $scope.selected = null
+    $scope.errorfeatures = []
+    $rootScope.$broadcast "Change:Dropbox:Items", null
     ngProgress.start()
-    $scope.errorfeatures = ErrorFeature.query
+    pageSize = 50
+
+    updateResult = (query) ->
+      query.$promise.then (ef) ->
+        $scope.errorfeatures = $scope.errorfeatures.concat ef.data
+        if ef.page < ef.pages and not $scope.destroy
+          updateResult ErrorFeature.query(
+            product: params.product
+            version: params.version
+            page: ef.page + 1
+            pageSize: pageSize
+          )
+        else
+          ngProgress.complete()
+          $scope.show = $scope.errorfeatures.length > 0
+          $scope.search = params.errorfeature if params.errorfeature
+      , (err) ->
+        ngProgress.complete()
+        $scope.show = false
+        $scope.search = params.errorfeature if params.errorfeature
+
+    updateResult ErrorFeature.query(
       product: params.product
       version: params.version
       page: 1
-      pageSize: 0
-    , (ef) ->
-      ngProgress.complete()
-      $scope.show = ef?.data?.length > 0
-      $scope.search = params.errorfeature if params.errorfeature
-      $rootScope.$broadcast "Change:Dropbox:Items", null
-    , (err) ->
-      ngProgress.complete()
-      $scope.show = false
-      $scope.search = params.errorfeature if params.errorfeature
-      $rootScope.$broadcast "Change:Dropbox:Items", null
+      pageSize: pageSize
+    )
   $scope.isString = angular.isString
   $scope.isArray = angular.isArray
   $scope.selectErrorFeature = (product, version, ef) ->
