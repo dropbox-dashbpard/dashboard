@@ -24,6 +24,7 @@ angular.module('dbboardApp')
 
   # select a version then update values
   $scope.changeVersion = (ver) ->
+    return unless ver?  # 如果ver是空
     TypeItems.query {type: $scope.type, product: $scope.product, version: ver}, (values) ->
       $scope.typeValues = values
       $scope.showSelect = values?.length <= 1000

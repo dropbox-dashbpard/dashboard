@@ -6,6 +6,7 @@ favicon = require("static-favicon")
 morgan = require("morgan")
 compression = require("compression")
 bodyParser = require("body-parser")
+busboy = require('connect-busboy')
 methodOverride = require("method-override")
 cookieParser = require("cookie-parser")
 session = require("express-session")
@@ -26,6 +27,10 @@ module.exports = (app) ->
   app.use bodyParser.urlencoded {extended: false, limit: '10mb'}
   app.use bodyParser.json {limit: '10mb'}
   app.use bodyParser.text {limit: '10mb'}
+  app.use busboy(
+    limits:
+      fileSize: 10 * 1024 * 1024
+  )
   app.use methodOverride()
   app.use cookieParser(config.secrets.session)
 
