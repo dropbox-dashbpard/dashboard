@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('dbboardApp')
-.controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, DropboxItem, TypeItems, queryUtilsFactory) ->
+.controller "QueryInAdvancedCtrl", ($rootScope, $scope, $stateParams, $location, $timeout, TypeItems, queryUtilsFactory) ->
   [$scope.from, $scope.to] = queryUtilsFactory.defaultDateOfQuery()
 
   $scope.type = if $location.path().match(/\/app$/) then "app" else "tag"

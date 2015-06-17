@@ -30,7 +30,7 @@ angular.module('dbboardApp')
   $scope.model = model
   $scope.$on "adfDashboardChanged", (event, name, model) ->
     localStorageService.set name, model
-.controller "QueryDataDeviceCtrl", ($rootScope, $scope, $state, DropboxItem, $stateParams, queryUtilsFactory) ->
+.controller "QueryDataDeviceCtrl", ($rootScope, $scope, $state, $stateParams, queryUtilsFactory) ->
   [$scope.from, $scope.to] = if $stateParams.from and $stateParams.to
     [$stateParams.from, $stateParams.to]
   else
