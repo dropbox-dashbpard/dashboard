@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="panel-body">
-    <div ng-repeat="ef in errorfeatures.data | filter: search as results"
+    <div ng-repeat="ef in errorfeatures | filter: search as results"
         ng-if="$index >= (currentPage-1) * itemPerPage && $index < currentPage * itemPerPage"
         ng-show="!selected || selected == ef.id" >
       <ul class="list-group">

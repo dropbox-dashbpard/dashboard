@@ -19,7 +19,15 @@ exports.getErrorFeatures = (req, res, next) ->
             res.json results
         , page, pageSize
       else
-        res.sendStatus(404)
+        res.json
+          product: product
+          version: version
+          total: 0
+          page: page
+          pageSize: pageSize
+          pages: 0
+          data: []
+
   else
     res.send 400
 
