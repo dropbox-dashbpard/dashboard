@@ -39,18 +39,20 @@ angular.module('dbboardApp')
 
     updateResult = (query) ->
       query.$promise.then (ef) ->
-        $scope.errorfeatures = $scope.errorfeatures.concat ef.data
-        if ef.page < ef.pages and not $scope.destroy
-          updateResult ErrorFeature.query(
-            product: params.product
-            version: params.version
-            page: ef.page + 1
-            pageSize: pageSize
-          )
-        else
-          ngProgress.complete()
+        if params.product is $scope.product and params.version is $scope.version and not $scope.destroy
+          $scope.errorfeatures = $scope.errorfeatures.concat ef.data
           $scope.show = $scope.errorfeatures.length > 0
-          $scope.search = params.errorfeature if params.errorfeature
+          if ef.page < ef.pages
+            updateResult ErrorFeature.query(
+              product: params.product
+              version: params.version
+              page: ef.page + 1
+              pageSize: pageSize
+            )
+          else
+            ngProgress.complete()
+            $scope.show = $scope.errorfeatures.length > 0
+            $scope.search = params.errorfeature if params.errorfeature
       , (err) ->
         ngProgress.complete()
         $scope.show = false
