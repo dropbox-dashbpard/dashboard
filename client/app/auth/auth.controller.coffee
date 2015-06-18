@@ -5,8 +5,8 @@ angular.module 'dbboardApp'
   $scope.session = Session
   $scope.products = Products
 
-  $scope.isCollapsed = false
-
+  $scope.isCollapsed = true
+ 
   $scope.isActive = (route) ->
     $location.path().indexOf(route) is 0
 
