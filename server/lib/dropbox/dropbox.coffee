@@ -218,25 +218,32 @@ exports.updateContent = (req, res, next) ->
 # upload attachment of dropbox
 exports.upload = (req, res, next) ->
   dropbox_id = req.param('dropbox_id')
-  if req.busboy?
-    req.busboy.on 'file', (fieldname, file, filename, encoding, mimetype) ->
-      writestream = req.gfs.createWriteStream(
-        content_type: mimetype
-        filename: filename
-        chunkSize: 4096
-        metadata:
-          dropbox_id: dropbox_id
-      )
-      file.on 'data', (data) ->
-        writestream.write data, encoding
-      file.on 'end', ->
-        writestream.end()
-        req.model.Dropbox.findByIdAndUpdate dropbox_id, $push: {attachment: "/api/0/dropbox/file/#{writestream.id}"}, (err, db) ->
-    req.busboy.on 'finish', ->
-      res.status(200).send()
-    req.pipe(req.busboy)
-  else
-    res.send ""
+  req.model.Dropbox.findById dropbox_id, (err, db) ->
+    return next err if err?
+    return res.status(404).send() unless db?
+    if req.busboy?
+      req.busboy.on 'file', (fieldname, file, filename, encoding, mimetype) ->
+        writestream = req.gfs.createWriteStream(
+          content_type: mimetype
+          filename: filename
+          chunkSize: 4096
+          metadata:
+            dropbox_id: dropbox_id
+        )
+        file.on 'data', (data) ->
+          writestream.write data, encoding
+        file.on 'end', ->
+          writestream.end()
+          db.attachment ?= []
+          db.attachment.push "/api/0/dropbox/file/#{writestream.id}"
+          db.save (err, doc) ->
+            unless doc?
+              req.gfs.remove _id: writestream.id, (err) ->
+      req.busboy.on 'finish', ->
+        res.status(200).send()
+      req.pipe(req.busboy)
+    else
+      res.send ""
 
 # download attachment of dropbox
 exports.download = (req, res, next) ->
