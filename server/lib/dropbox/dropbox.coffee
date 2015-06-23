@@ -162,13 +162,14 @@ exports.add = (req, res, next) ->
 
 # update dropbox message content
 exports.updateContent = (req, res, next) ->
-  dropbox_id = req.param('dropbox_id')
+  dropbox_id = req.params.dropbox_id
   content = req.body.content or req.body
   if content?
     req.model.Dropbox.findByIdAndUpdate(dropbox_id, $set: {"data.content": content}, select: "_id tag ua product version").exec()
     .then (doc) ->
-        res.json result: "ok"
-        process.nextTick ->
+      res.json result: "ok"
+      process.nextTick ->
+        try
           request.post
             url: "#{config.url.errordetect}/#{doc.tag}"
             body: content
@@ -210,14 +211,16 @@ exports.updateContent = (req, res, next) ->
               op.$inc["errorfeatures.#{md5}"] = 1
               req.model.ProductErrorFeature.findOneAndUpdate(query, op).exec()
             .end()
-      , (err) ->
-        next err
+        catch e
+          console.log e
+    , (err) ->
+      next err
   else
     res.status(400).send "No content!"
 
 # upload attachment of dropbox
 exports.upload = (req, res, next) ->
-  dropbox_id = req.param('dropbox_id')
+  dropbox_id = req.params.dropbox_id
   req.model.Dropbox.findById dropbox_id, (err, db) ->
     return next err if err?
     return res.status(404).send() unless db?

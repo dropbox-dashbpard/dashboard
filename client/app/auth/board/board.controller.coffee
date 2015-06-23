@@ -131,7 +131,7 @@ angular.module 'dbboardApp'
                 {
                   type: "productErrorRateOfRebootWidget"
                   config:
-                    tag: "SYSTEM_LAST_KMSG"
+                    tag: "KERNEL_PANIC"
                     product: ""
                     dist: ""
                     total: 8

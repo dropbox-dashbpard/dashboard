@@ -1,7 +1,7 @@
 "use strict"
 
 angular.module("widgets.dropbox", ["adf.provider", "dropbox", "highcharts-ng", "ngGrid"])
-.value("rebootTags", ["SYSTEM_RESTART", "SYSTEM_LAST_KMSG"])
+.value("rebootTags", ["SYSTEM_RESTART", "KERNEL_PANIC"])
 .provider("chartsProvider", ->
   @colors = colors =
     device: "#8888FF"
@@ -13,7 +13,7 @@ angular.module("widgets.dropbox", ["adf.provider", "dropbox", "highcharts-ng", "
     errorSum: "错误数"
     errorRate: "错误率/设备/天"
 
-  @nameMapping = nameMapping = 
+  @nameMapping = nameMapping =
     "com.baidu.map.location": "百度地图"
     "com.baidu.input": "百度输入法"
     "com.android.soundrecorder":  "录音机"
