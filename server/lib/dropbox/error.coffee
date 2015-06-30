@@ -45,9 +45,23 @@ exports.addTicket = (req, res, next) ->
     url: req.param('url')
     product: req.param('product')
     errorfeature: req.param('errorfeature')
+    status: req.param('status') or 'open'
   ).save (err, ticket) ->
     return next err if err?
     res.json ticket
+
+exports.updateTicket = (req, res, next) ->
+  id = req.params.ticket
+  status = req.params.status
+  if status not in ["open", "committed", "resolved", "closed"]
+    return res.status(400).send()
+  req.model.Ticket.findByIdAndUpdate(id,
+    $set:
+      status: status
+  ).exec().then (ticket) ->
+    res.json ticket
+  , (err) ->
+    next err
 
 exports.queryTickets = (req, res, next) ->
   query = req.model.Ticket.find()

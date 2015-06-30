@@ -89,6 +89,9 @@ exports = module.exports = (dbprefix) ->
         url: String
         product: String
         errorfeature: String
+        status:
+          type: String
+          enmu: ["open", "committed", "resolved", "closed"]
         created_at:
           type: Date
           default: Date.now
@@ -103,6 +106,7 @@ exports = module.exports = (dbprefix) ->
       product: @product
       errorfeature: @errorfeature
       created_at: @created_at
+      status: @status
 
     ErrorFeature: mongoose.model("#{dbprefix}.ErrorFeature", ErrorFeatureSchema)
     ProductErrorFeature: mongoose.model("#{dbprefix}.ProductErrorFeature", ProductErrorFeatureSchema)

@@ -46,6 +46,7 @@ router.get '/product/:product/version', bearerAuth, product.getVersions
 
 router.get '/product/:product/errorfeatures', bearerAuth, ef.getErrorFeatures
 router.post '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, ef.addTicket
+router.post '/product/:product/errorfeatures/:errorfeature/ticket/:ticket/status/:status', bearerAuth, ef.updateTicket
 router.get '/product/:product/errorfeatures/:errorfeature/ticket', bearerAuth, ef.queryTickets
 router.get '/product/:product/ticket', bearerAuth, ef.queryTickets
 
