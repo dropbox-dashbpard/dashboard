@@ -65,7 +65,7 @@
               <div class="col-md-2"><strong>Tickets</strong></div>
               <div class="col-md-8">
                 <span ng-repeat="ticket in tickets">
-                  <a href="{{ticket.url}}" ng-class="{'label': true, 'label-danger': ticket.status == 'open', 'label-default': ticket.status == 'closed', 'label-success': ticket.status == 'resolved', 'label-info': ticket.status == 'committed', 'label-warning': typeof(ticket.status) == 'undefined'}">{{ticket.id}}&nbsp;{{ticket.status}}</a>&nbsp;&nbsp;
+                  <a href="{{ticket.url}}" ng-class="{'label': true, 'label-danger': ticket.status == 'open', 'label-default': ticket.status == 'closed', 'label-success': ticket.status == 'resolved', 'label-info': ticket.status == 'committed'}" tooltip="{{ticket.status}}">{{ticket.id}}</a>&nbsp;&nbsp;
                 </span>
               </div>
             </div>
