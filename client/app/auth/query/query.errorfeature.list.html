@@ -37,7 +37,7 @@
             <div class="col-sm-2"><strong>Tickets</strong></div>
             <div class="col-sm-8">
               <span ng-repeat="ticket in ef.tickets">
-                <a href="{{ticket.url}}" class="label label-danger">{{ticket.id}}</a>&nbsp;&nbsp;
+                <a href="{{ticket.url}}" ng-class="{'label': true, 'label-danger': ticket.status == 'open', 'label-default': ticket.status == 'closed', 'label-success': ticket.status == 'resolved', 'label-info': ticket.status == 'committed'}">{{ticket.id}}&nbsp;{{ticket.status}}</a>&nbsp;&nbsp;
               </span>
             </div>
           </div>
