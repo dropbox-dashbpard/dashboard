@@ -106,7 +106,7 @@ exports = module.exports = (dbprefix) ->
       product: @product
       errorfeature: @errorfeature
       created_at: @created_at
-      status: @status
+      status: @status or "open"
 
     ErrorFeature: mongoose.model("#{dbprefix}.ErrorFeature", ErrorFeatureSchema)
     ProductErrorFeature: mongoose.model("#{dbprefix}.ProductErrorFeature", ProductErrorFeatureSchema)
