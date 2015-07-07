@@ -13,17 +13,17 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>方法</th>
                 <th>文件</th>
                 <th>行号</th>
+                <th>方法</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="t in item.traces">
                 <th>{{$index}}</th>
-                <td>{{t.func}}</td>
                 <td>{{t.file}}</td>
                 <td>{{t.line}}</td>
+                <td>{{t.func}}</td>
               </tr>
             </tbody>
           </table>
