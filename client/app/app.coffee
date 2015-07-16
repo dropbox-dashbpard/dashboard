@@ -17,6 +17,7 @@ angular.module "dbboardApp", [
   "ui.select2"
   "ngProgress"
   "http-auth-interceptor"
+  "highcharts-ng"
 ]
 .config ($stateProvider, $urlRouterProvider, $locationProvider) ->
   $urlRouterProvider.otherwise '/'

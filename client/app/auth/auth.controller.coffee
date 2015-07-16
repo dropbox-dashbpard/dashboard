@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module 'dbboardApp'
-.controller 'AuthCtrl', ($scope, $state, $location, LoginService, Session, Products) ->
+.controller 'AuthCtrl', ($scope, $state, $location, LoginService, Session, Products, $timeout) ->
   $scope.session = Session
   $scope.products = Products
 
@@ -16,3 +16,6 @@ angular.module 'dbboardApp'
   $scope.logout = ->
     LoginService.logout().then ->
       $state.go "login"
+
+  if $state.is('auth')
+    $state.go 'auth.locationdist'

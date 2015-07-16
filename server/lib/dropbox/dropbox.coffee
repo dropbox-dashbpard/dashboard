@@ -74,12 +74,16 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
   device_id = req.product.device_id req.ua
   req.model.DeviceStat.addDevice device_id, req.version, req.report_at, total, (err, device, key) ->
     return next(err) if err
-    req.device = device
-    req.isNewDevice = device.counter[key] <= total
-    if req.device.in_black
+    if device.in_black
       res.status(403).send 'Forbidden!'  # drop all entries in black_list, and don't count it on dropbox summary
     else
+      req.device = device
+      req.isNewDevice = device.counter[key] <= total
       next()
+      # 进行地域统计
+      if req.isNewDevice
+        process.nextTick ->
+          req.model.LocationStat.addIp req.ua.ip, req.product.name, req.report_at
       # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
       if req.body.uptime?
         uptime = req.body.uptime
@@ -92,6 +96,7 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
                 return next(err) if err
                 if device.counter[key] <= 1
                   req.model.DropboxStat.addDropboxEntry req.product.name, req.version, date, [], true, req.product
+                  req.model.LocationStat.addIp req.ua.ip, req.product.name, date
 
 exports.add = (req, res, next) ->
   isUnderLimits = (kvs) ->  # 判断是否超出上报限额
@@ -455,3 +460,10 @@ exports.tags = (req, res) ->
       version: ver
       data: data
     }
+
+exports.locationStat = (req, res) ->
+  product = req.query.product
+  days = req.query.days or '7'
+  req.model.LocationStat.locationDistribution days, product, (err, result) ->
+    return res.status(500).send() if err?
+    res.json result

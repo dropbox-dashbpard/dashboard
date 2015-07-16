@@ -157,7 +157,7 @@
           <a class="list-group-item">
             <div class="row">
               <div class="col-md-2"><strong><i class="glyphicon glyphicon-globe"></i>IP地址</strong></div>
-              <div class="col-md-8" ng-controller="IpLocationCtrl">{{item.ip}} <span ng-if="location && location.country">{{location.country}}/{{location.region}}/{{location.city}}</span></div>
+              <div class="col-md-8" ng-controller="IpLocationCtrl">{{item.ip}} <span ng-if="location && location.country">{{location.country}}/{{location.region || location.province}}/{{location.city}}</span></div>
             </div>
           </a>
         </div>

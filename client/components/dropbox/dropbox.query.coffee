@@ -47,3 +47,9 @@ angular.module("dropbox")
       transformResponse: (data, headers) ->
         angular.fromJson(data)?.data or []
   }
+.factory 'LocationDistribution', ($resource) ->
+  $resource "/api/0/dropbox/location", {}, {
+    query:
+      method: 'GET'
+      isArray: false
+  }

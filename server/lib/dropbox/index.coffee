@@ -36,6 +36,8 @@ router.get '/product/:product/errorrateofversion', localAuth, dropbox.errorRateO
 router.get '/product/:product/app', localAuth, dropbox.apps
 router.get '/product/:product/tag', localAuth, dropbox.tags
 
+router.get '/location', bearerAuth, dropbox.locationStat
+
 router.get '/product', localAuth, product.list
 router.get '/product/:product', localAuth, product.get
 

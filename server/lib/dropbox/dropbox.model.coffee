@@ -8,6 +8,8 @@ dateToString = require("./util").dateToString
 stringToDate = require("./util").stringToDate
 Schema = mongoose.Schema
 
+IpCache = require '../util/ip.model'
+
 exports = module.exports = (dbprefix) ->
 
   cached = cache.get("#{dbprefix}.dropbox") or do ->
@@ -17,7 +19,7 @@ exports = module.exports = (dbprefix) ->
       created_at:
         type: Date
         default: Date.now
-        expires: '180d'  # expires after 180 days
+        expires: '60d'  # expires after 180 days
       occurred_at: Date
       device_id: String
       product: String  # android product name
@@ -173,6 +175,64 @@ exports = module.exports = (dbprefix) ->
       @findByIdAndUpdate device_id, op, {upsert: true, select: "counter.#{key} in_black in_white"}, (err, doc) ->
         return callback(err) if err
         callback null, doc, key
+
+    ##################################################################################
+    # the location counter of every day
+    LocationStatSchema = new Schema(
+      date: String  # "yyyymmdd", e.g. "20141122"
+      product: String
+      total: Number
+      country: Object
+      province: Object
+      city: Object
+    ,
+      collection: "#{dbprefix}.locationstats"
+    )
+
+    LocationStatSchema.index {date: -1, product: 1}
+
+    LocationStatSchema.statics.addIp = (ip, product, date) ->
+      IpCache.location ip, (err, location) =>
+        return if err?
+        op = $inc: {total: 1}
+        if location.country != "未分配或者内网IP"
+          op.$inc["#{field}.#{location[field]}"] = 1 for field in ['country', 'province', 'city'] when location[field]
+        @findOneAndUpdate({date: dateToString(date or new Date), product: product}, op, {upsert: true}).exec()
+
+    LocationStatSchema.statics.locationDistribution = (days, product, callback) ->
+      days = Number(days)
+      timestamp = new Date().getTime()
+      end = dateToString new Date(timestamp)
+      start = dateToString new Date(timestamp - (days - 1)*1000*3600*24)
+      query = @find().where('date').gte(start).lte(end)
+      if product?
+        query = query.where('product').equals(product)
+      query.exec().then (stats) ->
+        summary = _.reduce stats, (result, stat) ->
+          result.total += stat.total
+          for field in ['country', 'province', 'city']
+            for key of stat[field] or {}
+              result[field][key] ?= 0
+              result[field][key] += stat[field][key]
+          result
+        , {
+          total: 0
+          country: {}
+          province: {}
+          city: {}
+        }
+
+        total = summary.total
+        result = {total: total}
+        for field in ['country', 'province', 'city']
+          result[field] = _.map _.sortBy([k, v] for k, v of summary[field] or {}, (item) ->
+            -item[1]
+          ), (item) ->
+            name: item[0]
+            percent: item[1]/total
+        callback null, result
+      , (err) ->
+        callback err
 
     ##################################################################################
     # counter of product/version/date/app/tag
@@ -483,6 +543,7 @@ exports = module.exports = (dbprefix) ->
     DropboxLimit: mongoose.model("#{dbprefix}.DropboxLimit", DropboxLimitSchema)
     DeviceStat: mongoose.model("#{dbprefix}.DeviceStat", DeviceStatSchema)
     DropboxStat: mongoose.model("#{dbprefix}.DropboxStat", DropboxStatSchema)
+    LocationStat: mongoose.model("#{dbprefix}.LocationStat", LocationStatSchema)
 
   cache.put "#{dbprefix}.dropbox", cached
 
