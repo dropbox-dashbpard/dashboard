@@ -33,7 +33,6 @@ angular.module("dbboardApp")
           dataLabels:
             enabled: true
       yAxis:
-        max: 100
         title:
           text: '总占比'
           align: "high"
@@ -82,7 +81,6 @@ angular.module("dbboardApp")
           dataLabels:
             enabled: true
       yAxis:
-        max: 100
         title:
           text: '总占比'
           align: "high"
