@@ -49,7 +49,7 @@ angular.module("dbboardApp")
       useHighStocks: false
       size:
       #   # width: 400
-        height: 600
+        height: 800
 
     nextProduct = do ->
       index = 0
