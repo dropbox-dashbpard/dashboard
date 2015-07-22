@@ -114,7 +114,7 @@ angular.module('dbboardApp')
         data.board = item.ua?.board
         data.device = item.ua?.device
         data.imei = item.ua?.imei
-        data.buildtype = item.ua?.type
+        data.buildtype = item.ua?.type or item.ua?.buildtype
         data.count = item.data?.count or 1
         data.ip = item.ua?.ip
         data.traces = $scope.trace(item.data?.traces or [])
