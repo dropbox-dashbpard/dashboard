@@ -152,7 +152,9 @@ exports = module.exports = (dbprefix) ->
     # the device counter of every day
     DeviceStatSchema = new Schema(
       _id: String  # device_id
-      counter: Object  # {"20141110|version": 12, "20141111|version": 9, ...}
+      counter: Object  # {"20141110|version": 12, "20141111|version": 9, ...} 用来计算上报次数
+      error: Object # {"20141110": 12}, 用来计算错误总数
+      product: String
       in_white:
         type: Boolean
         default: false
@@ -168,10 +170,14 @@ exports = module.exports = (dbprefix) ->
     DeviceStatSchema.virtual('device_id').set (value)->
       @_id = value
 
-    DeviceStatSchema.statics.addDevice = (device_id, version, date, count, callback) ->
-      key = "#{dateToString(date)}|#{version}".replace /\./g, "#"
+    DeviceStatSchema.statics.addDevice = (device_id, product, version, date, count, callback) ->
+      date = dateToString(date)
+      key = "#{date}|#{version}".replace /\./g, "#"
       op = $inc: {}
-      op.$inc["counter.#{key}"] = count
+      if count > 0
+        op.$inc["error.#{date}"] = count
+      op.$inc["counter.#{key}"] = 1
+      op.$set = product: product
       @findByIdAndUpdate device_id, op, {upsert: true, select: "counter.#{key} in_black in_white"}, (err, doc) ->
         return callback(err) if err
         callback null, doc, key

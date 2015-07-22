@@ -72,31 +72,31 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
     memo + (entry.data?.count or 1)
   , 0) or 1
   device_id = req.product.device_id req.ua
-  req.model.DeviceStat.addDevice device_id, req.version, req.report_at, total, (err, device, key) ->
+  req.model.DeviceStat.addDevice device_id, req.product.name, req.version, req.report_at, total, (err, device, key) ->
     return next(err) if err
     if device.in_black
       res.status(403).send 'Forbidden!'  # drop all entries in black_list, and don't count it on dropbox summary
     else
       req.device = device
-      req.isNewDevice = device.counter[key] <= total
+      req.isNewDevice = device.counter[key] <= 1
       next()
       # 进行地域统计
-      if req.isNewDevice
+      if req.isNewDevice and (not req.ua.buildtype? or req.ua.buildtype is "user")
         process.nextTick ->
           req.model.LocationStat.addIp req.ua.ip, req.product.name, req.report_at
-      # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
-      if req.body.uptime?
-        uptime = req.body.uptime
-        date = req.report_at
-        process.nextTick ->
-          while (uptime -= 1000*3600*24) > 0
-            date = new Date(date.getTime() - 1000*3600*24)
-            do (date) ->
-              req.model.DeviceStat.addDevice device_id, req.version, date, 1, (err, device, key) ->
-                return next(err) if err
-                if device.counter[key] <= 1
-                  req.model.DropboxStat.addDropboxEntry req.product.name, req.version, date, [], true, req.product
-                  req.model.LocationStat.addIp req.ua.ip, req.product.name, date
+      # # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
+      # if req.body.uptime?
+      #   uptime = req.body.uptime
+      #   date = req.report_at
+      #   process.nextTick ->
+      #     while (uptime -= 1000*3600*24) > 0
+      #       date = new Date(date.getTime() - 1000*3600*24)
+      #       do (date) ->
+      #         req.model.DeviceStat.addDevice device_id, req.product.name, req.version, date, 0, (err, device, key) ->
+      #           return next(err) if err
+      #           if device.counter[key] <= 1
+      #             req.model.DropboxStat.addDropboxEntry req.product.name, req.version, date, [], true, req.product
+      #             req.model.LocationStat.addIp req.ua.ip, req.product.name, date
 
 exports.add = (req, res, next) ->
   isUnderLimits = (kvs) ->  # 判断是否超出上报限额
@@ -130,6 +130,9 @@ exports.add = (req, res, next) ->
     entry.created_at = req.report_at
     if typeof entry.occurred_at is 'number'
       entry.occurred_at = new Date(entry.occurred_at)
+    if req.body.uptime?
+      entry.data ?= {}
+      entry.data.uptime = req.body.uptime
     entry
 
   addEntries = (entries) ->  # 增加所有的entry, 返回一个promise

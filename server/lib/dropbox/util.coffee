@@ -3,7 +3,7 @@
 exports = module.exports =
   dateToString: (date) ->
     return date if typeof date is 'string'
-    date = new Date(t) if typeof date is 'number'
+    date = new Date(date) if typeof date is 'number'
     year = date.getUTCFullYear()
     month = date.getUTCMonth() + 1
     day = date.getUTCDate()
