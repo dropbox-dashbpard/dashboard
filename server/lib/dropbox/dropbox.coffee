@@ -464,6 +464,27 @@ exports.tags = (req, res) ->
       data: data
     }
 
+exports.devices = (req, res) ->
+  page = Number(req.query.page) or 1
+  pageSize = Number(req.query.pageSize) or 100
+  req.model.DeviceStat.find().sort('_id').skip((page - 1) * pageSize).limit(pageSize).exec().then (docs) ->
+    res.json
+      page: page
+      pageSize: pageSize
+      data: docs
+  , (err) ->
+    res.json
+      page: page
+      pageSize: pageSize
+      data: []
+
+exports.device = (req, res) ->
+  sn = req.params.id
+  req.model.DeviceStat.findById(sn).exec().then (doc) ->
+    res.json doc
+  , (err) ->
+    res.status(404).send()
+
 exports.locationStat = (req, res) ->
   product = req.query.product
   days = req.query.days or '7'
