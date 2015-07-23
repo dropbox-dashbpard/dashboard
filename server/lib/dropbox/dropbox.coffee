@@ -464,7 +464,7 @@ exports.tags = (req, res) ->
       data: data
     }
 
-exports.devices = (req, res) ->
+exports.listDevices = (req, res) ->
   page = Number(req.query.page) or 1
   pageSize = Number(req.query.pageSize) or 100
   req.model.DeviceStat.find().sort('_id').skip((page - 1) * pageSize).limit(pageSize).exec().then (docs) ->
@@ -478,7 +478,7 @@ exports.devices = (req, res) ->
       pageSize: pageSize
       data: []
 
-exports.device = (req, res) ->
+exports.getDevice = (req, res) ->
   sn = req.params.id
   req.model.DeviceStat.findById(sn).exec().then (doc) ->
     res.json doc

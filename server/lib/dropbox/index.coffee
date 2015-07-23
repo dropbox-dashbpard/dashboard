@@ -38,8 +38,8 @@ router.get '/product/:product/tag', localAuth, dropbox.tags
 
 router.get '/location', bearerAuth, dropbox.locationStat
 
-router.get '/device', bearerAuth, dropbox.devices
-router.get '/device/:id', bearerAuth, dropbox.device
+router.get '/device', bearerAuth, dropbox.listDevices
+router.get '/device/:id', bearerAuth, dropbox.getDevice
 
 router.get '/product', localAuth, product.list
 router.get '/product/:product', localAuth, product.get
