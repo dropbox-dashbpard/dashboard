@@ -80,7 +80,7 @@
               <div class="col-md-8">{{item.product.display}}</div>
             </div>
           </a>
-          <a class="list-group-item list-group-item-info" ui-sref="auth.query.device({deviceId: item.device_id})">
+          <a class="list-group-item list-group-item-info" ui-sref="auth.query.device({deviceId: item.device_id})" ng-if="item.device_id">
             <div class="row">
               <div class="col-md-2"><strong><i class="glyphicon glyphicon-star"></i>设备ID</strong></div>
               <div class="col-md-8">{{item.device_id}}</div>
@@ -92,10 +92,16 @@
               <div class="col-md-8">{{item.imei}}</div>
             </div>
           </a>
-          <a class="list-group-item list-group-item-info" ui-sref="auth.query.mac({mac: item.mac_address})">
+          <a class="list-group-item list-group-item-info" ui-sref="auth.query.mac({mac: item.mac_address})" ng-if="item.mac_address">
             <div class="row">
               <div class="col-md-2"><strong><i class="glyphicon glyphicon-record"></i>网卡地址</strong></div>
               <div class="col-md-8">{{item.mac_address}}</div>
+            </div>
+          </a>
+          <a class="list-group-item list-group-item-info" ng-if="item.phone_number && item.phone_number != '0'">
+            <div class="row">
+              <div class="col-md-2"><strong><i class="glyphicon glyphicon-earphone"></i>电话号码</strong></div>
+              <div class="col-md-8">{{item.phone_number}}</div>
             </div>
           </a>
         </div>
