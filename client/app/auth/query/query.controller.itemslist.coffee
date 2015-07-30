@@ -114,6 +114,7 @@ angular.module('dbboardApp')
         data.board = item.ua?.board
         data.device = item.ua?.device
         data.imei = item.ua?.imei
+        data.phone_number = item.ua?.phone_number
         data.buildtype = item.ua?.type or item.ua?.buildtype
         data.count = item.data?.count or 1
         data.ip = item.ua?.ip
