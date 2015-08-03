@@ -180,7 +180,7 @@ exports = module.exports = (dbprefix) ->
       op.$set = product: product
       @findByIdAndUpdate device_id, op, {upsert: true, select: "counter.#{key} in_black in_white"}, (err, doc) ->
         return callback(err) if err
-        callback null, doc, key
+        callback null, doc, doc.counter[key] <= 1
 
     ##################################################################################
     # the location counter of every day
