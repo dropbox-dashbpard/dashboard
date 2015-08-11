@@ -57,7 +57,7 @@ angular.module("widgets.dropbox")
   , widget))
 ).controller("productVersionEditCtrl", ($scope, config, products) ->
   $scope.products = products
-  $scope.days = [10, 20, 30, 60, 90, 120, 150, 300]
+  $scope.days = [5, 7, 10, 20, 30, 60, 90, 120, 150, 300]
 
   updateVersions = ->
     if config.product and config.dist

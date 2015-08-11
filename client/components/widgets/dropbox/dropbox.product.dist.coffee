@@ -111,7 +111,7 @@ angular.module("widgets.dropbox")
       prod.name is config.product
     )
     $scope.dists = prod.versionTypes
-  $scope.days = [10, 20, 30, 60, 90, 120, 150, 300]
+  $scope.days = [5, 7, 10, 20, 30, 60, 90, 120, 150, 300]
   $scope.categories = ["app", "tag"]
   $scope.tags = rebootTags
   if config.selectApp

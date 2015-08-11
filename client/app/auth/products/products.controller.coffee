@@ -85,6 +85,41 @@ angular.module("dbboardApp")
             styleClass: "col-sm-6"
             widgets: [
               {
+                type: "productDistributionWidget"
+                config:
+                  product: product.name
+                  dist: dist
+                  category: "app"
+                  selectDays: true
+                  totalDisplay: 30
+                  days: 7
+              }
+            ]
+          }
+          {
+            styleClass: "col-sm-6"
+            widgets: [
+              {
+                type: "productDistributionWidget"
+                config:
+                  product: product.name
+                  dist: dist
+                  category: "tag"
+                  selectDays: true
+                  totalDisplay: 12
+                  days: 7
+              }
+            ]
+          }
+        ]
+      }
+      {
+        styleClass: "col-sm-12"
+        columns: [
+          {
+            styleClass: "col-sm-6"
+            widgets: [
+              {
                 type: "productErrorRateOfRebootWidget"
                 config:
                   tag: "#{rebootTags[0]}"
