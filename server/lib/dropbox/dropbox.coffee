@@ -9,9 +9,10 @@ crypto = require 'crypto'
 dateToString = require('./util').dateToString
 stringToDate = require('./util').stringToDate
 config = require '../../config/environment'
+cache = require 'memory-cache'
 
 exports.dbmodel = (req, res, next) ->  # 设置mongodb的model
-  prefix = req.user?.group or req.user?.name  or 'default'
+  req.prefix = prefix = req.user?.group or req.user?.name  or 'default'
   req.model = _.extend {}, require('./dropbox.model')(prefix), require('./product.model')(prefix), require('./error.model')(prefix)
   req.gfs = Grid(mongoose.connection.db, mongoose.mongo)
   next()
@@ -33,17 +34,24 @@ exports.ua = (req, res, next) ->  # parse 上报数据的ua
     # TODO mv to logger
   res.status(400).send 'Invalid UA'
 
-exports.product = (req, res, next) ->  # parse上报数据的产品信息
-  req.model.Product.findOne(
-    'build.brand': req.ua.brand
-    'build.device': req.ua.device
-    'build.product': req.ua.product
-    'build.model': req.ua.model
+getProductConfig = (prefix, ua, model, callback) ->
+  key = "#{prefix}:config:#{ua.brand}/#{ua.device}/#{ua.product}/#{ua.model}"
+  value = cache.get(key)
+  if value?
+    return callback null, value
+
+  model.Product.findOne(
+    'build.brand': ua.brand
+    'build.device': ua.device
+    'build.product': ua.product
+    'build.model': ua.model
   ).exec (err, prod) ->
-    return next(err) if err
-    return res.status(404).send 'No such a product!' if not prod
-    dc = new req.model.ProductConfig()
-    req.model.ProductConfig.findOneAndUpdate {
+    return callback(err) if err?
+    unless prod
+      console.log "Not found. brand=#{ua.brand}, device=#{ua.device}, product=#{ua.product}, model=#{ua.model}"
+      return callback('No such a product!') 
+    dc = new model.ProductConfig()
+    model.ProductConfig.findOneAndUpdate {
       _id: prod.name
     }, {
       $setOnInsert: {
@@ -57,15 +65,21 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
     }, {
       upsert: true
     }, (err, config) ->
-      return next(err) if err
-      req.product = config
-      req.version = config.version req.ua
-      if config.validVersion req.version
-        next()
-        if process.env.NODE_ENV isnt 'production'
-          config.addVersion _.last(config.versionTypes)?.name or 'development', req.version, (err, doc) ->  # TODO debug only
-      else
-        next new Error("Invalid version: #{config.name} - #{req.version}!")
+      return callback(err) if err?
+      cache.put key, config, 1000*60*60
+      callback null, config
+
+exports.product = (req, res, next) ->  # parse上报数据的产品信息
+  getProductConfig req.prefix, req.ua, req.model, (err, config) ->
+    return next(err) if err?
+    req.product = config
+    req.version = config.version req.ua
+    if config.validVersion req.version
+      next()
+      if process.env.NODE_ENV isnt 'production'
+        config.addVersion _.last(config.versionTypes)?.name or 'development', req.version, (err, doc) ->  # TODO debug only
+    else
+      next new Error("Invalid version: #{config.name} - #{req.version}!")
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce(req.body.data, (memo, entry) ->
@@ -87,7 +101,7 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
       # # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
       if req.body.uptime? and newDevice
         addDeviceDuringUptime = (date, uptime) ->
-          return if uptime < 0
+          return if uptime < 0 or uptime > 300*1000*3600*24  #  >300天极有可能是异常
           req.model.DeviceStat.addDevice device_id, req.product.name, req.version, date, 0, (err, device, isNewDevice) ->
             return next(err) if err
             if isNewDevice

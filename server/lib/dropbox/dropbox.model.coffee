@@ -19,7 +19,7 @@ exports = module.exports = (dbprefix) ->
       created_at:
         type: Date
         default: Date.now
-        expires: '60d'  # expires after 180 days
+        expires: '30d'  # expires after 180 days
       occurred_at: Date
       device_id: String
       product: String  # android product name

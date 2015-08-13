@@ -1,11 +1,16 @@
 'use strict'
 
 _ = require 'lodash'
+cache = require 'memory-cache'
 
-# 产品列表清单
-exports.list = (req, res, next) ->
-  req.model.ProductConfig.find().sort("_id").exec (err, docs) ->
-    return next err if err
+getProductList = (prefix, ProductConfig, callback) ->
+  key = "#{prefix}:products"
+  value = cache.get(key)
+  if value?
+    return callback null, value
+
+  ProductConfig.find().sort("_id").exec (err, docs) ->
+    return callback err if err?
     products = _.map docs, (config) ->
       display: config.display or config.name
       name: config.name
@@ -14,6 +19,14 @@ exports.list = (req, res, next) ->
       template: config.template
       ignores: config.ignores
       limits: config.limits
+
+    cache.put key, products, 1000*60
+    callback null, products
+
+# 产品列表清单
+exports.list = (req, res, next) ->
+  getProductList req.prefix, req.model.ProductConfig, (err, products) ->
+    return next err if err?
     res.json data: products
 
 # 产品详单
