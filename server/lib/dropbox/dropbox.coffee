@@ -98,20 +98,20 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
       if newDevice and (not req.ua.buildtype? or req.ua.buildtype is "user")
         process.nextTick ->
           req.model.LocationStat.addIp req.ua.ip, req.product.name, req.report_at
-      # # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
-      if req.body.uptime? and newDevice
-        addDeviceDuringUptime = (date, uptime) ->
-          return if uptime < 0 or uptime > 300*1000*3600*24  #  >300天极有可能是异常
-          req.model.DeviceStat.addDevice device_id, req.product.name, req.version, date, 0, (err, device, isNewDevice) ->
-            return next(err) if err
-            if isNewDevice
-              req.model.DropboxStat.addDropboxEntry req.product.name, req.version, date, [], true, req.product
-              if not req.ua.buildtype? or req.ua.buildtype is "user"
-                setTimeout ->
-                  req.model.LocationStat.addIp req.ua.ip, req.product.name, date
-                , 2000
-              addDeviceDuringUptime(new Date(date.getTime() - 1000*3600*24), uptime - 1000*3600*24)
-        addDeviceDuringUptime(new Date(req.report_at.getTime() - 1000*3600*24), req.body.uptime - 1000*3600*24)
+      # # # 根据uptime, 往前判断这个设备是否上报过, 如果没有, 则设备数+1
+      # if req.body.uptime? and newDevice
+      #   addDeviceDuringUptime = (date, uptime) ->
+      #     return if uptime < 0 or uptime > 300*1000*3600*24  #  >300天极有可能是异常
+      #     req.model.DeviceStat.addDevice device_id, req.product.name, req.version, date, 0, (err, device, isNewDevice) ->
+      #       return next(err) if err
+      #       if isNewDevice
+      #         req.model.DropboxStat.addDropboxEntry req.product.name, req.version, date, [], true, req.product
+      #         if not req.ua.buildtype? or req.ua.buildtype is "user"
+      #           setTimeout ->
+      #             req.model.LocationStat.addIp req.ua.ip, req.product.name, date
+      #           , 2000
+      #         addDeviceDuringUptime(new Date(date.getTime() - 1000*3600*24), uptime - 1000*3600*24)
+      #   addDeviceDuringUptime(new Date(req.report_at.getTime() - 1000*3600*24), req.body.uptime - 1000*3600*24)
 
 exports.add = (req, res, next) ->
   isUnderLimits = (kvs) ->  # 判断是否超出上报限额
