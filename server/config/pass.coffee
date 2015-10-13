@@ -4,6 +4,7 @@ mongoose = require('mongoose')
 passport = require('passport')
 LocalStrategy = require('passport-local').Strategy
 BearerStrategy = require('passport-http-bearer').Strategy
+cache = require 'memory-cache'
 
 User = require('../lib/auth/user.model').User
 UserGroup = require('../lib/auth/user.model').UserGroup
@@ -41,9 +42,19 @@ module.exports = (app) ->
     )
 
   passport.use new BearerStrategy((token, done) ->
+    key = token
+    value = cache.get(key)
+    if value?
+      console.log "hit cache!"
+      return done null, value
+
     UserGroup.findOne {token: token}, (err, group) ->
       return done(err, false) if err
-      done null, group or new UserGroup(name: 'default')
+      if group?
+        done null, group
+        cache.put key, group, 60*1000
+      else
+        done "Not found!", false
   )
 
   app.use passport.initialize()
