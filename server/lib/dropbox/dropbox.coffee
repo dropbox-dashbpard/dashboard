@@ -207,7 +207,11 @@ exports.updateContent = (req, res, next) ->
             if e? or r.statusCode isnt 200
               console.log "Error during detecting: #{e}"
               return
-            body = JSON.parse(body)
+            try
+              body = JSON.parse(body)
+            catch e
+              return
+
             if body.status isnt 1
               console.log "No feature detected for id #{doc._id}"
               return

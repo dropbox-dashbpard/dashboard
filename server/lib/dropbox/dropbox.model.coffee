@@ -178,9 +178,14 @@ exports = module.exports = (dbprefix) ->
         op.$inc["error.#{date}"] = count
       op.$inc["counter.#{key}"] = 1
       op.$set = product: product
-      @findByIdAndUpdate device_id, op, {upsert: true, select: "counter.#{key} in_black in_white"}, (err, doc) ->
-        return callback(err) if err
-        callback null, doc, doc.counter[key] <= 1
+      @update {_id: device_id}, op, {upsert: true}, (err, raw) =>
+        return callback(err) if err?
+        @findById device_id, "counter.#{key} in_black in_white", (err, doc) ->
+          return callback(err) if err?
+          callback null, doc, doc.counter[key] <= 1
+      # @findByIdAndUpdate device_id, op, {upsert: true, select: "counter.#{key} in_black in_white"}, (err, doc) ->
+      #   return callback(err) if err
+      #   callback null, doc, doc.counter[key] <= 1
 
     ##################################################################################
     # the location counter of every day
@@ -203,7 +208,7 @@ exports = module.exports = (dbprefix) ->
         op = $inc: {total: 1}
         if location.country != "未分配或者内网IP"
           op.$inc["#{field}.#{location[field]}"] = 1 for field in ['country', 'province', 'city'] when location[field]
-        @findOneAndUpdate({date: dateToString(date or new Date), product: product}, op, {upsert: true}).exec()
+        @update({date: dateToString(date or new Date), product: product}, op, {upsert: true}).exec()
 
     LocationStatSchema.statics.locationDistribution = (days, product, callback) ->
       days = Number(days)

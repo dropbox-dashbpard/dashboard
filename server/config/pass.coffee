@@ -45,7 +45,6 @@ module.exports = (app) ->
     key = token
     value = cache.get(key)
     if value?
-      console.log "hit cache!"
       return done null, value
 
     UserGroup.findOne {token: token}, (err, group) ->
