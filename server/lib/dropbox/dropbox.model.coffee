@@ -173,16 +173,41 @@ exports = module.exports = (dbprefix) ->
     DeviceStatSchema.statics.addDevice = (device_id, product, version, date, count, callback) ->
       date = dateToString(date)
       key = "#{date}|#{version}".replace /\./g, "#"
-      op = $inc: {}
-      if count > 0
-        op.$inc["error.#{date}"] = count
-      op.$inc["counter.#{key}"] = 1
-      op.$set = product: product
-      @update {_id: device_id}, op, {upsert: true}, (err, raw) =>
+
+      @findById device_id, "counter.#{key} error.#{date} in_black in_white product", (err, doc) =>
         return callback(err) if err?
-        @findById device_id, "counter.#{key} in_black in_white", (err, doc) ->
-          return callback(err) if err?
-          callback null, doc, doc.counter[key] <= 1
+
+        unless doc?
+          op = $inc: {}, $set: {product: product}
+          if count > 0
+            op.$inc["error.#{date}"] = count
+          op.$set["counter.#{key}"] = 1
+          @findByIdAndUpdate device_id, op, {upsert: true, select: "in_black in_white"}, (err, doc) ->
+            return callback(err) if err
+            callback err, doc, true
+        else
+          op = $set: {}
+          if doc.counter?[key] > 0
+            newDevice = false
+          else
+            newDevice = true
+            op.$set["counter.#{key}"] = 1
+          if count > 0
+            op.$inc = {}
+            op.$inc["error.#{date}"] = count
+          unless doc.product?
+            op.$set["product"] = product
+
+          if newDevice or count > 0
+            @update({_id: device_id}, op, {upsert: true}).exec()
+
+          callback null, doc, newDevice
+
+      # @update {_id: device_id}, op, {upsert: true}, (err, raw) =>
+      #   return callback(err) if err?
+      #   @findById device_id, "counter.#{key} in_black in_white", (err, doc) ->
+      #     return callback(err) if err?
+      #     callback null, doc, doc.counter[key] <= 1
       # @findByIdAndUpdate device_id, op, {upsert: true, select: "counter.#{key} in_black in_white"}, (err, doc) ->
       #   return callback(err) if err
       #   callback null, doc, doc.counter[key] <= 1
@@ -280,8 +305,8 @@ exports = module.exports = (dbprefix) ->
       for tag of @tag
         @model("#{dbprefix}.DropboxStat").toName(tag)
 
-    DropboxStatSchema.statics.addDropboxEntry = (product, version, date, entries, newDevice, config, callback) ->
-      doc = $inc: {}
+    DropboxStatSchema.statics.addDropboxEntry = (product, version, date, entries, newDevice, config) ->
+      op = $inc: {}
       total = 0
       _.each entries, (entry) =>
         [app, tag, count] = if config.shouldIgnore(entry.app, entry.tag)  # ignore
@@ -289,41 +314,30 @@ exports = module.exports = (dbprefix) ->
         else  # not ignore
           [@toKey(entry.app), @toKey(entry.tag), entry.data?.count or 1]
 
-        if doc.$inc["app.#{app}.occurred"]?
-          doc.$inc["app.#{app}.occurred"] += count
-        else
-          doc.$inc["app.#{app}.occurred"] = count
-        doc.$inc["app.#{app}.devices"] = 1 if newDevice
-        if doc.$inc["app.#{app}.tag.#{tag}.occurred"]?
-          doc.$inc["app.#{app}.tag.#{tag}.occurred"] += count
-        else
-          doc.$inc["app.#{app}.tag.#{tag}.occurred"] = count
-        doc.$inc["app.#{app}.tag.#{tag}.devices"] = 1 if newDevice
-        if doc.$inc["tag.#{tag}.occurred"]?
-          doc.$inc["tag.#{tag}.occurred"] += count
-        else
-          doc.$inc["tag.#{tag}.occurred"] = count
-        doc.$inc["tag.#{tag}.devices"] = 1 if newDevice
-        total += count
-      doc.$inc["all.occurred"] = total
-      doc.$inc["all.devices"] = 1 if newDevice
-      @findOneAndUpdate({
-          product: product
-          version: version
-          date: dateToString date
-        }, doc, upsert: true
-      ).select("_id")
-      .exec()
-      .then (stat) =>
-        p = @findOneAndUpdate({
-            product: product
-            version: version
-            date: null
-          }, doc, upsert: true
-        ).select("_id").exec()
-        if callback then p.onResolve(callback) else p
-      , (err) ->
-        callback err if callback
+        if count > 0
+          if op.$inc["app.#{app}.occurred"]?
+            op.$inc["app.#{app}.occurred"] += count
+          else
+            op.$inc["app.#{app}.occurred"] = count
+          if op.$inc["app.#{app}.tag.#{tag}.occurred"]?
+            op.$inc["app.#{app}.tag.#{tag}.occurred"] += count
+          else
+            op.$inc["app.#{app}.tag.#{tag}.occurred"] = count
+          if op.$inc["tag.#{tag}.occurred"]?
+            op.$inc["tag.#{tag}.occurred"] += count
+          else
+            op.$inc["tag.#{tag}.occurred"] = count
+          total += count
+        if newDevice
+          op.$inc["app.#{app}.devices"] = 1
+          op.$inc["app.#{app}.tag.#{tag}.devices"] = 1
+          op.$inc["tag.#{tag}.devices"] = 1
+      op.$inc["all.occurred"] = total
+      op.$inc["all.devices"] = 1 if newDevice
+
+      if newDevice or total > 0
+        @update({product: product, version: version, date: dateToString date}, op, upsert: true).exec()
+        @update({product: product, version: version, date: null}, op, upsert: true).exec()
 
     # 计算特定产品和build类型的错误趋势
     DropboxStatSchema.statics.trend = (product, dist, start, end, cb) ->

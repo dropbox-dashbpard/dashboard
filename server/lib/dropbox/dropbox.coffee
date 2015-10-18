@@ -83,8 +83,11 @@ exports.product = (req, res, next) ->  # parse上报数据的产品信息
 
 exports.device = (req, res, next) ->  # parse上报数据的设备信息
   total = _.reduce(req.body.data, (memo, entry) ->
-    memo + (entry.data?.count or 1)
-  , 0) or 1
+    if req.product.shouldIgnore(entry.app, entry.tag)
+      memo
+    else
+      memo + (entry.data?.count or entry.count or 1)
+  , 0)
   device_id = req.product.device_id req.ua
   req.model.DeviceStat.addDevice device_id, req.product.name, req.version, req.report_at, total, (err, device, newDevice) ->
     return next(err) if err
@@ -157,21 +160,25 @@ exports.add = (req, res, next) ->
       # 不在黑名单的都会增加dropbox计数
       memo.then (results) ->
         p = new mongoose.Promise
-        if req.device.in_white  # 在白名单，所以不增加limit里的计数
-          req.model.Dropbox.create entry, (err, doc) ->
-            results.push if err then null else {dropbox_id: doc._id, result: "ok"}
-            p.fulfill results
+        if req.product.shouldIgnore(entry.app, entry.tag)  # 是否忽略tag/app
+          results.push null
+          p.fulfill results
         else
-          kvs = req.product.limit_kvs entry
-          isUnderLimits(kvs).then (underLimit) ->  # 判断是否limit计数超限
-            if underLimit  # 没有超过limit计数
-              req.model.Dropbox.create entry, (err, doc) ->
-                results.push if err then null else {dropbox_id: doc._id, result: "ok"}
-                p.fulfill results
-                incLimits kvs  # 增加limit计数
-            else  # over limit, so drop it
-              results.push null
+          if req.device.in_white  # 在白名单，所以不增加limit里的计数
+            req.model.Dropbox.create entry, (err, doc) ->
+              results.push if err then null else {dropbox_id: doc._id, result: "ok"}
               p.fulfill results
+          else
+            kvs = req.product.limit_kvs entry
+            isUnderLimits(kvs).then (underLimit) ->  # 判断是否limit计数超限
+              if underLimit  # 没有超过limit计数
+                req.model.Dropbox.create entry, (err, doc) ->
+                  results.push if err then null else {dropbox_id: doc._id, result: "ok"}
+                  p.fulfill results
+                  incLimits kvs  # 增加limit计数
+              else  # over limit, so drop it
+                results.push null
+                p.fulfill results
         p
     , promise
 
