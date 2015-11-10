@@ -49,7 +49,7 @@ getProductConfig = (prefix, ua, model, callback) ->
     return callback(err) if err?
     unless prod
       console.log "Not found. brand=#{ua.brand}, device=#{ua.device}, product=#{ua.product}, model=#{ua.model}"
-      return callback('No such a product!') 
+      return callback('No such a product!')
     dc = new model.ProductConfig()
     model.ProductConfig.findOneAndUpdate {
       _id: prod.name
@@ -88,7 +88,7 @@ exports.device = (req, res, next) ->  # parse上报数据的设备信息
     else
       memo + (entry.data?.count or entry.count or 1)
   , 0)
-  device_id = req.product.device_id req.ua
+  device_id = req.product.device_id(req.ua) or "unknown"
   req.model.DeviceStat.addDevice device_id, req.product.name, req.version, req.report_at, total, (err, device, newDevice) ->
     return next(err) if err
     if device.in_black
