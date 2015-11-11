@@ -197,7 +197,7 @@ angular.module("widgets.dropbox")
     ).display
 
     $scope.chartConfig = chartsProvider.chartRate {
-      title: "错误率/设备/天 - #{config.app}"
+      title: "错误数/设备/天 - #{config.app}"
       subtitle: "#{prodDisplay} - #{distDisplay}"
       percentage: true
       drilldown:

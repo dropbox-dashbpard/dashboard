@@ -11,7 +11,7 @@ angular.module("widgets.dropbox", ["adf.provider", "dropbox", "highcharts-ng", "
     deviceSum: "设备数"
     deviceTime: "设备天"
     errorSum: "错误数"
-    errorRate: "错误率/设备/天"
+    errorRate: "错误数/设备/天"
 
   @nameMapping = nameMapping =
     "com.baidu.map.location": "百度地图"
