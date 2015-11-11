@@ -1,29 +1,29 @@
 <div ng-include="'app/auth/devices/alertdialog.html'"></div>
 <div class="row">
-  <h3><i class="glyphicon glyphicon-list-alt"></i> 配置 {{id | uppercase}}</h3>  
+  <h3><i class="glyphicon glyphicon-list-alt"></i> 配置 {{id | uppercase}}</h3>
   <hr>
 </div>
 <div class="row">
   <tabset>
-    <tab ng-controller="DeviceConfigBtsCtrl">
+    <tab>
       <tab-heading><i class="glyphicon glyphicon-cog"></i> Bug系统</tab-heading>
       <br/>
-      <div ng-include="'app/auth/devices/device.config.bts.html'"></div>
+      <div ng-controller="DeviceConfigBtsCtrl" ng-include="'app/auth/devices/device.config.bts.html'"></div>
     </tab>
-    <tab ng-controller="DeviceConfigLimitsCtrl">
+    <tab>
       <tab-heading><i class="glyphicon glyphicon-cog"></i> 流量控制</tab-heading>
       <br/>
-      <div ng-include="'app/auth/devices/device.config.limits.html'"></div>
+      <div ng-controller="DeviceConfigLimitsCtrl" ng-include="'app/auth/devices/device.config.limits.html'"></div>
     </tab>
-    <tab ng-controller="DeviceConfigIgnoresCtrl">
+    <tab>
       <tab-heading><i class="glyphicon glyphicon-cog"></i> 忽略控制</tab-heading>
       <br/>
-      <div ng-include="'app/auth/devices/device.config.ignores.html'"></div>
+      <div ng-controller="DeviceConfigIgnoresCtrl" ng-include="'app/auth/devices/device.config.ignores.html'"></div>
     </tab>
-    <tab ng-controller="DeviceConfigTemplatesCtrl">
+    <tab>
       <tab-heading><i class="glyphicon glyphicon-cog"></i> 模版</tab-heading>
       <br/>
-      <div ng-include="'app/auth/devices/device.config.templates.html'"></div>
+      <div ng-controller="DeviceConfigTemplatesCtrl" ng-include="'app/auth/devices/device.config.templates.html'"></div>
     </tab>
   </tabset>
 </div>
