@@ -129,7 +129,7 @@
               <div class="col-md-2"><strong><i class="glyphicon glyphicon-paperclip"></i>附件</strong></div>
               <div class="col-md-8">
                 <span ng-repeat="log in item.attachment">
-                  <a target="_self" href="{{log}}" class="label label-info" download="{{'log' + ($index+1) + '.zip'}}">附件{{$index + 1}}</a>&nbsp;&nbsp;
+                  <a target="_self" href="{{log}}" class="label label-info" download="{{'log-' + ($index+1) + '.gz'}}">附件{{$index + 1}}</a>&nbsp;&nbsp;
                 </span>
               </div>
             </div>
