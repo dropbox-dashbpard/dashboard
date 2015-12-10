@@ -85,13 +85,13 @@ exports.del = (req, res, next) ->
   userId = req.params.userId
   User.findById ObjectId(userId), (err, user) ->
     return next err if err
-    return req.status(404).send 'Not Found!'
+    return res.status(404).send 'Not permitted yet!'
     if req.user.admin or req.user.group is user?.group
       user.remove (err, u) ->
         return next err if err
         res.status(200).send 'Ok'
     else
-      req.status(401).send 'No permission!'
+      res.status(401).send 'No permission!'
 
 ###
 Username exists
