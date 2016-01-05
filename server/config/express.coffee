@@ -51,6 +51,7 @@ module.exports = (app) ->
     store: new MongoStore(
         secret: config.secrets.session
         url: config.mongo.uri
+        defaultExpirationTime: 1000 * 60 * 60 * 24 # set one day to reduce the sessions count
         collection: 'sessions'
       )
   )
