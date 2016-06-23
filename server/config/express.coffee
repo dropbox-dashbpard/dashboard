@@ -14,6 +14,7 @@ errorHandler = require("errorhandler")
 path = require("path")
 crypto = require('crypto')
 
+mongoose = require 'mongoose'
 MongoStore = require('connect-mongo')(session)
 
 config = require './environment'
@@ -50,7 +51,8 @@ module.exports = (app) ->
     saveUninitialized: true
     store: new MongoStore(
         secret: config.secrets.session
-        url: config.mongo.uri
+        #url: config.mongo.uri
+        db: mongoose.connection.db
         defaultExpirationTime: 1000 * 60 * 60 * 24 # set one day to reduce the sessions count
         collection: 'sessions'
       )
