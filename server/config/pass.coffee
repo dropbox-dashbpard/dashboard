@@ -32,12 +32,20 @@ module.exports = (app) ->
               email:
                 type: 'Email is not registered.'
           }
+        unless user.underlimit()
+          return done null, false, {
+            errors:
+              password:
+                type: 'Reach max error login.'
+          }
         unless user.authenticate(password)
+          User.incErrorCnt email
           return done null, false, {
             errors:
               password:
                 type: 'Password is incorrect.'
           }
+        User.clearErrorCnt email
         return done(null, user)
     )
 

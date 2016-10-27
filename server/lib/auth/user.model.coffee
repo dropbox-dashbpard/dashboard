@@ -2,6 +2,7 @@
 
 mongoose = require('mongoose')
 crypto = require('crypto')
+error_max = 5
 
 UserSchema = new mongoose.Schema(
   email:
@@ -19,6 +20,7 @@ UserSchema = new mongoose.Schema(
   name: String
   admin: Boolean
   guest: Boolean
+  error_cnt: Number
   provider: String
   group:
     type: String
@@ -68,6 +70,26 @@ UserSchema.pre 'save', (next) ->
   else
     next()
 
+UserSchema.statics.clearErrorCnt = (email, callback) ->
+  promise = @findOneAndUpdate(
+      email: email
+    ,
+      $set:
+        error_cnt: 0
+    , upsert: true
+  ).exec()
+  if callback then promise.onResolve(callback) else promise
+
+UserSchema.statics.incErrorCnt = (email, callback) ->
+  promise = @findOneAndUpdate(
+      email: email
+    ,
+      $inc:
+        error_cnt: 1
+    , upsert: true
+  ).exec()
+  if callback then promise.onResolve(callback) else promise
+
 ###
 Methods
 ###
@@ -77,7 +99,14 @@ UserSchema.methods =
   ###
   authenticate: (plainText) ->
     @encryptPassword(plainText) is @hashedPassword
-  
+
+  ###*
+  underlimit - check if the error counter beyond limit
+  ###
+  underlimit: ->
+    return true if not @error_cnt
+    @error_cnt < error_max
+
   ###*
   Make salt
   ###
