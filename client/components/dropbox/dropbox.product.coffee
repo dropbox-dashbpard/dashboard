@@ -11,7 +11,7 @@ angular.module("dropbox")
       if data?.data
         for prod in data.data
           for key, vers of prod.versions or {}
-            prod.versions[key] = (v for v in _.sortBy(vers) by -1)
+            prod.versions[key] = (v for v in vers by -1)
         deferred.resolve data.data
       else
         deferred.reject()
@@ -25,7 +25,7 @@ angular.module("dropbox")
     $http.get(url).success((data) ->
       if data and data.versions
         for key, vers of data.versions
-          data.versions[key] = (v for v in _.sortBy(vers) by -1)
+          data.versions[key] = (v for v in vers by -1)
         deferred.resolve data.versions
       else
         deferred.reject()
