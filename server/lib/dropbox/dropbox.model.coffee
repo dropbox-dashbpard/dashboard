@@ -19,7 +19,7 @@ exports = module.exports = (dbprefix) ->
       created_at:
         type: Date
         default: Date.now
-        expires: '30d'  # expires after 180 days
+        expires: '30d'  # expires after 30 days
       occurred_at: Date
       device_id: String
       product: String  # android product name
@@ -60,16 +60,27 @@ exports = module.exports = (dbprefix) ->
       if cb then promise.onResolve(cb) else promise
 
     DropboxSchema.statics.findByAppInAdvance = (product, version, app, from_date, to_date, limit, cb) ->
-      promise = @find()
-      .where("created_at").gte(from_date).lt(to_date)
-      .where("product").equals(product)
-      .where("version").equals(version)
-      .where("app").equals(app)
-      .sort('-created_at')
-      .limit(limit)
-      .select("product version occurred_at app tag created_at device_id errorfeature")
-      .exec()
-      if cb then promise.onResolve(cb) else promise
+      if version is 'all'
+        promise = @find()
+        .where("created_at").gte(from_date).lt(to_date)
+        .where("product").equals(product)
+        .where("app").equals(app)
+        .sort('-created_at')
+        .limit(limit)
+        .select("product version occurred_at app tag created_at device_id errorfeature")
+        .exec()
+        if cb then promise.onResolve(cb) else promise
+      else
+        promise = @find()
+        .where("created_at").gte(from_date).lt(to_date)
+        .where("product").equals(product)
+        .where("version").equals(version)
+        .where("app").equals(app)
+        .sort('-created_at')
+        .limit(limit)
+        .select("product version occurred_at app tag created_at device_id errorfeature")
+        .exec()
+        if cb then promise.onResolve(cb) else promise
 
     DropboxSchema.statics.findByTagInAdvance = (product, version, tag, from_date, to_date, limit, cb) ->
       promise = @find()
@@ -292,6 +303,7 @@ exports = module.exports = (dbprefix) ->
     DropboxStatSchema.index {product: 1, version: -1}
 
     DropboxStatSchema.statics.toKey = (name) ->
+      name ?= "unknown"
       name.replace /\./g, "#"
 
     DropboxStatSchema.statics.toName = (key) ->
@@ -336,8 +348,12 @@ exports = module.exports = (dbprefix) ->
       op.$inc["all.devices"] = 1 if newDevice
 
       if newDevice or total > 0
-        @update({product: product, version: version, date: dateToString date}, op, upsert: true).exec()
-        @update({product: product, version: version, date: null}, op, upsert: true).exec()
+        # @update({product: product, version: version, date: dateToString date}, op, upsert: true).exec()
+        @update({product: product, version: version, date: dateToString date}, op, upsert: true).exec (err, docs) ->
+          console.log err if err
+        # @update({product: product, version: version, date: null}, op, upsert: true).exec()
+        @update({product: product, version: version, date: null}, op, upsert: true).exec (err, docs) ->
+          console.log err if err
 
     # 计算特定产品和build类型的错误趋势
     DropboxStatSchema.statics.trend = (product, dist, start, end, cb) ->

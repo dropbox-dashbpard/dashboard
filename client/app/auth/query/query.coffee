@@ -34,6 +34,10 @@ angular.module "dbboardApp"
     url: "/tag?product&version&value"
     templateUrl: "app/auth/query/query.type.html"
     controller: "QueryInAdvancedCtrl"
+  .state "auth.query.custom",
+    url: "/custom?product&value"
+    templateUrl: "app/auth/query/query.custom.html"
+    controller: "QueryInCustomCtrl"
   .state "auth.query.dbitem",
     url: "/dbitem/:dropboxId"
     templateUrl: "app/auth/query/query.dropboxid.html"
