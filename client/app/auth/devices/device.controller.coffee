@@ -30,10 +30,10 @@ angular.module 'dbboardApp'
     $scope.open new ProductModel(
       name: 'name'
       build:
-        brand: 'build.brand'
-        device: 'build.device'
-        product: 'build.product'
-        model: 'build.model'
+        brand: 'ro.product.brand'
+        device: 'ro.product.device'
+        product: 'ro.build.product'
+        model: 'ro.product.model'
     ), true
 .controller 'DeviceModelEditCtrl', ($scope, $modalInstance, model) ->
   $scope.model = model
